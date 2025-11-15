@@ -76,9 +76,9 @@ export default function CreateEditBlogModal({
             />
 
             {/* modal panel */}
-            <div className="relative z-50   w-full max-w-5xl mx-4 mt-[10%]">
-              <div className="bg-white rounded-xl shadow-xl border border-gray-100">
-                <div className="flex  rounded-xl items-center justify-between px-4 sm:px-6 py-4 border-b bg-linear-to-r from-white to-gray-50">
+            <div className="pt-[23%] sm:pt-[15%]  md:pt-[12%] lg:pt-[8%] relative z-50  w-full max-w-5xl mx-4">
+              <div className=" bg-white rounded-xl shadow-xl border border-gray-100 ">
+                <div className="  flex  rounded-xl items-center justify-between px-4 sm:px-6 py-4 border-b bg-linear-to-r from-white to-gray-50 ">
                   <h3 className="text-lg font-semibold text-gray-900">
                     {actionType === "create" ? "Create Blog" : "Edit Blog"}
                   </h3>
