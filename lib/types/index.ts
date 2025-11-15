@@ -10,6 +10,16 @@ export interface BlogType extends RowDataPacket {
   updated_at: string;
 }
 
+export type CreateEditBlogTypes = {
+  actionType: "edit" | "create";
+  blog?: {
+    id: number;
+    title: string;
+    description?: string;
+    image?: string;
+  };
+};
+
 export type DeleteBlogParams = {
   id: number;
 };

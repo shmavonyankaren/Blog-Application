@@ -18,7 +18,7 @@ export default function Navigation() {
   const pathname = usePathname();
   return (
     <div>
-      <ul className="flex flex-col md:flex-row md:gap-8">
+      <ul className="flex flex-col md:flex-row md:gap-8 sm: gap-3">
         {navLinks.map((link) => {
           const isActive =
             link.href === "/"
@@ -26,11 +26,11 @@ export default function Navigation() {
               : pathname.startsWith(link.href);
 
           return (
-            <li key={link.name}>
+            <li className="" key={link.name}>
               <Link
                 href={link.href}
                 className={`text-sm ${
-                  isActive ? "font-semibold text-white" : "text-gray-400"
+                  isActive ? "font-semibold text-blue-500" : "text-gray-400"
                 }`}
               >
                 {link.name}

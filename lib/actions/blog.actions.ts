@@ -5,7 +5,7 @@
 import pool from "@/lib/db/index";
 import { revalidatePath } from "next/cache";
 
-import { handleError } from "@/lib/utils";
+import { handleError } from "@/lib/utils/";
 
 import { BlogType as Blog, GetBlogsByUserParams } from "@/lib/types";
 
@@ -30,18 +30,17 @@ export async function createBlog(formData: FormData) {
     const description = formData.get("description");
     const image = formData.get("image");
     const userId = formData.get("userId");
+
     await pool!.query(
       "INSERT INTO blogs (title, description, image, user_id) VALUES (?, ?, ?, ?)",
       [title, description, image, userId]
     );
-    const [rows] = await pool!.query("SELECT * FROM blogs WHERE user_id = ?", [
-      userId,
-    ]);
-    const newBlog = (rows as Blog[])[0];
 
+    // Revalidate only necessary paths
     revalidatePath("/my-blogs");
+    revalidatePath("/all-blogs");
 
-    return JSON.parse(JSON.stringify(newBlog));
+    // return { success: true, id: (result as any).insertId };
   } catch (error) {
     handleError(error);
   }
@@ -70,19 +69,18 @@ export async function updateBlog(formData: FormData) {
     const description = formData.get("description");
     const image = formData.get("image");
     const blogId = formData.get("blogId");
+
     await pool!.query(
       `UPDATE blogs SET title = ?, description = ?, image = ? WHERE id = ?`,
       [title, description, image, blogId]
     );
-    const [rows] = await pool!.query("SELECT * FROM blogs WHERE id = ?", [
-      blogId,
-    ]);
 
-    const blog = (rows as Blog[])[0];
-
+    // Revalidate only necessary paths
     revalidatePath("/my-blogs");
+    revalidatePath("/all-blogs");
+    revalidatePath(`/blog/${blogId}`);
 
-    return JSON.parse(JSON.stringify(blog));
+    return { success: true, id: blogId };
   } catch (error) {
     handleError(error);
   }
@@ -96,6 +94,8 @@ export async function deleteBlog(formData: FormData) {
     await pool!.query("DELETE FROM blogs WHERE id = ?", [blogId]);
 
     revalidatePath("/my-blogs");
+
+    return { success: true };
   } catch (error) {
     handleError(error);
   }

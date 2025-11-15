@@ -1,6 +1,7 @@
 import { BlogType as Blog } from "@/lib/types";
 import { deleteAllBlogsByUser } from "@/lib/actions/blog.actions";
 import { currentUser } from "@clerk/nextjs/server";
+import { DeleteButton } from "@/components";
 
 async function BlogFooter({ blogs }: { blogs: Blog[] }) {
   const user = await currentUser();
@@ -12,24 +13,17 @@ async function BlogFooter({ blogs }: { blogs: Blog[] }) {
             <span className="text-sm text-gray-500">
               Total Number of Blogs:{" "}
             </span>
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-gray-800">
+            <span className="flex justify-center items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-gray-800">
               {blogs.length}
             </span>
           </div>
         </div>
 
-        <div className="flex flex- items-center gap-2">
-          <form action={deleteAllBlogsByUser}>
-            <input type="hidden" name="userId" value={user?.id} />
-            <button
-              className="min-w-[90px] py-3 px-3 text-sm text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-700 transition"
-              type="submit"
-              aria-label="Clear all Blogs"
-            >
-              Delete All My Blogs
-            </button>
-          </form>
-        </div>
+        <DeleteButton
+          action={deleteAllBlogsByUser}
+          deleteId={user!.id}
+          text="Delete All My Blogs"
+        />
       </div>
     </div>
   );
