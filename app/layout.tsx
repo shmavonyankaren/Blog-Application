@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ReduxProvider from "@/components/ReduxProvider";
 import Header from "@/components/Header";
 import { ClerkProvider } from "@clerk/nextjs";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "./api/uploadthing/core";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,12 +34,19 @@ export default function RootLayout({
           className={`flex flex-col min-h-screen ${geistSans.variable} ${geistMono.variable} antialiased`}
           suppressHydrationWarning
         >
+          <NextSSRPlugin
+            /**
+             * The `extractRouterConfig` will extract **only** the route configs
+             * from the router to prevent additional information from being
+             * leaked to the client. The data passed to the client is the same
+             * as if you were to fetch `/api/uploadthing` directly.
+             */
+            routerConfig={extractRouterConfig(ourFileRouter)}
+          />
           <div className="fixed top-0 left-0 right-0 z-50 bg-white">
             <Header />
           </div>
-          <main className="flex-1 min-h-0 flex flex-col pt-16">
-            <ReduxProvider>{children}</ReduxProvider>
-          </main>
+          <main className="flex-1 min-h-0 flex flex-col pt-16">{children}</main>
         </body>
       </html>
     </ClerkProvider>
