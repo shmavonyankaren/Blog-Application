@@ -31,7 +31,7 @@ export async function createBlog(formData: FormData) {
     const image = formData.get("image");
     const userId = formData.get("userId");
 
-    const [result] = await pool!.query(
+    await pool!.query(
       "INSERT INTO blogs (title, description, image, user_id) VALUES (?, ?, ?, ?)",
       [title, description, image, userId]
     );
