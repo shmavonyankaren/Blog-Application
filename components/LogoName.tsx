@@ -12,7 +12,7 @@ export default function LogoName() {
           src="/assets/images/Logo.png"
           className="h-8 w-auto"
         />
-        <span className="text-white text-center">Blog Application</span>
+        <span className="text-white text-center">BlogSpace</span>
       </div>
     </Link>
   );
