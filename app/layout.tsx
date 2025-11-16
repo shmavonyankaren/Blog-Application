@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Blog App",
+  title: "BlogSpace",
   description: "A simple blog app built with Next.js and TypeScript",
 };
 

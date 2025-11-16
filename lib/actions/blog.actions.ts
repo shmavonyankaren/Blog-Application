@@ -105,7 +105,7 @@ export async function deleteBlog(formData: FormData) {
 
 export async function deleteAllBlogsByUser(formData: FormData) {
   try {
-    const userId = formData.get("userId");
+    const userId = formData.get("deleteId"); // Changed from "userId" to "deleteId" to match DeleteButton
 
     await pool!.query("DELETE FROM blogs WHERE user_id = ?", [userId]);
 
