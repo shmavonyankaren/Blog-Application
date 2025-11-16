@@ -2,7 +2,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-Run this command on windows shell to set a ngrok server running and attach webhook to that: ngrok http --url=famous-perfectly-bengal.ngrok-free.app 3000
+Run this command on windows shell to set a ngrok server running and attach webhook to that:
+ngrok http --url=famous-perfectly-bengal.ngrok-free.app 3000
 
 First, run the development server:
 

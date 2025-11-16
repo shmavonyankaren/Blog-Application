@@ -11,6 +11,7 @@ import Header from "./Header";
 import LogoName from "./LogoName";
 import MyBlogContainer from "./MyBlogsContainer";
 import Navigation from "./Navigation";
+import SearchBar from "./SearchBar";
 
 export {
   AddBlog,
@@ -26,4 +27,5 @@ export {
   LogoName,
   MyBlogContainer,
   Navigation,
+  SearchBar,
 };
