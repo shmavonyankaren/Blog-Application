@@ -12,7 +12,7 @@ async function BlogFooter({ blogs }: { blogs: Blog[] }) {
 
   return (
     <div className="mt-10 pt-6 border-t border-gray-200">
-      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6">
+      <div className="bg-linear-to-br from-gray-50 to-gray-100 rounded-lg p-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           {/* Stats Section */}
           <div className="flex items-center gap-3">
