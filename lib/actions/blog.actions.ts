@@ -116,9 +116,20 @@ export async function deleteAllBlogsByUser(formData: FormData) {
 }
 
 // GET ALL Blogs
-export async function getAllBlogs() {
+export async function getAllBlogs(searchQuery?: string) {
   try {
-    const [blogs] = await pool!.query("SELECT * FROM blogs");
+    let query = "SELECT * FROM blogs";
+    let params: string[] = [];
+
+    if (searchQuery && searchQuery.trim()) {
+      query += " WHERE title LIKE ? OR description LIKE ?";
+      const searchPattern = `%${searchQuery.trim()}%`;
+      params = [searchPattern, searchPattern];
+    }
+
+    query += " ORDER BY created_at DESC";
+
+    const [blogs] = await pool!.query(query, params);
 
     return JSON.parse(JSON.stringify(blogs));
   } catch (error) {

@@ -29,8 +29,10 @@ export default function Navigation() {
             <li className="" key={link.name}>
               <Link
                 href={link.href}
-                className={`text-sm ${
-                  isActive ? "font-semibold text-blue-500" : "text-gray-400"
+                className={`text-sm font-medium transition-all ${
+                  isActive
+                    ? "text-white font-bold"
+                    : "text-indigo-100 hover:text-white"
                 }`}
               >
                 {link.name}
