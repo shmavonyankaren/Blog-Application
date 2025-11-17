@@ -14,8 +14,20 @@ const navLinks: LinkType[] = [
   { name: "All Blogs", href: "/all-blogs" },
 ];
 
-export default function Navigation() {
+type NavigationProps = {
+  onNavigate?: () => void;
+};
+
+export default function Navigation({ onNavigate }: NavigationProps) {
   const pathname = usePathname();
+
+  const handleLinkClick = () => {
+    // Check if we're on mobile (screen width < 640px)
+    if (window.innerWidth < 640 && onNavigate) {
+      onNavigate();
+    }
+  };
+
   return (
     <div>
       <ul className="flex flex-col md:flex-row md:gap-8 sm: gap-3">
@@ -29,6 +41,7 @@ export default function Navigation() {
             <li className="" key={link.name}>
               <Link
                 href={link.href}
+                onClick={handleLinkClick}
                 className={`text-sm font-medium transition-all ${
                   isActive
                     ? "text-white font-bold"

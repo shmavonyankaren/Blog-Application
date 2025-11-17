@@ -95,7 +95,11 @@ export default function Header() {
           <div className="mt-6 flow-root">
             <div className="-my-6 flex flex-col justify-evenly divide-y divide-white/10">
               {/* App navigation links */}
-              <div className="space-y-2 py-6">{user && <Navigation />}</div>
+              <div className="space-y-2 py-6">
+                {user && (
+                  <Navigation onNavigate={() => setMobileMenuOpen(false)} />
+                )}
+              </div>
 
               {/* User account section */}
               <div className="py-6">
