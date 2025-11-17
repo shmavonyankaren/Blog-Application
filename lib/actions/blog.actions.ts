@@ -94,8 +94,6 @@ export async function deleteBlog(formData: FormData) {
     await pool!.query("DELETE FROM blogs WHERE id = ?", [blogId]);
 
     revalidatePath("/my-blogs");
-
-    return { success: true };
   } catch (error) {
     handleError(error);
   }

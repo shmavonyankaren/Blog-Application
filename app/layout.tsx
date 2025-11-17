@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
+import { Header, Footer } from "@/components";
 import { ClerkProvider } from "@clerk/nextjs";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
@@ -47,6 +47,7 @@ export default function RootLayout({
             <Header />
           </div>
           <main className="flex-1 min-h-0 flex flex-col pt-16">{children}</main>
+          <Footer />
         </body>
       </html>
     </ClerkProvider>
