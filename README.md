@@ -1,5 +1,9 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Thing to add to the app
+
+1. dynamic revalidatePath functionality
+
 ## Getting Started
 
 Run this command on windows shell to set a ngrok server running and attach webhook to that:

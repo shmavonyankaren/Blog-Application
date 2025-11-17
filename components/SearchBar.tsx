@@ -2,7 +2,7 @@
 
 import { useCallback, useState, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import debounce from "@/lib/utils/debounce";
+import { debounce } from "@/lib/utils";
 
 export default function SearchBar() {
   const router = useRouter();
