@@ -5,6 +5,7 @@ import Image from "next/image";
 import { formatDateHour } from "@/lib/utils/";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import CommentsSection from "@/components/CommentsSection";
 
 export default async function BlogPage({
   params,
@@ -101,6 +102,12 @@ export default async function BlogPage({
               )}
             </div>
           </div>
+        </div>
+        <div className="mt-8">
+          <CommentsSection
+            blogId={String(blog.id)}
+            creatorId={String(blog.user_id)}
+          />
         </div>
       </div>
     </main>

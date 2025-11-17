@@ -120,8 +120,12 @@ export default function CreateEditBlogModal({
                 <div className="p-4 sm:p-6 bg-gray-50">
                   <form action={handleSubmit} className="space-y-6">
                     <input type="hidden" name="userId" value={user?.id ?? ""} />
-                    {actionType === "edit" && (
-                      <input type="hidden" name="blogId" value={blog?.id} />
+                    {actionType === "edit" && blog?.id && (
+                      <input
+                        type="hidden"
+                        name="blogId"
+                        value={String(blog.id)}
+                      />
                     )}
 
                     <div className="flex flex-col lg:flex-row gap-6">
