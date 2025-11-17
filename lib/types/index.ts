@@ -1,5 +1,13 @@
 import { RowDataPacket } from "mysql2";
 
+export interface CommentType extends RowDataPacket {
+  id: number; // Auto-incremented primary key
+  blog_id: number; // References blogs.id
+  user_id: string; // References users.user_id (Clerk ID)
+  created_at: string; // ISO string (timestamp from DB)
+  content: string;
+}
+
 export interface BlogType extends RowDataPacket {
   id: number; // Auto-incremented primary key
   image?: string | undefined; // Optional image URL
@@ -36,10 +44,9 @@ export type UpdateBlogParams = {
 };
 
 export interface User {
-  user_id: string;
-  firstName: string | null;
-  lastName: string | null;
-  username: string;
+  first_name: string | null;
+  last_name: string | null;
+  username: string | null;
   photo: string;
   email: string;
 }
