@@ -2,16 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 
 type LinkType = {
   name: string;
   href: string;
+  requiresAuth?: boolean;
 };
 
 const navLinks: LinkType[] = [
   { name: "Home", href: "/" },
-  { name: "My Blogs", href: "/my-blogs" },
   { name: "All Blogs", href: "/all-blogs" },
+  { name: "My Blogs", href: "/my-blogs", requiresAuth: true },
 ];
 
 type NavigationProps = {
@@ -20,6 +22,7 @@ type NavigationProps = {
 
 export default function Navigation({ onNavigate }: NavigationProps) {
   const pathname = usePathname();
+  const { user } = useUser();
 
   const handleLinkClick = () => {
     // Check if we're on mobile (screen width < 640px)
@@ -32,6 +35,9 @@ export default function Navigation({ onNavigate }: NavigationProps) {
     <div>
       <ul className="flex flex-col md:flex-row md:gap-8 sm: gap-3">
         {navLinks.map((link) => {
+          // Skip links that require auth if user is not logged in
+          if (link.requiresAuth && !user) return null;
+
           const isActive =
             link.href === "/"
               ? pathname === "/"

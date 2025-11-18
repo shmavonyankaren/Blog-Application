@@ -33,7 +33,7 @@ export default async function CommentsFooter({
           {comments.length} {comments.length === 1 ? "Comment" : "Comments"}
         </p>
       </div>
-      {currUser!.id === creatorId && blogId && (
+      {currUser && currUser.id === creatorId && blogId && (
         <form action={deleteAllCommentsFromBlog}>
           <input type="hidden" name="blogId" value={blogId} />
           <button

@@ -24,6 +24,7 @@ export default function CommentItem({
         <CommentHeader
           creatorOfComment={creatorOfComment}
           createdAt={comment.created_at}
+          updatedAt={comment.updated_at}
         />
 
         {isOwner && (

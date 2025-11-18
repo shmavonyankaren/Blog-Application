@@ -4,12 +4,21 @@ import { User } from "@/lib/types";
 interface CommentHeaderProps {
   creatorOfComment: User;
   createdAt: string;
+  updatedAt: string;
 }
 
 export default function CommentHeader({
   creatorOfComment,
   createdAt,
+  updatedAt,
 }: CommentHeaderProps) {
+  const isEdited = createdAt !== updatedAt;
+
+  // Add 4 hours to compensate for Railway UTC storage
+  const offset = 4 * 60 * 60 * 1000;
+  const adjustedCreatedAt = new Date(new Date(createdAt).getTime() + offset);
+  const adjustedUpdatedAt = new Date(new Date(updatedAt).getTime() + offset);
+
   return (
     <div className="flex items-center gap-3">
       <Image
@@ -25,7 +34,12 @@ export default function CommentHeader({
             creatorOfComment.first_name + " " + creatorOfComment.last_name}
         </p>
         <p className="text-xs text-gray-500">
-          {new Date(createdAt).toLocaleString()}
+          {adjustedCreatedAt.toLocaleString()}
+          {isEdited && (
+            <span className="ml-2 text-gray-400 italic">
+              (edited {adjustedUpdatedAt.toLocaleString()})
+            </span>
+          )}
         </p>
       </div>
     </div>
