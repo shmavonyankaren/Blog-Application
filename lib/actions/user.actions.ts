@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import pool from "@/lib/db/index";
-import { handleError } from "@/lib/utils";
+import { handleError, sendEmail } from "@/lib/utils";
 
 import { BlogCreator, CreateUserParams, UpdateUserParams } from "@/lib/types";
 
@@ -120,6 +120,23 @@ export async function deleteUser(clerkId: string) {
     revalidatePath("/");
 
     return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function sendContactForm(form: FormData) {
+  try {
+    const name = form.get("name");
+    const email = form.get("email");
+    const subject = form.get("subject");
+    const message = form.get("message");
+    sendEmail(
+      name as string,
+      email as string,
+      subject as string,
+      message as string
+    );
   } catch (error) {
     handleError(error);
   }
