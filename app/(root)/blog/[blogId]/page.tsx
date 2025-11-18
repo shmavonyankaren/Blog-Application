@@ -5,7 +5,7 @@ import Image from "next/image";
 import { formatDateHour } from "@/lib/utils/";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import CommentsSection from "@/components/CommentsSection";
+import CommentsSection from "@/components/blog/comments/CommentsSection";
 
 export default async function BlogPage({
   params,
