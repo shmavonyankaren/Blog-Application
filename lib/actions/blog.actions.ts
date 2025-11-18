@@ -9,6 +9,8 @@ import { handleError } from "@/lib/utils/";
 
 import { BlogType as Blog, GetBlogsByUserParams } from "@/lib/types";
 
+type CountResult = { total: number };
+
 // const getCategoryByName = async (name: string) => {
 //   return Category.findOne({ name: { $regex: name, $options: "i" } });
 // };
@@ -114,37 +116,88 @@ export async function deleteAllBlogsByUser(formData: FormData) {
 }
 
 // GET ALL Blogs
-export async function getAllBlogs(searchQuery?: string) {
+export async function getAllBlogs(
+  searchQuery?: string,
+  page: number = 1,
+  limit: number = 9
+) {
   try {
-    let query = "SELECT * FROM blogs";
+    const offset = (page - 1) * limit;
+
+    let countQuery = "SELECT COUNT(*) as total FROM blogs";
+    let dataQuery = "SELECT * FROM blogs";
     let params: string[] = [];
 
     if (searchQuery && searchQuery.trim()) {
-      query += " WHERE title LIKE ? OR description LIKE ?";
+      const whereClause = " WHERE title LIKE ? OR description LIKE ?";
+      countQuery += whereClause;
+      dataQuery += whereClause;
       const searchPattern = `%${searchQuery.trim()}%`;
       params = [searchPattern, searchPattern];
     }
 
-    query += " ORDER BY created_at DESC";
+    dataQuery += " ORDER BY created_at DESC LIMIT ? OFFSET ?";
 
-    const [blogs] = await pool!.query(query, params);
+    // Get total count
+    const [countResult] = await pool!.query(countQuery, params);
+    const total = (countResult as CountResult[])[0].total;
 
-    return JSON.parse(JSON.stringify(blogs));
+    // Get paginated data
+    const [blogs] = await pool!.query(dataQuery, [...params, limit, offset]);
+
+    return {
+      data: JSON.parse(JSON.stringify(blogs)),
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+      totalCount: total,
+    };
   } catch (error) {
     handleError(error);
+    return {
+      data: [],
+      totalPages: 1,
+      currentPage: page,
+      totalCount: 0,
+    };
   }
 }
 
 // GET Blogs BY ORGANIZER
-export async function getBlogsByUser({ userId }: GetBlogsByUserParams) {
+export async function getBlogsByUser(
+  { userId }: GetBlogsByUserParams,
+  page: number = 1,
+  limit: number = 9
+) {
   try {
-    const [blogs] = await pool!.query("SELECT * FROM blogs WHERE user_id = ?", [
-      userId,
-    ]);
+    const offset = (page - 1) * limit;
 
-    return JSON.parse(JSON.stringify(blogs));
+    // Get total count
+    const [countResult] = await pool!.query(
+      "SELECT COUNT(*) as total FROM blogs WHERE user_id = ?",
+      [userId]
+    );
+    const total = (countResult as CountResult[])[0].total;
+
+    // Get paginated data
+    const [blogs] = await pool!.query(
+      "SELECT * FROM blogs WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?",
+      [userId, limit, offset]
+    );
+
+    return {
+      data: JSON.parse(JSON.stringify(blogs)),
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+      totalCount: total,
+    };
   } catch (error) {
     handleError(error);
+    return {
+      data: [],
+      totalPages: 1,
+      currentPage: page,
+      totalCount: 0,
+    };
   }
 }
 

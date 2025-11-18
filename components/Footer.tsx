@@ -27,14 +27,14 @@ export default function Footer() {
     { name: "My Blogs", href: "/my-blogs" },
   ];
 
-  //   const resourseLinks = [
-  //     { name: "About Us", href: "#" },
-  //     { name: "Privacy Policy", href: "#" },
-  //     { name: "Terms of Service", href: "#" },
-  //     { name: "Contact", href: "#" },
-  //   ];
+  const resourseLinks = [
+    { name: "About Us", href: "/about-us" },
+    // { name: "Privacy Policy", href: "#" },
+    // { name: "Terms of Service", href: "#" },
+    { name: "Contact", href: "/contact-us" },
+  ];
 
-  const resourseLinks: { name: string; href: string }[] = [];
+  // const resourseLinks: { name: string; href: string }[] = [];
 
   //   const privacyLinks = [
   //     { name: "Privacy", href: "#" },

@@ -3,11 +3,16 @@ function formatDateHour(iso?: string | null) {
   console.log(iso);
   try {
     const d = new Date(iso);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    const hour = String(d.getHours()).padStart(2, "0");
-    const minute = String(d.getMinutes()).padStart(2, "0");
+    // Check if the date looks like it's in UTC (hours are off by 4)
+    // Add 4 hours to compensate for Railway storing in UTC
+    const offset = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
+    const adjusted = new Date(d.getTime() + offset);
+
+    const year = adjusted.getFullYear();
+    const month = String(adjusted.getMonth() + 1).padStart(2, "0");
+    const day = String(adjusted.getDate()).padStart(2, "0");
+    const hour = String(adjusted.getHours()).padStart(2, "0");
+    const minute = String(adjusted.getMinutes()).padStart(2, "0");
     return `${year}-${month}-${day} ${hour}:${minute}`;
   } catch {
     return iso;

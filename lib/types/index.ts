@@ -5,6 +5,7 @@ export interface CommentType extends RowDataPacket {
   blog_id: number; // References blogs.id
   user_id: string; // References users.user_id (Clerk ID)
   created_at: string; // ISO string (timestamp from DB)
+  updated_at: string; // ISO string (timestamp from DB)
   content: string;
 }
 

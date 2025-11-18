@@ -1,0 +1,27 @@
+type ContactItemProps = {
+  icon: React.ReactNode;
+  title: string;
+  content: string | React.ReactNode;
+};
+
+export default function ContactInfoItem({
+  icon,
+  title,
+  content,
+}: ContactItemProps) {
+  return (
+    <div className="flex items-start gap-4">
+      <div className="bg-linear-to-r from-indigo-600 to-purple-600 p-3 rounded-xl shrink-0">
+        {icon}
+      </div>
+      <div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-1">{title}</h3>
+        {typeof content === "string" ? (
+          <p className="text-gray-600">{content}</p>
+        ) : (
+          content
+        )}
+      </div>
+    </div>
+  );
+}

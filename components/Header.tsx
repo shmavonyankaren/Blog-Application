@@ -42,7 +42,7 @@ export default function Header() {
         </div>
         {/* App navigation links */}
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
-          {user && <Navigation />}
+          <Navigation />
         </PopoverGroup>
         {/* User account section and sign in/up buttons */}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
@@ -96,9 +96,7 @@ export default function Header() {
             <div className="-my-6 flex flex-col justify-evenly divide-y divide-white/10">
               {/* App navigation links */}
               <div className="space-y-2 py-6">
-                {user && (
-                  <Navigation onNavigate={() => setMobileMenuOpen(false)} />
-                )}
+                <Navigation onNavigate={() => setMobileMenuOpen(false)} />
               </div>
 
               {/* User account section */}
