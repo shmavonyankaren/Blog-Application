@@ -1,28 +1,43 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+
 interface DeleteConfirmationModalProps {
   isOpen: boolean;
-  categoryName: string;
+  itemName: string;
+  itemType?: string;
   onConfirm: () => void;
   onCancel: () => void;
 }
 
 export default function DeleteConfirmationModal({
   isOpen,
-  categoryName,
+  itemName,
+  itemType = "item",
   onConfirm,
   onCancel,
 }: DeleteConfirmationModalProps) {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
 
-  return (
+  useEffect(() => {
+    function func() {
+      setMounted(true);
+    }
+    func();
+    return () => setMounted(false);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
+
+  const modalContent = (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onCancel}
       />
 
-      <div className="relative z-50 bg-white rounded-2xl shadow-2xl p-6 max-w-md mx-4 border border-gray-200">
+      <div className="relative z-50 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-6 max-w-md mx-4 border border-gray-200 dark:border-slate-800 transition-colors duration-300">
         <div className="flex items-start gap-4">
           <div className="shrink-0 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
             <svg
@@ -41,13 +56,13 @@ export default function DeleteConfirmationModal({
           </div>
 
           <div className="flex-1">
-            <h3 className="text-lg font-bold text-gray-900 mb-2">
-              Delete Category
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 transition-colors duration-300">
+              Delete {itemType.charAt(0).toUpperCase() + itemType.slice(1)}
             </h3>
-            <p className="text-sm text-gray-600 mb-6">
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-6 transition-colors duration-300">
               Are you sure you want to delete{" "}
-              <span className="font-semibold text-gray-900">
-                &quot;{categoryName}&quot;
+              <span className="font-semibold text-gray-900 dark:text-white transition-colors duration-300">
+                &quot;{itemName}&quot;
               </span>
               ? This action cannot be undone.
             </p>
@@ -56,7 +71,7 @@ export default function DeleteConfirmationModal({
               <button
                 type="button"
                 onClick={onCancel}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-all duration-300"
               >
                 Cancel
               </button>
@@ -73,4 +88,6 @@ export default function DeleteConfirmationModal({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

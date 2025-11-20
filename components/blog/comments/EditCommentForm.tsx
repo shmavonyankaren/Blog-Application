@@ -33,7 +33,7 @@ export default function EditCommentForm({
         name="content"
         value={editContent}
         onChange={(e) => setEditContent(e.target.value)}
-        className="w-full px-3 py-2 border border-indigo-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all resize-none"
+        className="w-full px-3 py-2 border border-indigo-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 transition-all duration-300 resize-none"
         rows={3}
         required
       />
@@ -60,7 +60,7 @@ export default function EditCommentForm({
         <button
           type="button"
           onClick={onCancel}
-          className="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-300 transition-colors"
+          className="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-slate-300 text-sm font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-slate-700 border border-gray-300 dark:border-slate-700 transition-all duration-300"
         >
           <svg
             className="w-4 h-4"

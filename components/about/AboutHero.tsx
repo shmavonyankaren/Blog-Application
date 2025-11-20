@@ -6,7 +6,7 @@ export default function AboutHero() {
           About Us
         </span>
       </h1>
-      <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+      <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed transition-colors duration-300">
         Welcome to BlogSpace, where ideas come to life and stories find their
         audience. We&apos;re building a vibrant community of writers and readers
         passionate about sharing knowledge and creativity.

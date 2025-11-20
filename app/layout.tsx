@@ -30,9 +30,9 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body
-          className={`flex flex-col min-h-screen ${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`flex flex-col min-h-screen bg-white dark:bg-slate-950 ${geistSans.variable} ${geistMono.variable} antialiased transition-colors duration-300`}
           suppressHydrationWarning
         >
           <NextSSRPlugin
@@ -44,11 +44,15 @@ export default function RootLayout({
              */
             routerConfig={extractRouterConfig(ourFileRouter)}
           />
-          <div className="fixed top-0 left-0 right-0 z-50 bg-white">
-            <Header />
-          </div>
-          <main className="flex-1 min-h-0 flex flex-col pt-16">{children}</main>
-          <Footer />
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <div className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 shadow-sm dark:shadow-slate-800/50 border-b border-gray-200 dark:border-slate-800 transition-colors duration-300">
+              <Header />
+            </div>
+            <main className="flex-1 min-h-0 flex flex-col pt-16 bg-gray-50 dark:bg-slate-950 transition-colors duration-300">
+              {children}
+            </main>
+            <Footer />
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

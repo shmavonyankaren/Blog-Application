@@ -55,7 +55,7 @@ export default function SearchBar() {
       {/* Search Icon */}
       <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
         <svg
-          className="w-5 h-5 text-gray-400"
+          className="w-5 h-5 text-gray-400 dark:text-gray-500"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -75,7 +75,7 @@ export default function SearchBar() {
         value={query}
         onChange={handleInputChange}
         placeholder="Search blogs..."
-        className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm hover:border-gray-400 transition-all duration-200"
+        className="w-full pl-12 pr-12 py-3 border border-gray-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 shadow-sm hover:border-gray-400 dark:hover:border-slate-600 transition-all duration-200"
       />
 
       {/* Loading Spinner */}
@@ -94,7 +94,7 @@ export default function SearchBar() {
             debouncedSearch.cancel();
             router.push(window.location.pathname);
           }}
-          className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600 transition-colors"
+          className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
           aria-label="Clear search"
         >
           <svg

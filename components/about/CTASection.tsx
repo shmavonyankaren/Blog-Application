@@ -13,7 +13,7 @@ export default function CTASection() {
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <Link
           href="/sign-up"
-          className="px-8 py-4 bg-white text-indigo-600 font-semibold rounded-xl hover:bg-indigo-50 transition-all shadow-lg hover:shadow-xl inline-block"
+          className="px-8 py-4 bg-white dark:bg-slate-800 text-indigo-600 dark:text-slate-100 font-semibold rounded-xl hover:bg-indigo-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-slate-600 transition-all duration-300 shadow-lg hover:shadow-xl inline-block"
         >
           Get Started
         </Link>

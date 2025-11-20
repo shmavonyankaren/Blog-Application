@@ -20,7 +20,7 @@ export default function CommentActions({
       {!isEditing && (
         <button
           onClick={onEditClick}
-          className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+          className="p-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900 rounded-lg transition-colors"
           aria-label="Edit comment"
         >
           <svg
@@ -42,7 +42,7 @@ export default function CommentActions({
         <input type="hidden" name="commentId" value={commentId} />
         <input type="hidden" name="blogId" value={blogId} />
         <button
-          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+          className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-white dark:text-red-600 dark:hover:text-red-700 duration-300 rounded-lg transition-colors"
           type="submit"
           aria-label="Delete comment"
         >

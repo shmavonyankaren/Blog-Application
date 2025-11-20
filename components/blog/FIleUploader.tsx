@@ -82,7 +82,7 @@ export default function FileUploader({
   return (
     <div
       {...getRootProps()}
-      className="flex flex-col items-center justify-center h-full min-h-[180px] w-full bg-gray-100 border border-gray-300 rounded-xl cursor-pointer overflow-hidden relative"
+      className="flex flex-col items-center justify-center h-full min-h-[180px] w-full bg-gray-100 dark:bg-slate-800/50 border border-gray-300 dark:border-slate-700 rounded-xl cursor-pointer overflow-hidden relative transition-colors duration-300"
       onClick={triggerFileDialog}
     >
       {/* Hidden input for manual selection */}
@@ -102,7 +102,7 @@ export default function FileUploader({
             alt="Uploaded"
             width={300}
             height={200}
-            className="w-full max-h-[245px]  object-contain"
+            className="w-full max-h-[180px]  object-contain"
             unoptimized={previewUrl.startsWith("blob:")}
           />
           {isUploading && (
@@ -127,7 +127,7 @@ export default function FileUploader({
 
           <button
             type="button"
-            className="mt-3 px-4 py-1.5 bg-gray-800 text-white rounded-full text-sm"
+            className="mt-3 px-4 py-1.5 bg-gray-800 dark:bg-[#302b63] text-white rounded-full text-sm transition-colors duration-300"
           >
             Choose from computer
           </button>

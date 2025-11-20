@@ -15,13 +15,14 @@ import {
 } from "@clerk/nextjs";
 import LogoName from "./LogoName";
 import Navigation from "./Navigation";
+import DarkModeButton from "./DarkModeButton";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user } = useUser();
 
   return (
-    <header className="bg-linear-to-r from-indigo-900 to-purple-900 shadow-xl">
+    <header className="bg-linear-to-r from-indigo-900 to-purple-900 dark:bg-linear-to-r dark:from-slate-900 dark:to-slate-800 transition-colors duration-300">
       <nav
         aria-label="Global"
         className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
@@ -44,17 +45,18 @@ export default function Header() {
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
           <Navigation />
         </PopoverGroup>
+
         {/* User account section and sign in/up buttons */}
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-4">
           <SignedOut>
             <div className="flex gap-3">
               <SignInButton>
-                <button className="cursor-pointer px-5 py-2 bg-white text-indigo-600 font-semibold rounded-lg hover:bg-indigo-50 transition-all shadow-md hover:shadow-lg">
+                <button className="cursor-pointer px-5 py-2 bg-white text-indigo-600 font-semibold rounded-lg hover:bg-indigo-50 transition-all shadow-md hover:shadow-lg dark:bg-[#302b63] dark:text-white dark:hover:bg-[#24243e]">
                   Sign In
                 </button>
               </SignInButton>
               <SignUpButton>
-                <button className="cursor-pointer px-5 py-2 bg-indigo-700 text-white font-semibold rounded-lg hover:bg-indigo-800 transition-all shadow-md hover:shadow-lg border border-indigo-500">
+                <button className="cursor-pointer px-5 py-2 bg-indigo-700 text-white font-semibold rounded-lg hover:bg-indigo-800 transition-all shadow-md hover:shadow-lg border border-indigo-500 dark:bg-indigo-600 dark:hover:bg-indigo-700">
                   Sign Up
                 </button>
               </SignUpButton>
@@ -63,11 +65,15 @@ export default function Header() {
           <SignedIn>
             <div className="flex justify-center items-center gap-3">
               <span className="text-sm font-medium text-white">
-                {user?.firstName}
+                {user?.username
+                  ? user.username
+                  : user?.firstName + " " + user?.lastName}
               </span>
               <UserButton />
             </div>
           </SignedIn>
+
+          <DarkModeButton />
         </div>
       </nav>
 
@@ -78,7 +84,7 @@ export default function Header() {
         className="lg:hidden"
       >
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-linear-to-br from-indigo-800 to-purple-800 p-6 sm:max-w-sm shadow-2xl">
+        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-linear-to-br from-indigo-800 to-purple-800 dark:from-[#0f0c29] dark:via-[#302b63] dark:to-[#24243e] p-6 sm:max-w-sm shadow-2xl">
           {/* Logo and close button */}
           <div className="flex items-center justify-between">
             <LogoName />
@@ -99,6 +105,12 @@ export default function Header() {
                 <Navigation onNavigate={() => setMobileMenuOpen(false)} />
               </div>
 
+              {/* Dark mode toggle */}
+              <div className="py-6 flex items-center justify-between">
+                <span className="text-sm font-medium text-white">Theme</span>
+                <DarkModeButton />
+              </div>
+
               {/* User account section */}
               <div className="py-6">
                 <SignedOut>
@@ -115,12 +127,14 @@ export default function Header() {
                     </SignUpButton>
                   </div>
                 </SignedOut>
-                <div className="flex justify-start items-center gap-3">
-                  <UserButton />
-                  <span className="text-base font-medium text-white">
-                    {user?.firstName}
-                  </span>
-                </div>
+                <SignedIn>
+                  <div className="flex justify-start items-center gap-3">
+                    <UserButton />
+                    <span className="text-base font-medium text-white">
+                      {user?.firstName}
+                    </span>
+                  </div>
+                </SignedIn>
               </div>
             </div>
           </div>

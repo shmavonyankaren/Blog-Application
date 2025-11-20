@@ -28,9 +28,9 @@ export default async function BlogContainer({
 
     return (
       <div className="min-h-full py-8 px-4">
-        <div className="mx-auto bg-white rounded-2xl shadow-xl overflow-hidden max-w-7xl">
+        <div className="mx-auto bg-white dark:bg-slate-900 rounded-2xl shadow-xl overflow-hidden max-w-7xl border border-gray-200 dark:border-slate-800 transition-colors duration-300">
           {/* Header Section with Gradient Background */}
-          <div className="bg-linear-to-r from-indigo-600 to-purple-600 px-6 py-10">
+          <div className="bg-linear-to-r from-indigo-600 to-purple-600  dark:from-slate-800 dark:to-slate-700 duration-300 transition-colors px-6 py-10">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <div>
                 <h1 className="text-4xl font-bold text-white mb-2">My Blogs</h1>
@@ -48,7 +48,7 @@ export default async function BlogContainer({
           </div>
 
           {/* Category Filter Section */}
-          <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+          <div className="px-6 py-4 bg-gray-50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-700 transition-colors duration-300">
             <CategoryFilter />
           </div>
 
@@ -96,7 +96,7 @@ export default async function BlogContainer({
     console.error("Error in MyBlogsContainer:", error);
     return (
       <div className="min-h-full py-8 px-4">
-        <div className="mx-auto bg-white rounded-2xl shadow-xl overflow-hidden max-w-7xl p-8 text-center">
+        <div className="mx-auto bg-white dark:bg-slate-900 rounded-2xl shadow-xl overflow-hidden max-w-7xl p-8 text-center border border-gray-200 dark:border-slate-800 transition-colors duration-300">
           <p className="text-red-600">
             Error loading blogs. Please try again later.
           </p>

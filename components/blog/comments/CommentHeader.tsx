@@ -26,17 +26,17 @@ export default function CommentHeader({
         alt="User Avatar"
         width={40}
         height={40}
-        className="rounded-full ring-2 ring-gray-200"
+        className="rounded-full"
       />
       <div>
-        <p className="text-sm font-semibold text-gray-900">
+        <p className="text-sm font-semibold text-gray-900 dark:text-white transition-colors duration-300">
           {creatorOfComment.username ||
             creatorOfComment.first_name + " " + creatorOfComment.last_name}
         </p>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
           {adjustedCreatedAt.toLocaleString()}
           {isEdited && (
-            <span className="ml-2 text-gray-400 italic">
+            <span className="ml-2 text-gray-400 dark:text-gray-500 italic transition-colors duration-300">
               (edited {adjustedUpdatedAt.toLocaleString()})
             </span>
           )}

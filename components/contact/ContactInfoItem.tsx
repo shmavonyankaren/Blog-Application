@@ -15,9 +15,13 @@ export default function ContactInfoItem({
         {icon}
       </div>
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">{title}</h3>
+        <h3 className="text-lg font-semibold dark:text-white text-gray-900 mb-1">
+          {title}
+        </h3>
         {typeof content === "string" ? (
-          <p className="text-gray-600">{content}</p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            {content}
+          </p>
         ) : (
           content
         )}
