@@ -125,7 +125,7 @@ export async function deleteUser(clerkId: string) {
   }
 }
 
-export function sendContactForm(form: FormData) {
+export async function sendContactForm(form: FormData) {
   try {
     const name = form.get("name");
     const email = form.get("email");
