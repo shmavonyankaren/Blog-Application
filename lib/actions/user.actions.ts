@@ -142,8 +142,6 @@ export async function sendContactForm(form: FormData) {
     if (!result.success) {
       throw new Error(result.error || "Failed to send email");
     }
-
-    return { success: true };
   } catch (error) {
     handleError(error);
     return { success: false, error: "Failed to send contact form" };
