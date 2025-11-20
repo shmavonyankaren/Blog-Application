@@ -6,7 +6,12 @@ export default function ContactForm() {
       <h2 className="text-3xl font-bold text-gray-900 mb-6">
         Send us a Message
       </h2>
-      <form className="space-y-6" action={sendContactForm}>
+      <form
+        className="space-y-6"
+        action={async (formData) => {
+          await sendContactForm(formData);
+        }}
+      >
         {/* Name Field */}
         <div>
           <label
