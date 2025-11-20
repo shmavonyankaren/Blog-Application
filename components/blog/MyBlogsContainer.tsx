@@ -1,19 +1,27 @@
 import { AddBlog, BlogFooter, BlogList, Pagination } from "@/components";
+import CategoryFilter from "./CategorySearchFilter";
 
 import { getBlogsByUser } from "@/lib/actions/blog.actions";
 import { currentUser } from "@clerk/nextjs/server";
 
 interface MyBlogsContainerProps {
   page?: number;
+  categoryId?: string;
 }
 
 export default async function BlogContainer({
   page = 1,
+  categoryId,
 }: MyBlogsContainerProps) {
   try {
     const user = await currentUser();
 
-    const result = await getBlogsByUser({ userId: user!.id }, page, 9);
+    const result = await getBlogsByUser(
+      { userId: user!.id },
+      page,
+      9,
+      categoryId
+    );
     const blogs = result?.data || [];
     const totalPages = result?.totalPages || 1;
     const totalCount = result?.totalCount || 0;
@@ -37,6 +45,11 @@ export default async function BlogContainer({
               </div>
               <AddBlog />
             </div>
+          </div>
+
+          {/* Category Filter Section */}
+          <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <CategoryFilter />
           </div>
 
           {/* Content Section */}

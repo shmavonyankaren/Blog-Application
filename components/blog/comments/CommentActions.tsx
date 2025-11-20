@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteCommentFromBlog } from "@/lib/actions/blog.actions";
+import { deleteCommentFromBlog } from "@/lib/actions/comment.actions";
 
 interface CommentActionsProps {
   commentId: string | number;

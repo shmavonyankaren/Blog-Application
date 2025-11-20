@@ -1,17 +1,20 @@
 import { getAllBlogs } from "@/lib/actions/blog.actions";
 import { BlogList, Pagination, SearchBar } from "@/components";
+import CategoryFilter from "./CategorySearchFilter";
 
 interface AllBlogsContainerProps {
   searchQuery?: string;
   page?: number;
+  categoryId?: string;
 }
 
 export default async function AllBlogsContainer({
   searchQuery,
   page = 1,
+  categoryId,
 }: AllBlogsContainerProps) {
   try {
-    const result = await getAllBlogs(searchQuery, page, 9);
+    const result = await getAllBlogs(searchQuery, page, 9, categoryId);
     const blogs = result?.data || [];
     const totalPages = result?.totalPages || 1;
     const totalCount = result?.totalCount || 0;
@@ -37,6 +40,11 @@ export default async function AllBlogsContainer({
               </div>
               <SearchBar />
             </div>
+          </div>
+
+          {/* Category Filter Section */}
+          <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <CategoryFilter />
           </div>
 
           {/* Content Section */}

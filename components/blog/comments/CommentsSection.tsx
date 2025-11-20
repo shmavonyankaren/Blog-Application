@@ -1,4 +1,4 @@
-import { getAllCommentsByBlog } from "@/lib/actions/blog.actions";
+import { getAllCommentsByBlog } from "@/lib/actions/comment.actions";
 import CommentsList from "./CommentsList";
 import AddCommentForm from "./AddCommentForm";
 import CommentsFooter from "./CommentsFooter";

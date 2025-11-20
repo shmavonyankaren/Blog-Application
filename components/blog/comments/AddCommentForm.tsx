@@ -1,4 +1,4 @@
-import { addCommentToBlog } from "@/lib/actions/blog.actions";
+import { addCommentToBlog } from "@/lib/actions/comment.actions";
 import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 

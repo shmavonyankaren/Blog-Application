@@ -32,10 +32,11 @@ export async function createBlog(formData: FormData) {
     const description = formData.get("description");
     const image = formData.get("image");
     const userId = formData.get("userId");
+    const categoryId = formData.get("categoryId");
 
     await pool!.query(
-      "INSERT INTO blogs (title, description, image, user_id) VALUES (?, ?, ?, ?)",
-      [title, description, image, userId]
+      "INSERT INTO blogs (title, description, image, user_id, category_id) VALUES (?, ?, ?, ?, ?)",
+      [title, description, image, userId, categoryId || null]
     );
 
     // Revalidate only necessary paths
@@ -71,10 +72,11 @@ export async function updateBlog(formData: FormData) {
     const description = formData.get("description");
     const image = formData.get("image");
     const blogId = formData.get("blogId");
+    const categoryId = formData.get("categoryId");
 
     await pool!.query(
-      `UPDATE blogs SET title = ?, description = ?, image = ? WHERE id = ?`,
-      [title, description, image, blogId]
+      `UPDATE blogs SET title = ?, description = ?, image = ?, category_id = ? WHERE id = ?`,
+      [title, description, image, categoryId || null, blogId]
     );
 
     // Revalidate only necessary paths
@@ -119,21 +121,32 @@ export async function deleteAllBlogsByUser(formData: FormData) {
 export async function getAllBlogs(
   searchQuery?: string,
   page: number = 1,
-  limit: number = 9
+  limit: number = 9,
+  categoryId?: string
 ) {
   try {
     const offset = (page - 1) * limit;
 
     let countQuery = "SELECT COUNT(*) as total FROM blogs";
     let dataQuery = "SELECT * FROM blogs";
-    let params: string[] = [];
+    const params: (string | number)[] = [];
+    const whereClauses: string[] = [];
 
     if (searchQuery && searchQuery.trim()) {
-      const whereClause = " WHERE title LIKE ? OR description LIKE ?";
+      whereClauses.push("(title LIKE ? OR description LIKE ?)");
+      const searchPattern = `%${searchQuery.trim()}%`;
+      params.push(searchPattern, searchPattern);
+    }
+
+    if (categoryId && categoryId !== "all") {
+      whereClauses.push("category_id = ?");
+      params.push(parseInt(categoryId));
+    }
+
+    if (whereClauses.length > 0) {
+      const whereClause = " WHERE " + whereClauses.join(" AND ");
       countQuery += whereClause;
       dataQuery += whereClause;
-      const searchPattern = `%${searchQuery.trim()}%`;
-      params = [searchPattern, searchPattern];
     }
 
     dataQuery += " ORDER BY created_at DESC LIMIT ? OFFSET ?";
@@ -166,23 +179,29 @@ export async function getAllBlogs(
 export async function getBlogsByUser(
   { userId }: GetBlogsByUserParams,
   page: number = 1,
-  limit: number = 9
+  limit: number = 9,
+  categoryId?: string
 ) {
   try {
     const offset = (page - 1) * limit;
+    let countQuery = "SELECT COUNT(*) as total FROM blogs WHERE user_id = ?";
+    let dataQuery = "SELECT * FROM blogs WHERE user_id = ?";
+    const params: (string | number)[] = [userId];
+
+    if (categoryId && categoryId !== "all") {
+      countQuery += " AND category_id = ?";
+      dataQuery += " AND category_id = ?";
+      params.push(parseInt(categoryId));
+    }
+
+    dataQuery += " ORDER BY created_at DESC LIMIT ? OFFSET ?";
 
     // Get total count
-    const [countResult] = await pool!.query(
-      "SELECT COUNT(*) as total FROM blogs WHERE user_id = ?",
-      [userId]
-    );
+    const [countResult] = await pool!.query(countQuery, params);
     const total = (countResult as CountResult[])[0].total;
 
     // Get paginated data
-    const [blogs] = await pool!.query(
-      "SELECT * FROM blogs WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?",
-      [userId, limit, offset]
-    );
+    const [blogs] = await pool!.query(dataQuery, [...params, limit, offset]);
 
     return {
       data: JSON.parse(JSON.stringify(blogs)),
@@ -201,72 +220,56 @@ export async function getBlogsByUser(
   }
 }
 
-// GET COMMENTS BY BLOG ID
+// CREATE CATEGORY
 
-export async function getAllCommentsByBlog(blogId: string) {
+export async function createCategory(formData: FormData) {
   try {
-    const [comments] = await pool!.query(
-      "SELECT * FROM comments WHERE blog_id = ? ORDER BY created_at DESC",
-      [blogId]
-    );
-    return JSON.parse(JSON.stringify(comments));
-  } catch (error) {
-    handleError(error);
-  }
-}
+    const name = formData.get("name");
+    const creatorId = formData.get("creatorId");
 
-// ADD COMMENT TO BLOG
-
-export async function addCommentToBlog(formData: FormData) {
-  try {
-    const blogId = formData.get("blogId");
-    const userId = formData.get("userId");
-    const content = formData.get("content");
     await pool!.query(
-      "INSERT INTO comments (blog_id, user_id, content) VALUES (?, ?, ?)",
-      [blogId, userId, content]
+      "INSERT INTO categories (name, creator_id) VALUES (?, ?)",
+      [name, creatorId]
     );
-    revalidatePath(`/blog/${blogId}`);
+
+    revalidatePath("/my-blogs");
+    revalidatePath("/all-blogs");
   } catch (error) {
     handleError(error);
   }
 }
 
-export async function editCommentByCommentId(formData: FormData) {
+// UPDATE CATEGORY
+export async function updateCategory(formData: FormData) {
   try {
-    const commentId = formData.get("commentId");
-    const blogId = formData.get("blogId");
-    const content = formData.get("content");
-    await pool!.query("UPDATE comments SET content = ? WHERE id = ?", [
-      content,
-      commentId,
+    const categoryId = formData.get("categoryId");
+    const name = formData.get("name");
+    await pool!.query("UPDATE categories SET name = ? WHERE id = ?", [
+      name,
+      categoryId,
     ]);
-    revalidatePath(`/blog/${blogId}`);
   } catch (error) {
     handleError(error);
   }
 }
 
-// Delete a comment from BLOG
-export async function deleteCommentFromBlog(formData: FormData) {
-  try {
-    const commentId = formData.get("commentId");
-    const blogId = formData.get("blogId");
-    await pool!.query("DELETE FROM comments WHERE id = ?", [commentId]);
+// DELETE CATEGORY
 
-    revalidatePath(`/blog/${blogId}`);
+export async function deleteCategory(formData: FormData) {
+  try {
+    const categoryId = formData.get("categoryId");
+    await pool!.query("DELETE FROM categories WHERE id = ?", [categoryId]);
   } catch (error) {
     handleError(error);
   }
 }
 
-// Delete all comments from BLOG
+// GET ALL CATEGORIES
 
-export async function deleteAllCommentsFromBlog(formData: FormData) {
+export async function getAllCategories() {
   try {
-    const blogId = formData.get("blogId");
-    await pool!.query("DELETE FROM comments WHERE blog_id = ?", [blogId]);
-    revalidatePath(`/blog/${blogId}`);
+    const [rows] = await pool!.query("SELECT * FROM categories");
+    return JSON.parse(JSON.stringify(rows));
   } catch (error) {
     handleError(error);
   }

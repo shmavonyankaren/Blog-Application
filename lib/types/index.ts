@@ -1,5 +1,11 @@
 import { RowDataPacket } from "mysql2";
 
+export interface CategoryType {
+  id: number; // Auto-incremented primary key
+  name: string; // Category name
+  creator_id: string; // References users.user_id (Clerk ID)
+}
+
 export interface CommentType extends RowDataPacket {
   id: number; // Auto-incremented primary key
   blog_id: number; // References blogs.id
@@ -15,6 +21,7 @@ export interface BlogType extends RowDataPacket {
   user_id: string; // References users.user_id (Clerk ID)
   title: string; // Blog title, required
   description?: string | undefined; // Optional description (TEXT in SQL can be null)
+  category_id?: number | undefined; // References categories.id
   created_at: string; // ISO string (timestamp from DB)
   updated_at: string;
 }
@@ -26,6 +33,7 @@ export type CreateEditBlogTypes = {
     title: string;
     description?: string;
     image?: string;
+    category_id?: number;
   };
 };
 
