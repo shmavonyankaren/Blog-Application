@@ -8,7 +8,7 @@ export default function ContactFAQCard() {
       </p>
       <a
         href="/faq"
-        className="bg-white text-indigo-600 font-semibold py-3 px-6 rounded-xl hover:bg-indigo-50 transition-all inline-flex items-center gap-2"
+        className="bg-white dark:bg-slate-800 text-indigo-600 dark:text-slate-100 font-semibold py-3 px-6 rounded-xl hover:bg-indigo-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-slate-600 transition-all duration-300 inline-flex items-center gap-2"
       >
         View FAQ
         <svg

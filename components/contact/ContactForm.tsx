@@ -2,8 +2,8 @@ import { sendContactForm } from "@/lib/actions/user.actions";
 
 export default function ContactForm() {
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-8 md:p-10">
-      <h2 className="text-3xl font-bold text-gray-900 mb-6">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-8 md:p-10 border border-gray-200 dark:border-slate-800 transition-colors duration-300">
+      <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 transition-colors duration-300">
         Send us a Message
       </h2>
       <form className="space-y-6" action={sendContactForm}>
@@ -11,7 +11,7 @@ export default function ContactForm() {
         <div>
           <label
             htmlFor="name"
-            className="block text-sm font-semibold text-gray-700 mb-2"
+            className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2 transition-colors duration-300"
           >
             Full Name
           </label>
@@ -19,7 +19,7 @@ export default function ContactForm() {
             type="text"
             id="name"
             name="name"
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+            className="w-full px-4 py-3 border border-gray-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 transition-colors duration-300"
             placeholder="John Doe"
             required
           />
@@ -29,7 +29,7 @@ export default function ContactForm() {
         <div>
           <label
             htmlFor="email"
-            className="block text-sm font-semibold text-gray-700 mb-2"
+            className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2 transition-colors duration-300"
           >
             Email Address
           </label>
@@ -37,7 +37,7 @@ export default function ContactForm() {
             type="email"
             id="email"
             name="email"
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+            className="w-full px-4 py-3 border border-gray-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 transition-colors duration-300"
             placeholder="john@example.com"
             required
           />
@@ -47,7 +47,7 @@ export default function ContactForm() {
         <div>
           <label
             htmlFor="subject"
-            className="block text-sm font-semibold text-gray-700 mb-2"
+            className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2 transition-colors duration-300"
           >
             Subject
           </label>
@@ -55,7 +55,7 @@ export default function ContactForm() {
             type="text"
             id="subject"
             name="subject"
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+            className="w-full px-4 py-3 border border-gray-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 transition-colors duration-300"
             placeholder="How can we help?"
             required
           />
@@ -65,7 +65,7 @@ export default function ContactForm() {
         <div>
           <label
             htmlFor="message"
-            className="block text-sm font-semibold text-gray-700 mb-2"
+            className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2 transition-colors duration-300"
           >
             Message
           </label>
@@ -73,7 +73,7 @@ export default function ContactForm() {
             id="message"
             name="message"
             rows={6}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors resize-none"
+            className="w-full px-4 py-3 border border-gray-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 transition-colors duration-300 resize-none"
             placeholder="Tell us more about your inquiry..."
             required
           ></textarea>

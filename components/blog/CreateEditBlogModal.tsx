@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useUser } from "@clerk/nextjs";
 import { createBlog, updateBlog } from "@/lib/actions/blog.actions";
@@ -45,7 +45,6 @@ export default function CreateEditBlogModal({
 
   const handleOpen = () => {
     setIsOpen(true);
-    document.body.style.overflow = "hidden";
     if (actionType === "create") {
       setImageUrl(null);
       resetCategory();
@@ -56,18 +55,10 @@ export default function CreateEditBlogModal({
 
   const handleClose = () => {
     setIsOpen(false);
-    document.body.style.overflow = "";
   };
-
-  useEffect(() => {
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
 
   const handleSubmit = async (formData: FormData) => {
     setIsOpen(false);
-    document.body.style.overflow = "";
 
     try {
       if (actionType === "create") {
@@ -86,7 +77,7 @@ export default function CreateEditBlogModal({
       {actionType === "create" ? (
         <button
           onClick={handleOpen}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-white text-indigo-600 font-semibold rounded-lg hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600 transition-all duration-200 shadow-lg hover:shadow-xl border border-indigo-200"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-linear-to-r dark:from-indigo-600 dark:to-purple-600 text-indigo-600 dark:text-slate-100 font-semibold rounded-lg hover:bg-indigo-50 dark:hover:bg-linear-to-r dark:hover:from-indigo-700 dark:hover:to-purple-800  focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600 transition-all duration-200 shadow-lg hover:shadow-xl border border-indigo-200 dark:border-slate-700"
         >
           <svg
             className="w-5 h-5"
@@ -121,19 +112,19 @@ export default function CreateEditBlogModal({
           <div className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto">
             <div
               className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-              onClick={() => setIsOpen(false)}
+              onClick={handleClose}
             />
 
             {/* modal panel */}
             <div className="pt-[23%] px-[2%] pb-[2%] sm:pt-[15%] sm:px-[1%] sm:pb-[1%]  md:pt-[12%] md:px-[1%] md:pb-[1%] lg:pt-[9%] xl:pt-[7%] lg:px-[1%] lg:pb-[1%] relative z-50  w-full max-w-5xl mx- -8">
-              <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+              <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-800 overflow-hidden transition-colors duration-300">
                 {/* Header with gradient */}
                 <div className="flex items-center justify-between px-4 sm:px-6 py-5 bg-linear-to-r from-indigo-600 to-purple-600">
                   <h3 className="text-xl font-bold text-white">
                     {actionType === "create" ? "Create New Blog" : "Edit Blog"}
                   </h3>
                   <button
-                    onClick={() => setIsOpen(false)}
+                    onClick={handleClose}
                     className="cursor-pointer inline-flex items-center justify-center w-9 h-9 rounded-full hover:bg-white/20 text-white transition-colors"
                     aria-label="Close"
                   >
@@ -153,7 +144,7 @@ export default function CreateEditBlogModal({
                   </button>
                 </div>
 
-                <div className="p-4 sm:p-6 bg-gray-50">
+                <div className="p-4 sm:p-6 bg-gray-50 dark:bg-slate-800/50 transition-colors duration-300">
                   <form action={handleSubmit} className="space-y-6">
                     <input type="hidden" name="userId" value={user?.id ?? ""} />
                     {actionType === "edit" && blog?.id && (
@@ -178,7 +169,7 @@ export default function CreateEditBlogModal({
                               actionType === "edit" ? blog?.title : ""
                             }
                             placeholder="Enter an engaging title..."
-                            className="block w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                            className="block w-full px-4 py-3 border border-gray-300 dark:border-[#302b63] rounded-lg bg-white dark:bg-[#24243e] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-[#302b63] focus:border-indigo-500 dark:focus:border-[#302b63] transition-all duration-300"
                           />
                         </div>
 
@@ -193,7 +184,7 @@ export default function CreateEditBlogModal({
                               actionType === "edit" ? blog?.description : ""
                             }
                             placeholder="Share your thoughts and ideas..."
-                            className="block w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all resize-none"
+                            className="block w-full px-4 py-3 border border-gray-300 dark:border-[#302b63] rounded-lg bg-white dark:bg-[#24243e] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-[#302b63] focus:border-indigo-500 dark:focus:border-[#302b63] transition-all duration-300 resize-none"
                           />
                         </div>
                       </div>
@@ -250,7 +241,7 @@ export default function CreateEditBlogModal({
                       <button
                         type="button"
                         onClick={() => setIsOpen(false)}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition-all cursor-pointer shadow-sm"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all duration-300 cursor-pointer shadow-sm"
                       >
                         Cancel
                       </button>
@@ -302,7 +293,8 @@ export default function CreateEditBlogModal({
             </div>
             <DeleteConfirmationModal
               isOpen={deleteModalOpen}
-              categoryName={categoryToDelete?.name || ""}
+              itemName={categoryToDelete?.name || ""}
+              itemType="category"
               onConfirm={confirmDelete}
               onCancel={() => setDeleteModalOpen(false)}
             />

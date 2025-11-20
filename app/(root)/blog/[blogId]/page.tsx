@@ -1,11 +1,12 @@
 import { CreateEditBlogModal } from "@/components";
-import { deleteBlog, getBlogById } from "@/lib/actions/blog.actions";
+import { getBlogById } from "@/lib/actions/blog.actions";
 import { BlogType } from "@/lib/types";
 import Image from "next/image";
 import { formatDateHour } from "@/lib/utils/";
 import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import CommentsSection from "@/components/blog/comments/CommentsSection";
+import BlogDetailDeleteButton from "@/components/blog/BlogDetailDeleteButton";
+import { notFound } from "next/navigation";
 
 export default async function BlogPage({
   params,
@@ -14,12 +15,22 @@ export default async function BlogPage({
 }) {
   const { blogId } = await params;
   const user = await currentUser();
-  const blog: BlogType = await getBlogById(blogId);
+
+  let blog: BlogType;
+  try {
+    blog = await getBlogById(blogId);
+    if (!blog) {
+      notFound();
+    }
+  } catch {
+    notFound();
+  }
+
   return (
-    <main className="w-full min-h-screen bg-linear-to-br from-gray-50 via-indigo-50 to-purple-50 px-4 py-12">
+    <main className="w-full min-h-screen bg-linear-to-br from-gray-50 via-indigo-50 to-purple-50 dark:bg-linear-to-br dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 px-4 py-12 transition-colors duration-300">
       <div className="w-full max-w-5xl mx-auto">
         {/* Header Section */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-6">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl overflow-hidden mb-6 border border-gray-200 dark:border-slate-800 transition-colors duration-300">
           <div className="relative h-[400px] md:h-[500px]">
             <Image
               src={blog.image || "/assets/images/default_blog_image.png"}
@@ -62,40 +73,26 @@ export default async function BlogPage({
             {user?.id === blog.user_id && (
               <div className="absolute top-4 right-4 flex items-center gap-2">
                 <CreateEditBlogModal actionType="edit" blog={blog} />
-                <form
-                  action={async (form: FormData) => {
-                    "use server";
-                    deleteBlog(form);
-                    redirect("/my-blogs");
-                  }}
-                >
-                  <input type="hidden" name="blogId" value={String(blog.id)} />
-                  <button className="p-2 bg-white/90 hover:bg-white rounded-lg shadow-lg transition-all">
-                    <Image
-                      className="cursor-pointer"
-                      src="/assets/icons/delete.svg"
-                      alt="delete"
-                      width={20}
-                      height={20}
-                    />
-                  </button>
-                </form>
+                <BlogDetailDeleteButton
+                  blogId={blog.id}
+                  blogTitle={blog.title}
+                />
               </div>
             )}
           </div>
         </div>
 
         {/* Content Section */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 md:p-10">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-6 md:p-10 border border-gray-200 dark:border-slate-800 transition-colors duration-300">
           <div className="prose prose-lg max-w-none">
-            <p className="text-lg text-gray-700 leading-relaxed whitespace-pre-wrap">
+            <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap transition-colors duration-300">
               {blog.description ?? "No description provided."}
             </p>
           </div>
 
           {/* Metadata footer */}
           <div className="mt-10 pt-6 border-t border-gray-200">
-            <div className="flex items-center justify-between text-sm text-gray-500">
+            <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
               <span>Published on {formatDateHour(blog.created_at)}</span>
               {blog.updated_at !== blog.created_at && (
                 <span>Last updated {formatDateHour(blog.updated_at)}</span>

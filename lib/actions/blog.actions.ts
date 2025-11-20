@@ -98,9 +98,30 @@ export async function deleteBlog(formData: FormData) {
     await pool!.query("DELETE FROM blogs WHERE id = ?", [blogId]);
 
     revalidatePath("/my-blogs");
+    revalidatePath("/all-blogs");
+    revalidatePath(`/blog/${blogId}`);
   } catch (error) {
     handleError(error);
   }
+}
+
+// DELETE BLOG FROM DETAIL PAGE WITH REDIRECT
+export async function deleteBlogAndRedirect(formData: FormData) {
+  const { redirect } = await import("next/navigation");
+
+  try {
+    const blogId = formData.get("blogId");
+
+    await pool!.query("DELETE FROM blogs WHERE id = ?", [blogId]);
+
+    revalidatePath("/my-blogs");
+    revalidatePath("/all-blogs");
+    revalidatePath(`/blog/${blogId}`);
+  } catch (error) {
+    handleError(error);
+  }
+
+  redirect("/my-blogs");
 }
 
 // Delete all blogs by current User

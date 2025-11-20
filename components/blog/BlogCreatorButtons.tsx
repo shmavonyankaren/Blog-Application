@@ -1,15 +1,31 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 import CreateEditBlogModal from "./CreateEditBlogModal";
+import DeleteConfirmationModal from "./modal/DeleteConfirmationModal";
 import { deleteBlog } from "@/lib/actions/blog.actions";
 import { BlogType } from "@/lib/types";
 
 export default function BlogCreatorButtons({ blog }: { blog: BlogType }) {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const handleDeleteClick = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    const formData = new FormData();
+    formData.append("blogId", String(blog.id));
+    await deleteBlog(formData);
+    setIsDeleteModalOpen(false);
+  };
+
   return (
-    <div className="absolute right-2 top-2 flex flex-col gap-4 rounded-xl bg-white p-3 shadow-sm transition-all">
-      <CreateEditBlogModal actionType="edit" blog={blog} />
-      <form action={deleteBlog}>
-        <input type="hidden" name="blogId" value={String(blog.id)} />
-        <button>
+    <>
+      <div className="absolute right-2 top-2 flex flex-col gap-4 rounded-xl bg-white dark:bg-slate-800 p-3 shadow-sm transition-all">
+        <CreateEditBlogModal actionType="edit" blog={blog} />
+        <button onClick={handleDeleteClick} type="button">
           <Image
             className="cursor-pointer"
             src="/assets/icons/delete.svg"
@@ -18,7 +34,15 @@ export default function BlogCreatorButtons({ blog }: { blog: BlogType }) {
             height={20}
           />
         </button>
-      </form>
-    </div>
+      </div>
+
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        itemName={blog.title}
+        itemType="blog"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setIsDeleteModalOpen(false)}
+      />
+    </>
   );
 }

@@ -6,7 +6,7 @@ export default function ContactHero() {
           Contact Us
         </span>
       </h1>
-      <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+      <p className="text-xl text-gray-600 dark:text-gray-300 transition-colors duration-300 max-w-2xl mx-auto leading-relaxed">
         Have a question or feedback? We&apos;d love to hear from you. Send us a
         message and we&apos;ll respond as soon as possible.
       </p>

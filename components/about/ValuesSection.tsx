@@ -2,8 +2,8 @@ import ValueItem from "./ValueItem";
 
 export default function ValuesSection() {
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 mb-12">
-      <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-8 md:p-12 mb-12 border border-gray-200 dark:border-slate-800 transition-colors duration-300">
+      <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center transition-colors duration-300">
         Our Core Values
       </h2>
       <div className="grid md:grid-cols-2 gap-8">

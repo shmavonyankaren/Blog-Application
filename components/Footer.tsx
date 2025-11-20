@@ -44,7 +44,7 @@ export default function Footer() {
   const privacyLinks: { name: string; href: string }[] = [];
 
   return (
-    <footer className="bg-linear-to-r from-indigo-900 to-purple-900 text-white mt-auto">
+    <footer className="bg-linear-to-r from-indigo-900 to-purple-900 dark:bg-linear-to-r dark:from-slate-900 dark:to-slate-800 transition-colors duration-300 text-white mt-auto">
       <div className="max-w-7xl mx-auto px-6 py-12 lg:px-8">
         <div
           // className="grid grid-cols-1 md:grid-cols-4 gap-8"

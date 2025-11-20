@@ -48,13 +48,13 @@ export default function CategorySelector({
   return (
     <div className="relative">
       <div className="flex items-center justify-between mb-2">
-        <label className="block text-sm font-semibold text-gray-700">
+        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 transition-colors duration-300">
           Category
         </label>
         <button
           type="button"
           onClick={onToggleCreateForm}
-          className="text-xs text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1"
+          className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium flex items-center gap-1 transition-colors duration-300"
         >
           <svg
             className="w-3.5 h-3.5"
@@ -88,18 +88,20 @@ export default function CategorySelector({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full px-4 py-2.5 text-left bg-white border border-gray-300 rounded-lg shadow-sm hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+          className="w-full px-4 py-2.5 text-left bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg shadow-sm hover:border-indigo-400 dark:hover:border-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <span
               className={
-                selectedCategoryObj ? "text-gray-900" : "text-gray-500"
+                selectedCategoryObj
+                  ? "text-gray-900 dark:text-white transition-colors duration-300"
+                  : "text-gray-500 dark:text-gray-400 transition-colors duration-300"
               }
             >
               {selectedCategoryObj ? selectedCategoryObj.name : "No category"}
             </span>
             <svg
-              className={`w-5 h-5 text-gray-400 transition-transform ${
+              className={`w-5 h-5 text-gray-400 dark:text-gray-500 transition-transform duration-300 ${
                 isOpen ? "rotate-180" : ""
               }`}
               fill="none"
@@ -118,7 +120,7 @@ export default function CategorySelector({
 
         {/* Dropdown Menu */}
         {isOpen && (
-          <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-y-auto">
+          <div className="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-lg max-h-64 overflow-y-auto transition-colors duration-300">
             {/* None Option */}
             <button
               type="button"
@@ -126,10 +128,10 @@ export default function CategorySelector({
                 onCategorySelect("");
                 setIsOpen(false);
               }}
-              className={`w-full px-4 py-2.5 text-left hover:bg-indigo-50 transition-colors ${
+              className={`w-full px-4 py-2.5 text-left hover:bg-indigo-50 dark:hover:bg-[#302b63] transition-colors duration-300 ${
                 selectedCategory === ""
-                  ? "bg-indigo-100 text-indigo-700 font-medium"
-                  : "text-gray-700"
+                  ? "bg-indigo-100 dark:bg-[#302b63] text-indigo-700 dark:text-white font-medium"
+                  : "text-gray-700 dark:text-gray-200"
               }`}
             >
               No category
@@ -143,8 +145,8 @@ export default function CategorySelector({
               return (
                 <div
                   key={category.id}
-                  className={`flex items-center justify-between px-4 py-2.5 hover:bg-indigo-50 transition-colors ${
-                    isSelected ? "bg-indigo-100" : ""
+                  className={`flex items-center justify-between px-4 py-2.5 hover:bg-indigo-50 dark:hover:bg-[#302b63] transition-colors duration-300 ${
+                    isSelected ? "bg-indigo-100 dark:bg-[#302b63]" : ""
                   }`}
                 >
                   <button
@@ -153,10 +155,10 @@ export default function CategorySelector({
                       onCategorySelect(category.id.toString());
                       setIsOpen(false);
                     }}
-                    className={`flex-1 text-left ${
+                    className={`flex-1 text-left transition-colors duration-300 ${
                       isSelected
-                        ? "text-indigo-700 font-medium"
-                        : "text-gray-700"
+                        ? "text-indigo-700 dark:text-white font-medium"
+                        : "text-gray-700 dark:text-gray-200"
                     }`}
                   >
                     {category.name}

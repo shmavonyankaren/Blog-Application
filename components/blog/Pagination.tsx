@@ -77,7 +77,7 @@ export default function Pagination({
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors"
+        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-indigo-400 dark:hover:border-slate-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-slate-800 transition-colors duration-300"
       >
         <svg
           className="w-4 h-4"
@@ -102,7 +102,7 @@ export default function Pagination({
             return (
               <span
                 key={`ellipsis-${index}`}
-                className="px-4 py-2 text-gray-500"
+                className="px-4 py-2 text-gray-500 dark:text-gray-400"
               >
                 ...
               </span>
@@ -119,7 +119,7 @@ export default function Pagination({
               className={`min-w-10 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                 isActive
                   ? "bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-md"
-                  : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+                  : "text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-indigo-400 dark:hover:border-slate-600 transition-colors duration-300"
               }`}
             >
               {pageNumber}
@@ -129,7 +129,7 @@ export default function Pagination({
       </div>
 
       {/* Mobile: Current Page Indicator */}
-      <div className="sm:hidden px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg">
+      <div className="sm:hidden px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg transition-colors duration-300">
         {currentPage} / {totalPages}
       </div>
 
@@ -137,7 +137,7 @@ export default function Pagination({
       <button
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors"
+        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-indigo-400 dark:hover:border-slate-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-slate-800 transition-colors duration-300"
       >
         Next
         <svg

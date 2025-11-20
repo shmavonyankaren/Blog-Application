@@ -14,9 +14,9 @@ export default async function CommentsFooter({
   return (
     <div className="flex justify-between items-center pt-4 mt-4 border-t border-gray-200">
       <div className="flex items-center gap-2">
-        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100">
+        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900">
           <svg
-            className="w-4 h-4 text-indigo-600"
+            className="w-4 h-4 text-indigo-600 dark:text-indigo-400 transition-colors duration-300"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -29,7 +29,7 @@ export default async function CommentsFooter({
             />
           </svg>
         </div>
-        <p className="text-sm font-medium text-gray-700">
+        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">
           {comments.length} {comments.length === 1 ? "Comment" : "Comments"}
         </p>
       </div>
@@ -37,7 +37,7 @@ export default async function CommentsFooter({
         <form action={deleteAllCommentsFromBlog}>
           <input type="hidden" name="blogId" value={blogId} />
           <button
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900 rounded-lg hover:bg-red-50 dark:hover:bg-slate-700 hover:border-red-300 dark:hover:border-red-800 transition-all duration-300"
             type="submit"
           >
             <svg
