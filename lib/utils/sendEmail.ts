@@ -1,14 +1,15 @@
 import { Resend } from "resend";
 
-function sendEmail(
+async function sendEmail(
   name: string,
   email: string,
   subject: string,
   message: string
-): void {
-  const resend = new Resend(process.env.RESEND_EMAIL_API_KEY);
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const resend = new Resend(process.env.RESEND_EMAIL_API_KEY);
 
-  const htmlTemplate = `
+    const htmlTemplate = `
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -98,8 +99,8 @@ function sendEmail(
                     <tr>
                       <td align="center">
                         <a href="mailto:${email}?subject=Re: ${encodeURIComponent(
-    subject
-  )}" 
+      subject
+    )}" 
                            style="display: inline-block; background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3);">
                           Reply to ${name.split(" ")[0]}
                         </a>
@@ -129,12 +130,21 @@ function sendEmail(
     </html>
   `;
 
-  resend.emails.send({
-    from: "onboarding@resend.dev",
-    to: "2003.karen.shmavonyan@gmail.com",
-    subject: subject,
-    html: htmlTemplate,
-  });
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: "2003.karen.shmavonyan@gmail.com",
+      subject: subject,
+      html: htmlTemplate,
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Email sending error:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to send email",
+    };
+  }
 }
 
 export default sendEmail;

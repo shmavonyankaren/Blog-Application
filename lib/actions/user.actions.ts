@@ -131,13 +131,21 @@ export async function sendContactForm(form: FormData) {
     const email = form.get("email");
     const subject = form.get("subject");
     const message = form.get("message");
-    sendEmail(
+
+    const result = await sendEmail(
       name as string,
       email as string,
       subject as string,
       message as string
     );
+
+    if (!result.success) {
+      throw new Error(result.error || "Failed to send email");
+    }
+
+    return { success: true };
   } catch (error) {
     handleError(error);
+    return { success: false, error: "Failed to send contact form" };
   }
 }

@@ -1,4 +1,4 @@
-import { deleteAllCommentsFromBlog } from "@/lib/actions/blog.actions";
+import { deleteAllCommentsFromBlog } from "@/lib/actions/comment.actions";
 import { CommentType } from "@/lib/types";
 import { currentUser } from "@clerk/nextjs/server";
 

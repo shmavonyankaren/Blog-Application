@@ -1,15 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-
 import { useUser } from "@clerk/nextjs";
-
-import Image from "next/image";
-
 import { createBlog, updateBlog } from "@/lib/actions/blog.actions";
-import FileUploader from "./FIleUploader";
 import { CreateEditBlogTypes } from "@/lib/types";
+import ModalTriggerButton from "./modal/ModalTriggerButton";
+import ModalHeader from "./modal/ModalHeader";
+import BlogFormFields from "./modal/BlogFormFields";
+import CategorySelector from "./modal/CategorySelector";
+import ImageUploadSection from "./modal/ImageUploadSection";
+import FormActions from "./modal/FormActions";
+import DeleteConfirmationModal from "./modal/DeleteConfirmationModal";
+import { useCategoryManager } from "./modal/useCategoryManager";
+import FileUploader from "./FIleUploader";
+import Image from "next/image";
 
 export default function CreateEditBlogModal({
   actionType,
@@ -21,16 +26,48 @@ export default function CreateEditBlogModal({
     actionType === "edit" ? blog?.image || null : null
   );
 
+  const {
+    categories,
+    selectedCategory,
+    showCreateForm,
+    newCategoryName,
+    deleteModalOpen,
+    categoryToDelete,
+    setSelectedCategory,
+    setShowCreateForm,
+    setNewCategoryName,
+    setDeleteModalOpen,
+    handleDeleteCategory,
+    confirmDelete,
+    resetCategory,
+    fetchCategories,
+  } = useCategoryManager(user?.id, isOpen);
+
   const handleOpen = () => {
     setIsOpen(true);
-    // Reset image URL when opening create modal
+    document.body.style.overflow = "hidden";
     if (actionType === "create") {
       setImageUrl(null);
+      resetCategory();
+    } else if (actionType === "edit" && blog?.category_id) {
+      setSelectedCategory(blog.category_id.toString());
     }
   };
 
+  const handleClose = () => {
+    setIsOpen(false);
+    document.body.style.overflow = "";
+  };
+
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   const handleSubmit = async (formData: FormData) => {
     setIsOpen(false);
+    document.body.style.overflow = "";
 
     try {
       if (actionType === "create") {
@@ -40,7 +77,6 @@ export default function CreateEditBlogModal({
       }
     } catch (error) {
       console.error("Failed to save blog:", error);
-      // Optionally show error toast here
     }
   };
 
@@ -89,7 +125,7 @@ export default function CreateEditBlogModal({
             />
 
             {/* modal panel */}
-            <div className="pt-[23%] sm:pt-[15%]  md:pt-[12%] lg:pt-[8%] relative z-50  w-full max-w-5xl mx-4 mb-8">
+            <div className="pt-[23%] px-[2%] pb-[2%] sm:pt-[15%] sm:px-[1%] sm:pb-[1%]  md:pt-[12%] md:px-[1%] md:pb-[1%] lg:pt-[9%] xl:pt-[7%] lg:px-[1%] lg:pb-[1%] relative z-50  w-full max-w-5xl mx- -8">
               <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
                 {/* Header with gradient */}
                 <div className="flex items-center justify-between px-4 sm:px-6 py-5 bg-linear-to-r from-indigo-600 to-purple-600">
@@ -164,6 +200,36 @@ export default function CreateEditBlogModal({
 
                       {/* Right side - Image uploader */}
                       <div className="lg:w-96 flex flex-col gap-2">
+                        <div className="lg:w-96 space-y-5">
+                          <CategorySelector
+                            categories={categories}
+                            selectedCategory={selectedCategory}
+                            currentUserId={user?.id}
+                            showCreateForm={showCreateForm}
+                            newCategoryName={newCategoryName}
+                            onCategorySelect={setSelectedCategory}
+                            onToggleCreateForm={() =>
+                              setShowCreateForm(!showCreateForm)
+                            }
+                            onNewCategoryChange={setNewCategoryName}
+                            onCancelCreate={() => {
+                              setShowCreateForm(false);
+                              setNewCategoryName("");
+                            }}
+                            onDeleteCategory={handleDeleteCategory}
+                            onCategoryCreated={async () => {
+                              setShowCreateForm(false);
+                              setNewCategoryName("");
+                              await fetchCategories();
+                              // Dispatch event to notify other components
+                              if (typeof window !== "undefined") {
+                                window.dispatchEvent(
+                                  new CustomEvent("categoryChange")
+                                );
+                              }
+                            }}
+                          />
+                        </div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">
                           Cover Image
                         </label>
@@ -234,6 +300,12 @@ export default function CreateEditBlogModal({
                 </div>
               </div>
             </div>
+            <DeleteConfirmationModal
+              isOpen={deleteModalOpen}
+              categoryName={categoryToDelete?.name || ""}
+              onConfirm={confirmDelete}
+              onCancel={() => setDeleteModalOpen(false)}
+            />
           </div>,
           document.body
         )}

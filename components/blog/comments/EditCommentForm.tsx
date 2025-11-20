@@ -1,6 +1,6 @@
 "use client";
 
-import { editCommentByCommentId } from "@/lib/actions/blog.actions";
+import { editCommentByCommentId } from "@/lib/actions/comment.actions";
 import { useState } from "react";
 
 interface EditCommentFormProps {
