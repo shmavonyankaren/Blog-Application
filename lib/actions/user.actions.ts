@@ -125,25 +125,20 @@ export async function deleteUser(clerkId: string) {
   }
 }
 
-export async function sendContactForm(form: FormData) {
+export function sendContactForm(form: FormData) {
   try {
     const name = form.get("name");
     const email = form.get("email");
     const subject = form.get("subject");
     const message = form.get("message");
 
-    const result = await sendEmail(
+    sendEmail(
       name as string,
       email as string,
       subject as string,
       message as string
     );
-
-    if (!result.success) {
-      throw new Error(result.error || "Failed to send email");
-    }
   } catch (error) {
     handleError(error);
-    return { success: false, error: "Failed to send contact form" };
   }
 }
