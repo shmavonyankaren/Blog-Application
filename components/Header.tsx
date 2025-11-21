@@ -84,18 +84,21 @@ export default function Header() {
         className="lg:hidden"
       >
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-linear-to-br from-indigo-800 to-purple-800 dark:from-[#0f0c29] dark:via-[#302b63] dark:to-[#24243e] p-6 sm:max-w-sm shadow-2xl">
+        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full max-w-sm overflow-y-auto bg-linear-to-br from-indigo-800 to-purple-800 dark:from-[#0f0c29] dark:via-[#302b63] dark:to-[#24243e] p-6 shadow-2xl transition-colors duration-300">
           {/* Logo and close button */}
           <div className="flex items-center justify-between">
             <LogoName />
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(false)}
-              className="-m-2.5 cursor-pointer rounded-lg p-2.5 text-white hover:bg-white/10 transition-colors"
-            >
-              <span className="sr-only">Close menu</span>
-              <XMarkIcon aria-hidden="true" className="size-6" />
-            </button>
+            <div className="flex items-center gap-3">
+              <DarkModeButton />
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(false)}
+                className="-m-2.5 cursor-pointer rounded-lg p-2.5 text-white hover:bg-white/10 transition-colors"
+              >
+                <span className="sr-only">Close menu</span>
+                <XMarkIcon aria-hidden="true" className="size-6" />
+              </button>
+            </div>
           </div>
 
           <div className="mt-6 flow-root">
@@ -103,12 +106,6 @@ export default function Header() {
               {/* App navigation links */}
               <div className="space-y-2 py-6">
                 <Navigation onNavigate={() => setMobileMenuOpen(false)} />
-              </div>
-
-              {/* Dark mode toggle */}
-              <div className="py-6 flex items-center justify-between">
-                <span className="text-sm font-medium text-white">Theme</span>
-                <DarkModeButton />
               </div>
 
               {/* User account section */}

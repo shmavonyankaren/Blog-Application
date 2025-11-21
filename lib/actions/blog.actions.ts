@@ -52,9 +52,13 @@ export async function createBlog(formData: FormData) {
 // GET ONE Blog BY ID
 export async function getBlogById(blogId: string) {
   try {
-    const [rows] = await pool!.query("SELECT * FROM blogs WHERE id = ?", [
-      blogId,
-    ]);
+    const [rows] = await pool!.query(
+      `SELECT b.*, c.name as category_name 
+       FROM blogs b 
+       LEFT JOIN categories c ON b.category_id = c.id 
+       WHERE b.id = ?`,
+      [blogId]
+    );
     const blog = (rows as Blog[])[0];
 
     if (!blog) throw new Error("Blog not found");

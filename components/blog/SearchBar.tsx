@@ -55,7 +55,7 @@ export default function SearchBar() {
       {/* Search Icon */}
       <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
         <svg
-          className="w-5 h-5 text-gray-400 dark:text-gray-500"
+          className="w-5 h-5 text-gray-400 dark:text-gray-500 transition-colors duration-300"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -94,7 +94,7 @@ export default function SearchBar() {
             debouncedSearch.cancel();
             router.push(window.location.pathname);
           }}
-          className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+          className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-300"
           aria-label="Clear search"
         >
           <svg

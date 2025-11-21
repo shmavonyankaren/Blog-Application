@@ -6,6 +6,9 @@ import Link from "next/link";
 import { getUserById } from "@/lib/actions/user.actions";
 import BlogCreatorButtons from "./BlogCreatorButtons";
 import { formatDateHour } from "@/lib/utils";
+import { currentUser } from "@clerk/nextjs/server";
+import FavouriteButton from "./FavouriteButton";
+import { checkIfBlogIsFavourited } from "@/lib/actions/favourite.action";
 
 type BlogCardProps = {
   cardType: "creator" | "viewer";
@@ -14,6 +17,12 @@ type BlogCardProps = {
 
 export default async function BlogCard({ cardType, blog }: BlogCardProps) {
   const creatorUser: BlogCreator = await getUserById(blog.user_id);
+  const user = await currentUser();
+  const isFavourited = user
+    ? await checkIfBlogIsFavourited(user.id, blog.id)
+    : false;
+  const isOwnBlog = user?.id === blog.user_id;
+
   return (
     <div className="group relative flex min-h-[380px] w-full max-w-[500px] min-w-[350px] flex-col overflow-hidden rounded-2xl bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-950/50 hover:shadow-2xl border border-gray-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-slate-600 transform transition-all duration-300 ease-in-out md:min-h-[438px]">
       <Link
@@ -28,7 +37,12 @@ export default async function BlogCard({ cardType, blog }: BlogCardProps) {
       >
         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </Link>
-
+      {user && (
+        <FavouriteButton
+          blogId={blog.id}
+          isFavourited={isFavourited || false}
+        />
+      )}
       {/* Event creator controls */}
       {cardType === "creator" && <BlogCreatorButtons blog={blog} />}
 
@@ -57,7 +71,10 @@ export default async function BlogCard({ cardType, blog }: BlogCardProps) {
         </div>
 
         <div className="flex-between w-full pt-3 border-t border-gray-200 dark:border-slate-700 transition-colors duration-300">
-          <div className="flex items-center gap-3">
+          <Link
+            href={isOwnBlog ? "/my-blogs" : `/creator-page/${blog.user_id}`}
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+          >
             <Image
               className="rounded-full"
               src={creatorUser?.photo || "/assets/images/user_avatar.png"}
@@ -67,10 +84,12 @@ export default async function BlogCard({ cardType, blog }: BlogCardProps) {
               style={{ width: "auto", height: "auto" }}
             />
             <p className="text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors duration-300">
-              {creatorUser.username ||
-                creatorUser.first_name + " " + creatorUser.last_name}
+              {isOwnBlog
+                ? "You"
+                : creatorUser.username ||
+                  creatorUser.first_name + " " + creatorUser.last_name}
             </p>
-          </div>
+          </Link>
 
           <Link
             href={`/blog/${blog.id}`}
