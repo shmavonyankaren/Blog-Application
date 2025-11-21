@@ -23,7 +23,7 @@ export default function BlogCreatorButtons({ blog }: { blog: BlogType }) {
 
   return (
     <>
-      <div className="absolute right-2 top-2 flex flex-col gap-4 rounded-xl bg-white dark:bg-slate-800 p-3 shadow-sm transition-all">
+      <div className="absolute right-2 top-2 flex flex-col gap-4 rounded-xl bg-white dark:bg-slate-800 p-3 shadow-sm transition-all duration-300">
         <CreateEditBlogModal actionType="edit" blog={blog} />
         <button onClick={handleDeleteClick} type="button">
           <Image

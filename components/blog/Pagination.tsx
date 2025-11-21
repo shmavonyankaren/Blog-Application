@@ -102,7 +102,7 @@ export default function Pagination({
             return (
               <span
                 key={`ellipsis-${index}`}
-                className="px-4 py-2 text-gray-500 dark:text-gray-400"
+                className="px-4 py-2 text-gray-500 dark:text-gray-400 transition-colors duration-300"
               >
                 ...
               </span>

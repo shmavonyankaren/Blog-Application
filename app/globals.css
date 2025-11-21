@@ -126,6 +126,12 @@ body {
   width: var(--uib-size);
 }
 
+:root.dark .container-loader,
+.dark .container-loader,
+[data-theme="dark"] .container-loader {
+  --uib-color: white;
+}
+
 .line {
   position: absolute;
   top: 0;

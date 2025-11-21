@@ -11,14 +11,14 @@ async function BlogFooter({ blogs }: { blogs: Blog[] }) {
   }
 
   return (
-    <div className="mt-10 pt-6 border-t border-gray-200">
-      <div className="bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 dark:text-white  rounded-lg p-6">
+    <div className="mt-10 pt-6 border-t border-gray-200 dark:border-slate-700 transition-colors duration-300">
+      <div className="bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 dark:text-white rounded-lg p-6 transition-colors duration-300">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           {/* Stats Section */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900">
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 transition-colors duration-300">
               <svg
-                className="w-5 h-5 text-indigo-600 dark:text-indigo-400"
+                className="w-5 h-5 text-indigo-600 dark:text-indigo-400 transition-colors duration-300"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -32,10 +32,10 @@ async function BlogFooter({ blogs }: { blogs: Blog[] }) {
               </svg>
             </div>
             <div>
-              <p className="text-xs text-gray-500 dark:text-gray-300 font-medium">
+              <p className="text-xs text-gray-500 dark:text-gray-300 font-medium transition-colors duration-300">
                 Total Posts
               </p>
-              <p className="text-2xl font-bold text-gray-800 dark:text-white">
+              <p className="text-2xl font-bold text-gray-800 dark:text-white transition-colors duration-300">
                 {blogs.length}
               </p>
             </div>

@@ -6,6 +6,12 @@ export interface CategoryType {
   creator_id: string; // References users.user_id (Clerk ID)
 }
 
+export interface FavouriteType extends RowDataPacket {
+  id: number; // Auto-incremented primary key
+  user_id: string; // References users.user_id (Clerk ID)
+  blog_id: number; // References blogs.id
+}
+
 export interface CommentType extends RowDataPacket {
   id: number; // Auto-incremented primary key
   blog_id: number; // References blogs.id

@@ -14,6 +14,7 @@ const navLinks: LinkType[] = [
   { name: "Home", href: "/" },
   { name: "All Blogs", href: "/all-blogs" },
   { name: "My Blogs", href: "/my-blogs", requiresAuth: true },
+  { name: "Favourites", href: "/favourites", requiresAuth: true },
 ];
 
 type NavigationProps = {
@@ -23,13 +24,6 @@ type NavigationProps = {
 export default function Navigation({ onNavigate }: NavigationProps) {
   const pathname = usePathname();
   const { user } = useUser();
-
-  const handleLinkClick = () => {
-    // Check if we're on mobile (screen width < 640px)
-    if (window.innerWidth < 640 && onNavigate) {
-      onNavigate();
-    }
-  };
 
   return (
     <div>
@@ -47,7 +41,6 @@ export default function Navigation({ onNavigate }: NavigationProps) {
             <li className="" key={link.name}>
               <Link
                 href={link.href}
-                onClick={handleLinkClick}
                 className={`text-sm font-medium transition-all ${
                   isActive
                     ? "text-white font-bold"

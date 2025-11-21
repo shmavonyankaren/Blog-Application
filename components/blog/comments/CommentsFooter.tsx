@@ -14,7 +14,7 @@ export default async function CommentsFooter({
   return (
     <div className="flex justify-between items-center pt-4 mt-4 border-t border-gray-200">
       <div className="flex items-center gap-2">
-        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900">
+        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 transition-colors duration-300">
           <svg
             className="w-4 h-4 text-indigo-600 dark:text-indigo-400 transition-colors duration-300"
             fill="none"

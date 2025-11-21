@@ -61,7 +61,7 @@ export default function CategoryFilter() {
           ${
             selectedCategory === "all"
               ? "bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/50 scale-105"
-              : "bg-white dark:bg-[#302b63] text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#24243e] border border-gray-200 dark:border-[#302b63] hover:border-indigo-300 dark:hover:border-[#24243e] hover:shadow-md"
+              : "bg-white dark:bg-[#302b63] text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#24243e] border border-gray-200 dark:border-[#302b63] hover:border-indigo-300 dark:hover:border-[#24243e] hover:shadow-md transition-colors duration-300"
           }
         `}
       >

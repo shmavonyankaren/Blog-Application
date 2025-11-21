@@ -37,7 +37,7 @@ export default function CreateCategoryForm({
   };
 
   return (
-    <div className="mb-3 p-3 bg-indigo-50 rounded-lg border border-indigo-200">
+    <div className="mb-3 p-3 bg-indigo-50 dark:bg-slate-800/50 rounded-lg border border-indigo-200 dark:border-slate-700 transition-colors duration-300">
       <div className="flex gap-2">
         <input
           type="text"
@@ -45,19 +45,19 @@ export default function CreateCategoryForm({
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Category name..."
-          className="flex-1 px-3 py-2 text-sm border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="flex-1 px-3 py-2 text-sm bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 border border-indigo-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 placeholder:text-gray-400 dark:placeholder:text-slate-500 transition-colors duration-300"
         />
         <button
           type="button"
           onClick={handleAddClick}
-          className="px-3 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+          className="px-3 py-2 bg-indigo-600 dark:bg-indigo-700 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors duration-300"
         >
           Add
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="px-3 py-2 bg-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-400 transition-colors"
+          className="px-3 py-2 bg-gray-300 dark:bg-slate-700 text-gray-700 dark:text-slate-300 text-sm font-medium rounded-lg hover:bg-gray-400 dark:hover:bg-slate-600 transition-colors duration-300"
         >
           Cancel
         </button>
