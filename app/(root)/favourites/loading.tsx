@@ -4,7 +4,7 @@ export default function LoadingFavourites() {
       <div className="min-h-full py-8 px-4 w-full">
         <div className="mx-auto bg-white dark:bg-slate-900 rounded-2xl shadow-xl overflow-hidden max-w-7xl border border-gray-200 dark:border-slate-800 transition-colors duration-300">
           {/* Header Skeleton */}
-          <div className="bg-linear-to-r from-red-600 to-pink-600 dark:from-slate-800 dark:to-slate-700 duration-300 transition-colors px-6 py-10">
+          <div className="bg-linear-to-r from-indigo-600 to-purple-600 dark:from-slate-800 dark:to-slate-700 duration-300 transition-colors px-6 py-10">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <div className="space-y-2">
                 <div className="h-10 bg-white/20 rounded w-56 animate-pulse"></div>

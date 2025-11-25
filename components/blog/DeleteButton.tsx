@@ -31,7 +31,6 @@ export default function DeleteButton({
     await action(formData);
     setIsDeleteModalOpen(false);
   };
-
   return (
     <>
       <div className="flex items-center gap-2">

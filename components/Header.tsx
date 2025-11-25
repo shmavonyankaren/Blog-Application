@@ -22,10 +22,10 @@ export default function Header() {
   const { user } = useUser();
 
   return (
-    <header className="bg-linear-to-r from-indigo-900 to-purple-900 dark:bg-linear-to-r dark:from-slate-900 dark:to-slate-800 transition-colors duration-300">
+    <header className="bg-linear-to-r from-indigo-900 to-purple-900 dark:from-slate-900 dark:to-slate-800 backdrop-blur-xl border-b border-white/30 shadow-2xl transition-all duration-300 relative before:absolute before:inset-0 before:bg-linear-to-r before:from-white/5 before:to-transparent before:pointer-events-none">
       <nav
         aria-label="Global"
-        className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+        className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8 relative z-10"
       >
         {/* Logo section */}
         <div className="flex lg:flex-1">
@@ -84,7 +84,7 @@ export default function Header() {
         className="lg:hidden"
       >
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full max-w-sm overflow-y-auto bg-linear-to-br from-indigo-800 to-purple-800 dark:from-[#0f0c29] dark:via-[#302b63] dark:to-[#24243e] p-6 shadow-2xl transition-colors duration-300">
+        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full max-w-xs sm:max-w-sm overflow-y-auto bg-linear-to-br from-indigo-800 to-purple-800 dark:from-[#0f0c29] dark:via-[#302b63] dark:to-[#24243e] p-6 shadow-2xl transition-colors duration-300">
           {/* Logo and close button */}
           <div className="flex items-center justify-between">
             <LogoName />

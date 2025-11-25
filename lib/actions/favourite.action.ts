@@ -14,6 +14,8 @@ export async function checkIfBlogIsFavourited(userId: string, blogId: number) {
     return (rows as FavouriteType[]).length > 0;
   } catch (error) {
     handleError(error);
+
+    return false;
   }
 }
 

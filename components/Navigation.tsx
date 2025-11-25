@@ -41,10 +41,11 @@ export default function Navigation({ onNavigate }: NavigationProps) {
             <li className="" key={link.name}>
               <Link
                 href={link.href}
+                onClick={onNavigate}
                 className={`text-sm font-medium transition-all ${
                   isActive
-                    ? "text-white font-bold"
-                    : "text-indigo-100 hover:text-white"
+                    ? "text-purple-500 dark:text-yellow-400 font-bold underline underline-offset-4"
+                    : "text-indigo-100 dark:text-gray-300 hover:text-white dark:hover:text-white"
                 }`}
               >
                 {link.name}
