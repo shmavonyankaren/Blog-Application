@@ -1,3 +1,5 @@
+"use client";
+
 import { sendContactForm } from "@/lib/actions/user.actions";
 
 export default function ContactForm() {

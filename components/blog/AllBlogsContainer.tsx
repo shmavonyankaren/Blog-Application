@@ -23,7 +23,7 @@ export default async function AllBlogsContainer({
       <div className="min-h-full py-8 px-4">
         <div className="mx-auto bg-white dark:bg-slate-900 rounded-2xl shadow-xl dark:shadow-slate-950/50 overflow-hidden max-w-7xl border border-gray-200 dark:border-slate-800 transition-colors duration-300">
           {/* Header Section with Gradient Background */}
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-slate-800 dark:to-slate-700 px-6 py-10 transition-colors duration-300">
+          <div className="bg-linear-to-r from-indigo-600 to-purple-600 dark:from-slate-800 dark:to-slate-700 px-6 py-10 transition-colors duration-300">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <div>
                 <h1 className="text-4xl font-bold text-white mb-2">

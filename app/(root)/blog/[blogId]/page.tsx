@@ -9,6 +9,8 @@ import CommentsSection from "@/components/blog/comments/CommentsSection";
 import BlogDetailDeleteButton from "@/components/blog/BlogDetailDeleteButton";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import FavouriteButton from "@/components/blog/FavouriteButton";
+import { checkIfBlogIsFavourited } from "@/lib/actions/favourite.action";
 
 export default async function BlogPage({
   params,
@@ -29,6 +31,9 @@ export default async function BlogPage({
   }
 
   const creator = await getUserById(blog.user_id);
+  const isFavourited = user
+    ? await checkIfBlogIsFavourited(user.id, blog.id)
+    : false;
 
   return (
     <main className="w-full min-h-screen bg-linear-to-br from-gray-50 via-indigo-50 to-purple-50 dark:bg-linear-to-br dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 px-4 py-12 transition-colors duration-300">
@@ -120,6 +125,13 @@ export default async function BlogPage({
                 )}
               </div>
             </div>
+
+            {/* Save/Favourite button for logged-in users */}
+            {user && (
+              <div className="absolute top-4 left-4">
+                <FavouriteButton blogId={blog.id} isFavourited={isFavourited} />
+              </div>
+            )}
 
             {/* Edit/Delete buttons */}
             {user?.id === blog.user_id && (

@@ -16,18 +16,22 @@ async function FavouritesFooter({ favourites }: { favourites: Blog[] }) {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           {/* Stats Section */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-red-100 dark:bg-red-900 transition-colors duration-300">
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 transition-colors duration-300">
               <svg
-                className="w-5 h-5 text-red-600 dark:text-red-400 transition-colors duration-300"
+                className="w-5 h-5 text-blue-600 dark:text-blue-400 transition-colors duration-300"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                <path
+                  fillRule="evenodd"
+                  d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
             <div>
               <p className="text-xs text-gray-500 dark:text-gray-300 font-medium transition-colors duration-300">
-                Total Favourites
+                Total Saved
               </p>
               <p className="text-2xl font-bold text-gray-800 dark:text-white transition-colors duration-300">
                 {favourites.length}
