@@ -159,7 +159,7 @@ export default function CreateEditBlogModal({
                       {/* Left side - Form fields */}
                       <div className="flex-1 space-y-5">
                         <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2 transition-colors duration-300">
                             Blog Title
                           </label>
                           <input
@@ -174,7 +174,7 @@ export default function CreateEditBlogModal({
                         </div>
 
                         <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 transition-colors duration-300 mb-2">
                             Description
                           </label>
                           <textarea
@@ -221,7 +221,7 @@ export default function CreateEditBlogModal({
                             }}
                           />
                         </div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 transition-colors duration-300 mb-2">
                           Cover Image
                         </label>
                         <FileUploader
