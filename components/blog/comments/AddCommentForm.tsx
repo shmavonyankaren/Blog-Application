@@ -7,7 +7,7 @@ export default async function AddCommentForm({ blogId }: { blogId: string }) {
 
   if (!user) {
     return (
-      <div className="mt-6 mb-6 bg-linear-to-r from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-xl p-6 text-center">
+      <div className="mt-6 mb-6 bg-linear-to-r border-2 border-indigo-200 dark:bg-slate-800 shadow-sm dark:shadow-slate-800/50 dark:border-slate-500 border-b rounded-xl p-6 text-center">
         <svg
           className="mx-auto h-12 w-12 text-indigo-600 mb-3"
           fill="none"
@@ -21,7 +21,7 @@ export default async function AddCommentForm({ blogId }: { blogId: string }) {
             d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
           />
         </svg>
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors duration-300">
+        <h3 className="text-xl font-bold  text-gray-900 dark:text-white mb-2 transition-colors duration-300">
           Join the Conversation
         </h3>
         <p className="text-gray-600 dark:text-gray-300 mb-4 transition-colors duration-300">
