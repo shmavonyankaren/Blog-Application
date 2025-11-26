@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import CreateEditBlogModal from "./CreateEditBlogModal";
 import DeleteConfirmationModal from "./modal/DeleteConfirmationModal";
 import { deleteBlog } from "@/lib/actions/blog.actions";
@@ -9,17 +10,18 @@ import { BlogType } from "@/lib/types";
 
 export default function BlogCreatorButtons({ blog }: { blog: BlogType }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const pathname = usePathname();
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = useCallback(() => {
     setIsDeleteModalOpen(true);
-  };
+  }, []);
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = useCallback(async () => {
     const formData = new FormData();
     formData.append("blogId", String(blog.id));
-    await deleteBlog(formData);
+    await deleteBlog(formData, pathname);
     setIsDeleteModalOpen(false);
-  };
+  }, [blog.id, pathname]);
 
   return (
     <>

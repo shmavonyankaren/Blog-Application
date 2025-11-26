@@ -18,7 +18,7 @@ export default function CommentItem({
   const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <div className="p-4 bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-gray-200 dark:border-slate-700 hover:border-indigo-200 dark:hover:border-slate-600 transition-all duration-300">
+    <div className="p-4 bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-gray-200 dark:border-slate-800 hover:border-indigo-200 dark:hover:border-slate-700/60 transition-all duration-300">
       {/* Header with user info and actions */}
       <div className="flex items-center justify-between mb-3">
         <CommentHeader

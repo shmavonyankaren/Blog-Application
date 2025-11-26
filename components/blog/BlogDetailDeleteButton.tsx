@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import DeleteConfirmationModal from "./modal/DeleteConfirmationModal";
 import { deleteBlogAndRedirect } from "@/lib/actions/blog.actions";
 
@@ -14,15 +14,15 @@ export default function BlogDetailDeleteButton({
 }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = useCallback(() => {
     setIsDeleteModalOpen(true);
-  };
+  }, []);
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = useCallback(async () => {
     const formData = new FormData();
     formData.append("blogId", String(blogId));
-    await deleteBlogAndRedirect(formData);
-  };
+    await deleteBlogAndRedirect(formData, "/my-blogs");
+  }, [blogId]);
 
   return (
     <>

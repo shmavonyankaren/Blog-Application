@@ -84,9 +84,10 @@ export async function updateUser(clerkId: string, user: UpdateUserParams) {
       [user.firstName, user.lastName, user.photo, user.username, clerkId]
     );
 
-    const [rows] = await pool!.query("SELECT * FROM users WHERE user_id = ?", [
-      clerkId,
-    ]);
+    const [rows] = await pool!.query(
+      "SELECT user_id, email, username, photo, first_name, last_name FROM users WHERE user_id = ?",
+      [clerkId]
+    );
     const updatedUser = (rows as UpdateUserParams[])[0];
 
     if (!updatedUser) throw new Error("User update failed");

@@ -9,7 +9,7 @@ export default function DarkModeButton() {
 
   // useEffect only runs on the client, so now we can safely show the UI
   useEffect(() => {
-    async function func() {
+    function func() {
       setMounted(true);
     }
     func();

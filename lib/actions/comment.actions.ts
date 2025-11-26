@@ -9,7 +9,7 @@ import { handleError } from "@/lib/utils/";
 export async function getAllCommentsByBlog(blogId: string) {
   try {
     const [comments] = await pool!.query(
-      "SELECT * FROM comments WHERE blog_id = ? ORDER BY created_at DESC",
+      "SELECT id, blog_id, user_id, content, created_at FROM comments WHERE blog_id = ? ORDER BY created_at DESC",
       [blogId]
     );
     return JSON.parse(JSON.stringify(comments));
@@ -20,7 +20,7 @@ export async function getAllCommentsByBlog(blogId: string) {
 
 // ADD COMMENT TO BLOG
 
-export async function addCommentToBlog(formData: FormData) {
+export async function addCommentToBlog(formData: FormData, path: string) {
   try {
     const blogId = formData.get("blogId");
     const userId = formData.get("userId");
@@ -29,35 +29,35 @@ export async function addCommentToBlog(formData: FormData) {
       "INSERT INTO comments (blog_id, user_id, content) VALUES (?, ?, ?)",
       [blogId, userId, content]
     );
-    revalidatePath(`/blog/${blogId}`);
+    revalidatePath(path);
   } catch (error) {
     handleError(error);
   }
 }
 
-export async function editCommentByCommentId(formData: FormData) {
+export async function editCommentByCommentId(formData: FormData, path: string) {
   try {
     const commentId = formData.get("commentId");
-    const blogId = formData.get("blogId");
+    // const blogId = formData.get("blogId");
     const content = formData.get("content");
     await pool!.query("UPDATE comments SET content = ? WHERE id = ?", [
       content,
       commentId,
     ]);
-    revalidatePath(`/blog/${blogId}`);
+    revalidatePath(path);
   } catch (error) {
     handleError(error);
   }
 }
 
 // Delete a comment from BLOG
-export async function deleteCommentFromBlog(formData: FormData) {
+export async function deleteCommentFromBlog(formData: FormData, path: string) {
   try {
     const commentId = formData.get("commentId");
-    const blogId = formData.get("blogId");
+    // const blogId = formData.get("blogId");
     await pool!.query("DELETE FROM comments WHERE id = ?", [commentId]);
 
-    revalidatePath(`/blog/${blogId}`);
+    revalidatePath(path);
   } catch (error) {
     handleError(error);
   }
@@ -65,11 +65,14 @@ export async function deleteCommentFromBlog(formData: FormData) {
 
 // Delete all comments from BLOG
 
-export async function deleteAllCommentsFromBlog(formData: FormData) {
+export async function deleteAllCommentsFromBlog(
+  formData: FormData,
+  path: string
+) {
   try {
     const blogId = formData.get("blogId");
     await pool!.query("DELETE FROM comments WHERE blog_id = ?", [blogId]);
-    revalidatePath(`/blog/${blogId}`);
+    revalidatePath(path);
   } catch (error) {
     handleError(error);
   }

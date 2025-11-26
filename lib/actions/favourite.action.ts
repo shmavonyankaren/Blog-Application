@@ -8,7 +8,7 @@ import { BlogType, FavouriteType } from "@/lib/types";
 export async function checkIfBlogIsFavourited(userId: string, blogId: number) {
   try {
     const [rows] = await pool!.query(
-      "SELECT * FROM favourites WHERE user_id = ? AND blog_id = ?",
+      "SELECT blog_id FROM favourites WHERE user_id = ? AND blog_id = ?",
       [userId, blogId]
     );
     return (rows as FavouriteType[]).length > 0;
@@ -20,7 +20,7 @@ export async function checkIfBlogIsFavourited(userId: string, blogId: number) {
 }
 
 // CREATE
-export async function favouriteBlog(formData: FormData) {
+export async function favouriteBlog(formData: FormData, path: string) {
   try {
     const userId = formData.get("userId");
     const blogId = formData.get("blogId");
@@ -28,15 +28,14 @@ export async function favouriteBlog(formData: FormData) {
       "INSERT INTO favourites (user_id, blog_id) VALUES (?, ?)",
       [userId, blogId]
     );
-    revalidatePath("/all-blogs");
-    revalidatePath("/favourites");
+    revalidatePath(path);
   } catch (error) {
     handleError(error);
   }
 }
 
 // DELETE
-export async function unfavouriteBlog(formData: FormData) {
+export async function unfavouriteBlog(formData: FormData, path: string) {
   try {
     const userId = formData.get("userId");
     const blogId = formData.get("blogId");
@@ -44,19 +43,21 @@ export async function unfavouriteBlog(formData: FormData) {
       "DELETE FROM favourites WHERE user_id = ? AND blog_id = ?",
       [userId, blogId]
     );
-    revalidatePath("/all-blogs");
-    revalidatePath("/favourites");
+    revalidatePath(path);
   } catch (error) {
     handleError(error);
   }
 }
 
 // DELETE ALL FAVOURITES FOR A USER
-export async function deleteAllFavouritesByUser(formData: FormData) {
+export async function deleteAllFavouritesByUser(
+  formData: FormData,
+  path: string
+) {
   try {
     const userId = formData.get("deleteId"); // Changed to match DeleteButton
     await pool!.query("DELETE FROM favourites WHERE user_id = ?", [userId]);
-    revalidatePath("/favourites");
+    revalidatePath(path);
   } catch (error) {
     handleError(error);
   }

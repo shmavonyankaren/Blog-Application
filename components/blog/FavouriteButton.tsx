@@ -2,7 +2,7 @@
 
 import { favouriteBlog, unfavouriteBlog } from "@/lib/actions/favourite.action";
 import { useUser } from "@clerk/nextjs";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useCallback } from "react";
 
 export default function FavouriteButton({
   blogId,
@@ -16,7 +16,7 @@ export default function FavouriteButton({
   const [optimisticFavourited, setOptimisticFavourited] =
     useState(isFavourited);
 
-  const handleToggleFavourite = () => {
+  const handleToggleFavourite = useCallback(() => {
     if (!user?.id) return;
 
     // Store the current state before changing
@@ -33,16 +33,16 @@ export default function FavouriteButton({
 
       try {
         if (previousState) {
-          await unfavouriteBlog(formData);
+          await unfavouriteBlog(formData, "/blog/" + blogId);
         } else {
-          await favouriteBlog(formData);
+          await favouriteBlog(formData, "/blog/" + blogId);
         }
       } catch {
         // Revert on error
         setOptimisticFavourited(previousState);
       }
     });
-  };
+  }, [user, optimisticFavourited, startTransition, blogId]);
 
   return (
     <button

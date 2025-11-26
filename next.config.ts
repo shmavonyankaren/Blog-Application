@@ -2,6 +2,11 @@ import type { NextConfig } from "next";
 
 // Allow external images (Clerk user avatars, blog images, etc.)
 const nextConfig: NextConfig = {
+  // Production optimizations
+  reactStrictMode: true,
+  poweredByHeader: false,
+  compress: true,
+
   images: {
     remotePatterns: [
       {

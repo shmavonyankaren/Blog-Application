@@ -82,6 +82,7 @@ export default async function BlogCard({ cardType, blog }: BlogCardProps) {
               width={32}
               height={32}
               style={{ width: "auto", height: "auto" }}
+              loading="lazy"
             />
             <p className="text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors duration-300">
               {isOwnBlog

@@ -1,16 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { useUser } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
 import { createBlog, updateBlog } from "@/lib/actions/blog.actions";
 import { CreateEditBlogTypes } from "@/lib/types";
-import ModalTriggerButton from "./modal/ModalTriggerButton";
-import ModalHeader from "./modal/ModalHeader";
-import BlogFormFields from "./modal/BlogFormFields";
 import CategorySelector from "./modal/CategorySelector";
-import ImageUploadSection from "./modal/ImageUploadSection";
-import FormActions from "./modal/FormActions";
 import DeleteConfirmationModal from "./modal/DeleteConfirmationModal";
 import { useCategoryManager } from "./modal/useCategoryManager";
 import FileUploader from "./FIleUploader";
@@ -22,6 +18,7 @@ export default function CreateEditBlogModal({
 }: CreateEditBlogTypes) {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useUser();
+  const pathname = usePathname();
   const [imageUrl, setImageUrl] = useState<string | null>(
     actionType === "edit" ? blog?.image || null : null
   );
@@ -43,7 +40,7 @@ export default function CreateEditBlogModal({
     fetchCategories,
   } = useCategoryManager(user?.id, isOpen);
 
-  const handleOpen = () => {
+  const handleOpen = useCallback(() => {
     setIsOpen(true);
     if (actionType === "create") {
       setImageUrl(null);
@@ -51,25 +48,28 @@ export default function CreateEditBlogModal({
     } else if (actionType === "edit" && blog?.category_id) {
       setSelectedCategory(blog.category_id.toString());
     }
-  };
+  }, [actionType, blog, resetCategory, setSelectedCategory]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsOpen(false);
-  };
+  }, []);
 
-  const handleSubmit = async (formData: FormData) => {
-    setIsOpen(false);
+  const handleSubmit = useCallback(
+    async (formData: FormData) => {
+      setIsOpen(false);
 
-    try {
-      if (actionType === "create") {
-        await createBlog(formData);
-      } else {
-        await updateBlog(formData);
+      try {
+        if (actionType === "create") {
+          await createBlog(formData, pathname);
+        } else {
+          await updateBlog(formData, pathname);
+        }
+      } catch (error) {
+        // Error is already handled by server action
       }
-    } catch (error) {
-      console.error("Failed to save blog:", error);
-    }
-  };
+    },
+    [actionType, pathname]
+  );
 
   return (
     <>
@@ -169,7 +169,7 @@ export default function CreateEditBlogModal({
                               actionType === "edit" ? blog?.title : ""
                             }
                             placeholder="Enter an engaging title..."
-                            className="block w-full px-4 py-3 border border-gray-300 dark:border-[#302b63] rounded-lg bg-white dark:bg-[#24243e] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-[#302b63] focus:border-indigo-500 dark:focus:border-[#302b63] transition-all duration-300"
+                            className="block w-full px-4 py-3 border border-gray-300 dark:border-[#302b63] rounded-lg bg-white dark:bg-[#0f172a] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-[#302b63] focus:border-indigo-500 dark:focus:border-[#302b63] transition-all duration-300"
                           />
                         </div>
 
@@ -184,7 +184,7 @@ export default function CreateEditBlogModal({
                               actionType === "edit" ? blog?.description : ""
                             }
                             placeholder="Share your thoughts and ideas..."
-                            className="block w-full px-4 py-3 border border-gray-300 dark:border-[#302b63] rounded-lg bg-white dark:bg-[#24243e] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-[#302b63] focus:border-indigo-500 dark:focus:border-[#302b63] transition-all duration-300 resize-none"
+                            className="block w-full px-4 py-3 border border-gray-300 dark:border-[#302b63] rounded-lg bg-white dark:bg-[#0f172a] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-[#302b63] focus:border-indigo-500 dark:focus:border-[#302b63] transition-all duration-300 resize-none"
                           />
                         </div>
                       </div>
@@ -241,7 +241,7 @@ export default function CreateEditBlogModal({
                       <button
                         type="button"
                         onClick={() => setIsOpen(false)}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all duration-300 cursor-pointer shadow-sm"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-[#0f172a] border border-gray-300 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all duration-300 cursor-pointer shadow-sm"
                       >
                         Cancel
                       </button>

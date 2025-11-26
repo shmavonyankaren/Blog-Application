@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import {
   getAllCategories,
   createCategory,
@@ -9,6 +10,7 @@ import {
 import { CategoryType } from "@/lib/types";
 
 export function useCategoryManager(userId?: string, isOpen?: boolean) {
+  const pathname = usePathname();
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -39,14 +41,13 @@ export function useCategoryManager(userId?: string, isOpen?: boolean) {
     formData.append("name", newCategoryName.trim());
     formData.append("creatorId", userId);
 
-    await createCategory(formData);
+    await createCategory(formData, pathname);
     setNewCategoryName("");
     setShowCreateForm(false);
     await fetchCategories();
 
     // Dispatch custom event to notify other components
     if (typeof window !== "undefined") {
-      console.log("Dispatching categoryChange event after create");
       window.dispatchEvent(new CustomEvent("categoryChange"));
     }
   };
@@ -65,7 +66,7 @@ export function useCategoryManager(userId?: string, isOpen?: boolean) {
     const formData = new FormData();
     formData.append("categoryId", categoryToDelete.id.toString());
 
-    await deleteCategory(formData);
+    await deleteCategory(formData, pathname);
     if (selectedCategory === categoryToDelete.id.toString()) {
       setSelectedCategory("");
     }
