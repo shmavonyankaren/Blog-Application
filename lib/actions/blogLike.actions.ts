@@ -4,7 +4,7 @@ import pool from "@/lib/db/index";
 import { revalidatePath } from "next/cache";
 import { handleError } from "@/lib/utils/";
 
-export async function getBlogLikeCount(blogId: string) {
+export async function getBlogLikeCount(blogId: number) {
   try {
     const [rows] = await pool!.query(
       "SELECT COUNT(*) as total FROM blog_likes WHERE blog_id = ?",
@@ -15,6 +15,20 @@ export async function getBlogLikeCount(blogId: string) {
   } catch (error) {
     handleError(error);
     return 0;
+  }
+}
+
+export async function checkIfUserLikedBlog(userId: string, blogId: number) {
+  try {
+    const [rows] = await pool!.query(
+      "SELECT COUNT(*) as total FROM blog_likes WHERE blog_id = ? AND user_id = ?",
+      [blogId, userId]
+    );
+    const countResult = (rows as { total: number }[])[0];
+    return countResult.total > 0;
+  } catch (error) {
+    handleError(error);
+    return false;
   }
 }
 
@@ -46,14 +60,19 @@ export async function unlikeBlog(formData: FormData, path: string) {
   }
 }
 
-export async function getUserBlogLikeCount(userId: string, blogId: string) {
+export async function getTotalBlogLikesForUser(userId: string) {
   try {
     const [rows] = await pool!.query(
-      "SELECT COUNT(*) as total FROM blog_likes WHERE blog_id = ? AND user_id = ?",
-      [blogId, userId]
+      `
+      SELECT COUNT(*) AS total
+      FROM blog_likes bl
+      JOIN blogs b ON bl.blog_id = b.id
+      WHERE b.user_id = ?
+      `,
+      [userId]
     );
-    const countResult = (rows as { total: number }[])[0];
-    return countResult.total;
+
+    return (rows as { total: number }[])[0].total;
   } catch (error) {
     handleError(error);
     return 0;

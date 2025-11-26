@@ -1,5 +1,8 @@
 import Image from "next/image";
 import { User } from "@/lib/types";
+import Link from "next/link";
+import {} from "@clerk/nextjs/server";
+import { useUser } from "@clerk/nextjs";
 
 interface CommentHeaderProps {
   creatorOfComment: User;
@@ -13,14 +16,19 @@ export default function CommentHeader({
   updatedAt,
 }: CommentHeaderProps) {
   const isEdited = createdAt !== updatedAt;
-
+  const { user } = useUser();
   // Add 4 hours to compensate for Railway UTC storage
   const offset = 4 * 60 * 60 * 1000;
   const adjustedCreatedAt = new Date(new Date(createdAt).getTime() + offset);
   const adjustedUpdatedAt = new Date(new Date(updatedAt).getTime() + offset);
-
+  const isOwnBlog = user?.id === creatorOfComment.user_id;
   return (
-    <div className="flex items-center gap-3">
+    <Link
+      href={
+        isOwnBlog ? "/my-blogs" : `/creator-page/${creatorOfComment.user_id}`
+      }
+      className="flex items-center gap-3"
+    >
       <Image
         src={creatorOfComment.photo}
         alt="User Avatar"
@@ -30,8 +38,10 @@ export default function CommentHeader({
       />
       <div>
         <p className="text-sm font-semibold text-gray-900 dark:text-white transition-colors duration-300">
-          {creatorOfComment.username ||
-            creatorOfComment.first_name + " " + creatorOfComment.last_name}
+          {isOwnBlog
+            ? "You"
+            : creatorOfComment.username ||
+              creatorOfComment.first_name + " " + creatorOfComment.last_name}
         </p>
         <p className="text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
           {adjustedCreatedAt.toLocaleString()}
@@ -42,6 +52,6 @@ export default function CommentHeader({
           )}
         </p>
       </div>
-    </div>
+    </Link>
   );
 }

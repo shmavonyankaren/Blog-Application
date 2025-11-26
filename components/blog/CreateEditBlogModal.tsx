@@ -95,7 +95,10 @@ export default function CreateEditBlogModal({
           New Blog
         </button>
       ) : (
-        <button onClick={handleOpen} className="inline-block cursor-pointer">
+        <button
+          onClick={handleOpen}
+          className="p-2.5 cursor-pointer bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-lg shadow-lg backdrop-blur-sm border border-gray-200/50 dark:border-slate-700 transition-all duration-300 group"
+        >
           <Image
             src="/assets/icons/edit.svg"
             alt="edit"

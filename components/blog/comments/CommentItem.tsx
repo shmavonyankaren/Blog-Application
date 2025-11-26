@@ -16,7 +16,6 @@ export default function CommentItem({
   isOwner: boolean;
 }) {
   const [isEditing, setIsEditing] = useState(false);
-
   return (
     <div className="p-4 bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-gray-200 dark:border-slate-800 hover:border-indigo-200 dark:hover:border-slate-700/60 transition-all duration-300">
       {/* Header with user info and actions */}

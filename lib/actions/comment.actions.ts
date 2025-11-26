@@ -9,7 +9,7 @@ import { handleError } from "@/lib/utils/";
 export async function getAllCommentsByBlog(blogId: string) {
   try {
     const [comments] = await pool!.query(
-      "SELECT id, blog_id, user_id, content, created_at FROM comments WHERE blog_id = ? ORDER BY created_at DESC",
+      "SELECT id, blog_id, user_id, content, created_at, updated_at FROM comments WHERE blog_id = ? ORDER BY created_at DESC",
       [blogId]
     );
     return JSON.parse(JSON.stringify(comments));

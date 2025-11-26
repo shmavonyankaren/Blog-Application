@@ -28,7 +28,7 @@ export default function BlogDetailDeleteButton({
     <>
       <button
         onClick={handleDeleteClick}
-        className="p-2 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 border border-gray-200/50 dark:border-slate-700 rounded-lg shadow-lg transition-all duration-300"
+        className="p-2.5 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 border border-gray-200/50 dark:border-slate-700 rounded-lg shadow-lg transition-all duration-300"
         type="button"
       >
         <Image

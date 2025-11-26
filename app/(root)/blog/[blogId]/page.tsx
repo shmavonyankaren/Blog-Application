@@ -1,4 +1,4 @@
-import { CreateEditBlogModal } from "@/components";
+import { BlogCreatorButtons, CreateEditBlogModal } from "@/components";
 import { getBlogById } from "@/lib/actions/blog.actions";
 import { getUserById } from "@/lib/actions/user.actions";
 import { BlogType } from "@/lib/types";
@@ -11,6 +11,19 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import FavouriteButton from "@/components/blog/FavouriteButton";
 import { checkIfBlogIsFavourited } from "@/lib/actions/favourite.action";
+import LikeButton from "@/components/blog/LikeButton";
+import {
+  checkIfUserLikedBlog,
+  getBlogLikeCount,
+} from "@/lib/actions/blogLike.actions";
+import { get } from "http";
+import {
+  getBlogViewCount,
+  incrementBlogView,
+} from "@/lib/actions/blogView.actions";
+import ViewCount from "@/components/blog/ViewCount";
+import { create } from "domain";
+import SaveLikeButtons from "@/components/blog/SaveLikeButtons";
 
 export default async function BlogPage({
   params,
@@ -34,6 +47,9 @@ export default async function BlogPage({
   const isFavourited = user
     ? await checkIfBlogIsFavourited(user.id, blog.id)
     : false;
+  const isLiked = user ? await checkIfUserLikedBlog(user.id, blog.id) : false;
+  const likeCount = await getBlogLikeCount(blog.id);
+  const viewCount = await getBlogViewCount(blog.id);
 
   return (
     <main className="w-full min-h-screen bg-linear-to-br from-gray-50 via-indigo-50 to-purple-50 dark:bg-linear-to-br dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 px-4 py-12 transition-colors duration-300">
@@ -82,10 +98,11 @@ export default async function BlogPage({
                     </span>
                   </div>
                 </Link>
-
                 <span className="text-white/50">•</span>
-
-                <div className="flex items-center gap-2">
+                <div
+                  title="blog category section"
+                  className="flex items-center gap-2"
+                >
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -123,25 +140,49 @@ export default async function BlogPage({
                     </span>
                   </div>
                 )}
+                <span className="text-white/50">•</span>
+                <div className="flex items-center gap-2">
+                  <svg
+                    className="w-5 h-5 text-red-600 dark:text-red-400 fill-current"
+                    fill="currentColor"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                  </svg>
+                  Likes: {likeCount}
+                </div>
+                <span className="text-white/50">•</span>
+                <ViewCount viewCount={viewCount} blogId={blog.id} />
               </div>
             </div>
 
             {/* Save/Favourite button for logged-in users */}
             {user && (
-              <div className="absolute top-4 left-4">
-                <FavouriteButton blogId={blog.id} isFavourited={isFavourited} />
-              </div>
+              <SaveLikeButtons
+                blogId={blog.id}
+                isFavourited={isFavourited}
+                isLiked={isLiked}
+              />
             )}
 
             {/* Edit/Delete buttons */}
             {user?.id === blog.user_id && (
-              <div className="absolute top-4 right-4 flex items-center gap-2">
-                <CreateEditBlogModal actionType="edit" blog={blog} />
-                <BlogDetailDeleteButton
-                  blogId={blog.id}
-                  blogTitle={blog.title}
-                />
-              </div>
+              // <div className="absolute top-4 right-4 flex flex-col items-center gap-2">
+              //   <div className="flex justify-center items-center p-2.5 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 border border-gray-200/50 dark:border-slate-700 rounded-lg shadow-lg transition-all duration-300">
+              //     <CreateEditBlogModal actionType="edit" blog={blog} />
+              //   </div>
+              //   <BlogDetailDeleteButton
+              //     blogId={blog.id}
+              //     blogTitle={blog.title}
+              //   />
+              <BlogCreatorButtons blog={blog} from="blogDetail" />
+              // </div>
             )}
           </div>
         </div>

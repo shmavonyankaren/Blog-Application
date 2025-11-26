@@ -2,15 +2,19 @@
 
 import Image from "next/image";
 import { useState, useCallback } from "react";
-import { usePathname } from "next/navigation";
 import CreateEditBlogModal from "./CreateEditBlogModal";
 import DeleteConfirmationModal from "./modal/DeleteConfirmationModal";
-import { deleteBlog } from "@/lib/actions/blog.actions";
+import { deleteBlog, deleteBlogAndRedirect } from "@/lib/actions/blog.actions";
 import { BlogType } from "@/lib/types";
 
-export default function BlogCreatorButtons({ blog }: { blog: BlogType }) {
+export default function BlogCreatorButtons({
+  blog,
+  from,
+}: {
+  blog: BlogType;
+  from: "blogCard" | "blogDetail";
+}) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const pathname = usePathname();
 
   const handleDeleteClick = useCallback(() => {
     setIsDeleteModalOpen(true);
@@ -19,15 +23,23 @@ export default function BlogCreatorButtons({ blog }: { blog: BlogType }) {
   const handleConfirmDelete = useCallback(async () => {
     const formData = new FormData();
     formData.append("blogId", String(blog.id));
-    await deleteBlog(formData, pathname);
+    if (from === "blogDetail") {
+      await deleteBlogAndRedirect(formData, "/my-blogs");
+    } else {
+      await deleteBlog(formData, "/my-blogs");
+    }
     setIsDeleteModalOpen(false);
-  }, [blog.id, pathname]);
+  }, [blog, from]);
 
   return (
     <>
-      <div className="absolute right-2 top-2 flex flex-col gap-4 rounded-xl bg-white dark:bg-slate-800 p-3 shadow-sm transition-all duration-300">
+      <div className="absolute right-4 top-4 flex justify-center items-center flex-col gap-2 z-10">
         <CreateEditBlogModal actionType="edit" blog={blog} />
-        <button onClick={handleDeleteClick} type="button">
+        <button
+          className="p-2.5 cursor-pointer bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-lg shadow-lg backdrop-blur-sm border border-gray-200/50 dark:border-slate-700 transition-all duration-300 group"
+          onClick={handleDeleteClick}
+          type="button"
+        >
           <Image
             className="cursor-pointer"
             src="/assets/icons/delete.svg"

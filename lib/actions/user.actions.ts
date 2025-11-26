@@ -63,7 +63,7 @@ export async function createUser(user: CreateUserParams) {
 export async function getUserById(userId: string) {
   try {
     const [rows] = await pool!.query(
-      "SELECT username, first_name, last_name, photo, email from users WHERE user_id = ?",
+      "SELECT user_id, username, first_name, last_name, photo, email from users WHERE user_id = ?",
       [userId]
     );
 
