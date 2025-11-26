@@ -6,6 +6,7 @@ const isPublicRoute = createRouteMatcher([
   "/contact-us",
   "/faq",
   "/all-blogs",
+  "/creator-page/(.*)",
   "/blog/(.*)",
   "/sign-in(.*)",
   "/sign-up(.*)",
