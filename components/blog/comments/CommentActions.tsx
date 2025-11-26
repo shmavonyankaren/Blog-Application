@@ -1,5 +1,3 @@
-"use client";
-
 import { deleteCommentFromBlog } from "@/lib/actions/comment.actions";
 
 interface CommentActionsProps {
@@ -15,6 +13,10 @@ export default function CommentActions({
   isEditing,
   onEditClick,
 }: CommentActionsProps) {
+  const handleDelete = async (formData: FormData) => {
+    await deleteCommentFromBlog(formData, "/blog/" + blogId);
+  };
+
   return (
     <div className="flex items-center gap-1">
       {!isEditing && (
@@ -38,7 +40,7 @@ export default function CommentActions({
           </svg>
         </button>
       )}
-      <form action={deleteCommentFromBlog}>
+      <form action={handleDelete}>
         <input type="hidden" name="commentId" value={commentId} />
         <input type="hidden" name="blogId" value={blogId} />
         <button

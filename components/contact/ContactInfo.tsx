@@ -51,7 +51,7 @@ export default function ContactInfo() {
             </svg>
           }
           title="Phone"
-          content="+374 (55) 72-66-78"
+          content="+374 (95) 72-66-78"
         />
 
         {/* Location */}

@@ -21,6 +21,14 @@ export default function LoadingCreatorPage() {
                   <div className="h-8 w-16 bg-white/20 rounded animate-pulse mx-auto"></div>
                   <div className="h-4 w-12 bg-white/10 rounded animate-pulse"></div>
                 </div>
+                <div className="text-center space-y-2">
+                  <div className="h-8 w-16 bg-white/20 rounded animate-pulse mx-auto"></div>
+                  <div className="h-4 w-12 bg-white/10 rounded animate-pulse"></div>
+                </div>
+                <div className="text-center space-y-2">
+                  <div className="h-8 w-16 bg-white/20 rounded animate-pulse mx-auto"></div>
+                  <div className="h-4 w-12 bg-white/10 rounded animate-pulse"></div>
+                </div>
               </div>
             </div>
           </div>

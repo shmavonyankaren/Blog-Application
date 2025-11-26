@@ -34,7 +34,12 @@ export default async function CommentsFooter({
         </p>
       </div>
       {currUser && currUser.id === creatorId && blogId && (
-        <form action={deleteAllCommentsFromBlog}>
+        <form
+          action={async (formData: FormData) => {
+            "use server";
+            await deleteAllCommentsFromBlog(formData, "/blog/" + blogId);
+          }}
+        >
           <input type="hidden" name="blogId" value={blogId} />
           <button
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900 rounded-lg hover:bg-red-50 dark:hover:bg-slate-700 hover:border-red-300 dark:hover:border-red-800 transition-all duration-300"

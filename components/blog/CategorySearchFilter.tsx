@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { getAllCategories } from "@/lib/actions/blog.actions";
 import { CategoryType } from "@/lib/types";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 export default function CategoryFilter() {
   const router = useRouter();
@@ -20,7 +20,6 @@ export default function CategoryFilter() {
 
     // Listen for category changes
     const handleCategoryChange = () => {
-      console.log("Category change event received");
       fetchCategories();
     };
 
@@ -35,21 +34,24 @@ export default function CategoryFilter() {
     };
   }, []);
 
-  const handleCategoryClick = (categoryId: string) => {
-    const params = new URLSearchParams(searchParams.toString());
+  const handleCategoryClick = useCallback(
+    (categoryId: string) => {
+      const params = new URLSearchParams(searchParams.toString());
 
-    if (categoryId === "all") {
-      params.delete("category");
-    } else {
-      params.set("category", categoryId);
-    }
+      if (categoryId === "all") {
+        params.delete("category");
+      } else {
+        params.set("category", categoryId);
+      }
 
-    // Reset to page 1 when changing category
-    params.delete("page");
+      // Reset to page 1 when changing category
+      params.delete("page");
 
-    const queryString = params.toString();
-    router.push(queryString ? `?${queryString}` : window.location.pathname);
-  };
+      const queryString = params.toString();
+      router.push(queryString ? `?${queryString}` : window.location.pathname);
+    },
+    [router, searchParams]
+  );
 
   return (
     <div className="flex flex-wrap gap-2 items-center">
@@ -74,7 +76,7 @@ export default function CategoryFilter() {
           key={category.id}
           onClick={() => handleCategoryClick(category.id.toString())}
           className={`
-            px-4 py-2 rounded-full font-medium text-sm transition-all duration-300 ease-in-out
+            px-4 py-2 rounded-full font-medium text-sm transition-all duration-300 ease-in-out cursor-pointer
             ${
               selectedCategory === category.id.toString()
                 ? "bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/50 scale-105"

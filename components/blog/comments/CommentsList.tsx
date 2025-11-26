@@ -15,7 +15,6 @@ export default async function CommentsList({
     getUserById(comment.user_id)
   );
   const usersData = await Promise.all(userDataPromises);
-
   return (
     <div className="mb-6">
       <ul className="space-y-4">

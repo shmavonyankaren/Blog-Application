@@ -3,6 +3,8 @@ import { getBlogsByUser } from "@/lib/actions/blog.actions";
 import { BlogList, Pagination } from "@/components";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { getTotalBlogViewsForUser } from "@/lib/actions/blogView.actions";
+import { getTotalBlogLikesForUser } from "@/lib/actions/blogLike.actions";
 
 export default async function CreatorPage({
   params,
@@ -27,6 +29,8 @@ export default async function CreatorPage({
   const blogs = result?.data || [];
   const totalPages = result?.totalPages || 1;
   const totalCount = result?.totalCount || 0;
+  const totalViews = await getTotalBlogViewsForUser(creatorId);
+  const totalLikes = await getTotalBlogLikesForUser(creatorId);
 
   return (
     <div className="bg-linear-to-b from-gray-50 to-gray-100 dark:bg-linear-to-b dark:from-slate-950 dark:to-slate-900 flex-1 min-h-screen transition-colors duration-300">
@@ -76,7 +80,19 @@ export default async function CreatorPage({
                 <div className="text-center">
                   <p className="text-3xl font-bold text-white">{totalCount}</p>
                   <p className="text-purple-100 dark:text-slate-300 text-sm transition-colors duration-300">
-                    {totalCount === 1 ? "Blog" : "Blogs"}
+                    {totalCount === 0 || totalCount === 1 ? "Blog" : "Blogs"}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-white">{totalViews}</p>
+                  <p className="text-purple-100 dark:text-slate-300 text-sm transition-colors duration-300">
+                    {totalViews === 0 || totalViews === 1 ? "View" : "Views"}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-white">{totalLikes}</p>
+                  <p className="text-purple-100 dark:text-slate-300 text-sm transition-colors duration-300">
+                    {totalLikes === 0 || totalLikes === 1 ? "Like" : "Likes"}
                   </p>
                 </div>
               </div>

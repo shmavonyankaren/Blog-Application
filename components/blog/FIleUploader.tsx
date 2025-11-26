@@ -82,7 +82,7 @@ export default function FileUploader({
   return (
     <div
       {...getRootProps()}
-      className="flex flex-col items-center justify-center h-full min-h-[180px] w-full bg-gray-100 dark:bg-slate-800/50 border border-gray-300 dark:border-slate-700 rounded-xl cursor-pointer overflow-hidden relative transition-colors duration-300"
+      className="flex flex-col items-center justify-center h-full min-h-[180px] w-full bg-gray-100 dark:bg-[#0f172a] border border-gray-300 dark:border-slate-700 rounded-xl cursor-pointer overflow-hidden relative transition-colors duration-300"
       onClick={triggerFileDialog}
     >
       {/* Hidden input for manual selection */}

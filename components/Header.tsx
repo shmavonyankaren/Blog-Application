@@ -22,10 +22,10 @@ export default function Header() {
   const { user } = useUser();
 
   return (
-    <header className="bg-linear-to-r from-indigo-900 to-purple-900 dark:from-slate-900 dark:to-slate-800 backdrop-blur-xl border-b border-white/30 shadow-2xl transition-all duration-300 relative before:absolute before:inset-0 before:bg-linear-to-r before:from-white/5 before:to-transparent before:pointer-events-none">
+    <header className="bg-linear-to-r from-indigo-900 to-purple-900 dark:from-slate-900 dark:to-slate-800 backdrop-blur-xl border-b border-white/30 shadow-2xl transition-all duration-300 relative before:absolute before:inset-0 before:bg-linear-to-r before:from-white/5 before:to-transparent before:pointer-events-none h-16 md:h-19">
       <nav
         aria-label="Global"
-        className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8 relative z-10"
+        className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-6 relative z-10 min-h-0"
       >
         {/* Logo section */}
         <div className="flex lg:flex-1">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { createPortal } from "react-dom";
 
 interface DeleteConfirmationModalProps {
@@ -11,7 +11,7 @@ interface DeleteConfirmationModalProps {
   onCancel: () => void;
 }
 
-export default function DeleteConfirmationModal({
+function DeleteConfirmationModal({
   isOpen,
   itemName,
   itemType = "item",
@@ -91,3 +91,5 @@ export default function DeleteConfirmationModal({
 
   return createPortal(modalContent, document.body);
 }
+
+export default memo(DeleteConfirmationModal);

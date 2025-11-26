@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { createCategory } from "@/lib/actions/blog.actions";
 
 interface CreateCategoryFormProps {
@@ -17,6 +18,8 @@ export default function CreateCategoryForm({
   onCancel,
   onSuccess,
 }: CreateCategoryFormProps) {
+  const pathname = usePathname();
+
   const handleAddClick = async () => {
     if (!value.trim() || !userId) return;
 
@@ -24,7 +27,7 @@ export default function CreateCategoryForm({
     formData.append("name", value.trim());
     formData.append("creatorId", userId);
 
-    await createCategory(formData);
+    await createCategory(formData, pathname);
     onChange("");
     onSuccess();
   };
@@ -37,7 +40,7 @@ export default function CreateCategoryForm({
   };
 
   return (
-    <div className="mb-3 p-3 bg-indigo-50 dark:bg-slate-800/50 rounded-lg border border-indigo-200 dark:border-slate-700 transition-colors duration-300">
+    <div className="mb-3 p-3 bg-indigo-50 dark:bg-[#0f172a] rounded-lg border border-indigo-200 dark:border-slate-700 transition-colors duration-300">
       <div className="flex gap-2">
         <input
           type="text"

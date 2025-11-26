@@ -17,6 +17,14 @@ export default function LoadingBlogDetail() {
                   <div className="h-4 w-32 bg-white/20 rounded animate-pulse"></div>
                 </div>
                 <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-white/20 animate-pulse"></div>
+                  <div className="h-4 w-32 bg-white/20 rounded animate-pulse"></div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 rounded bg-white/20 animate-pulse"></div>
+                  <div className="h-4 w-32 bg-white/20 rounded animate-pulse"></div>
+                </div>
+                <div className="flex items-center gap-2">
                   <div className="w-5 h-5 bg-white/20 rounded animate-pulse"></div>
                   <div className="h-4 w-32 bg-white/20 rounded animate-pulse"></div>
                 </div>

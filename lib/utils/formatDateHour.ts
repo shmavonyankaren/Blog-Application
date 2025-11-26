@@ -1,6 +1,5 @@
 function formatDateHour(iso?: string | null) {
   if (!iso) return "";
-  console.log(iso);
   try {
     const d = new Date(iso);
     // Check if the date looks like it's in UTC (hours are off by 4)

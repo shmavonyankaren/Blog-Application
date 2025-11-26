@@ -1,14 +1,12 @@
+import { memo } from "react";
+
 type ContactItemProps = {
   icon: React.ReactNode;
   title: string;
   content: string | React.ReactNode;
 };
 
-export default function ContactInfoItem({
-  icon,
-  title,
-  content,
-}: ContactItemProps) {
+function ContactInfoItem({ icon, title, content }: ContactItemProps) {
   return (
     <div className="flex items-start gap-4">
       <div className="bg-linear-to-r from-indigo-600 to-purple-600 p-3 rounded-xl shrink-0">
@@ -29,3 +27,5 @@ export default function ContactInfoItem({
     </div>
   );
 }
+
+export default memo(ContactInfoItem);

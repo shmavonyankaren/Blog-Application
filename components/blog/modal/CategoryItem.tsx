@@ -1,6 +1,7 @@
 "use client";
 
 import { CategoryType } from "@/lib/types";
+import { memo } from "react";
 
 interface CategoryItemProps {
   category: CategoryType;
@@ -10,7 +11,7 @@ interface CategoryItemProps {
   onDelete: (categoryId: number, categoryName: string) => void;
 }
 
-export default function CategoryItem({
+function CategoryItem({
   category,
   isSelected,
   currentUserId,

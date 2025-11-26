@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 interface PaginationProps {
@@ -16,13 +17,16 @@ export default function Pagination({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  if (totalPages <= 1) return null;
+  const handlePageChange = useCallback(
+    (page: number) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("page", page.toString());
+      router.push(`${basePath}?${params.toString()}`);
+    },
+    [basePath, router, searchParams]
+  );
 
-  const handlePageChange = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", page.toString());
-    router.push(`${basePath}?${params.toString()}`);
-  };
+  if (totalPages <= 1) return null;
 
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];

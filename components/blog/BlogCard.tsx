@@ -9,6 +9,9 @@ import { formatDateHour } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
 import FavouriteButton from "./FavouriteButton";
 import { checkIfBlogIsFavourited } from "@/lib/actions/favourite.action";
+import LikeButton from "./LikeButton";
+import { checkIfUserLikedBlog } from "@/lib/actions/blogLike.actions";
+import SaveLikeButtons from "./SaveLikeButtons";
 
 type BlogCardProps = {
   cardType: "creator" | "viewer";
@@ -21,6 +24,7 @@ export default async function BlogCard({ cardType, blog }: BlogCardProps) {
   const isFavourited = user
     ? await checkIfBlogIsFavourited(user.id, blog.id)
     : false;
+  const isLiked = user ? await checkIfUserLikedBlog(user.id, blog.id) : false;
   const isOwnBlog = user?.id === blog.user_id;
 
   return (
@@ -38,13 +42,17 @@ export default async function BlogCard({ cardType, blog }: BlogCardProps) {
         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </Link>
       {user && (
-        <FavouriteButton
+        <SaveLikeButtons
           blogId={blog.id}
-          isFavourited={isFavourited || false}
+          isFavourited={isFavourited}
+          isLiked={isLiked}
         />
       )}
+
       {/* Event creator controls */}
-      {cardType === "creator" && <BlogCreatorButtons blog={blog} />}
+      {cardType === "creator" && (
+        <BlogCreatorButtons blog={blog} from="blogCard" />
+      )}
 
       <div className="flex min-h-[230px] flex-col gap-3 p-6 md:gap-4 bg-white dark:bg-slate-900 transition-colors duration-300">
         <Link href={`/blog/${blog.id}`}>
@@ -82,6 +90,7 @@ export default async function BlogCard({ cardType, blog }: BlogCardProps) {
               width={32}
               height={32}
               style={{ width: "auto", height: "auto" }}
+              loading="lazy"
             />
             <p className="text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors duration-300">
               {isOwnBlog
@@ -91,25 +100,27 @@ export default async function BlogCard({ cardType, blog }: BlogCardProps) {
             </p>
           </Link>
 
-          <Link
-            href={`/blog/${blog.id}`}
-            className="flex items-center gap-1 text-indigo-600 hover:text-indigo-700 transition-colors group/link"
-          >
-            <span className="text-sm font-medium">Read</span>
-            <svg
-              className="w-4 h-4 transform group-hover/link:translate-x-1 transition-transform"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          <div className="flex items-center gap-3">
+            <Link
+              href={`/blog/${blog.id}`}
+              className="flex items-center gap-1 text-indigo-600 hover:text-indigo-700 transition-colors group/link"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </Link>
+              <span className="text-sm font-medium">Read</span>
+              <svg
+                className="w-4 h-4 transform group-hover/link:translate-x-1 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

@@ -42,7 +42,13 @@ export default async function AddCommentForm({ blogId }: { blogId: string }) {
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 transition-colors duration-300">
         Add a Comment
       </h3>
-      <form action={addCommentToBlog} className="flex flex-col gap-3">
+      <form
+        action={async (formData: FormData) => {
+          "use server";
+          await addCommentToBlog(formData, "/blog/" + blogId);
+        }}
+        className="flex flex-col gap-3"
+      >
         <input type="hidden" name="blogId" value={blogId} />
         <input type="hidden" name="userId" value={user!.id} />
         <textarea

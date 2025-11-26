@@ -63,7 +63,7 @@ export async function createUser(user: CreateUserParams) {
 export async function getUserById(userId: string) {
   try {
     const [rows] = await pool!.query(
-      "SELECT username, first_name, last_name, photo, email from users WHERE user_id = ?",
+      "SELECT user_id, username, first_name, last_name, photo, email from users WHERE user_id = ?",
       [userId]
     );
 
@@ -84,9 +84,10 @@ export async function updateUser(clerkId: string, user: UpdateUserParams) {
       [user.firstName, user.lastName, user.photo, user.username, clerkId]
     );
 
-    const [rows] = await pool!.query("SELECT * FROM users WHERE user_id = ?", [
-      clerkId,
-    ]);
+    const [rows] = await pool!.query(
+      "SELECT user_id, email, username, photo, first_name, last_name FROM users WHERE user_id = ?",
+      [clerkId]
+    );
     const updatedUser = (rows as UpdateUserParams[])[0];
 
     if (!updatedUser) throw new Error("User update failed");

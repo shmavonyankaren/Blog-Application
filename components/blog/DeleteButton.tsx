@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import DeleteConfirmationModal from "./modal/DeleteConfirmationModal";
 
 export default function DeleteButton({
@@ -10,7 +10,7 @@ export default function DeleteButton({
   itemName,
   itemType = "blog",
 }: {
-  action: (formData: FormData) => Promise<void>;
+  action: (formData: FormData, path: string) => Promise<void>;
   deleteId: string | number;
   text: string;
   itemName: string;
@@ -19,18 +19,18 @@ export default function DeleteButton({
 }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const handleDeleteClick = (e: React.MouseEvent) => {
+  const handleDeleteClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     setIsDeleteModalOpen(true);
-  };
+  }, []);
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = useCallback(async () => {
     const formData = new FormData();
     formData.append("deleteId", deleteId.toString());
     formData.append("revalidatePath", "");
-    await action(formData);
+    await action(formData, "/favourites");
     setIsDeleteModalOpen(false);
-  };
+  }, [deleteId, action]);
   return (
     <>
       <div className="flex items-center gap-2">

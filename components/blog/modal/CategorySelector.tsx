@@ -88,7 +88,7 @@ export default function CategorySelector({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full px-4 py-2.5 text-left bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg shadow-sm hover:border-indigo-400 dark:hover:border-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 transition-all duration-300"
+          className="w-full px-4 py-2.5 text-left bg-white dark:bg-[#0f172a] border border-gray-300 dark:border-slate-700 rounded-lg shadow-sm hover:border-indigo-400 dark:hover:border-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <span
@@ -120,7 +120,7 @@ export default function CategorySelector({
 
         {/* Dropdown Menu */}
         {isOpen && (
-          <div className="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-lg max-h-64 overflow-y-auto transition-colors duration-300">
+          <div className="absolute z-50 w-full mt-1 bg-white dark:bg-[#0f172a] border border-gray-200 dark:border-slate-700 rounded-lg shadow-lg max-h-64 overflow-y-auto transition-colors duration-300">
             {/* None Option */}
             <button
               type="button"

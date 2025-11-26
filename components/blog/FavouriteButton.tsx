@@ -2,7 +2,7 @@
 
 import { favouriteBlog, unfavouriteBlog } from "@/lib/actions/favourite.action";
 import { useUser } from "@clerk/nextjs";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useCallback } from "react";
 
 export default function FavouriteButton({
   blogId,
@@ -16,7 +16,7 @@ export default function FavouriteButton({
   const [optimisticFavourited, setOptimisticFavourited] =
     useState(isFavourited);
 
-  const handleToggleFavourite = () => {
+  const handleToggleFavourite = useCallback(() => {
     if (!user?.id) return;
 
     // Store the current state before changing
@@ -33,21 +33,21 @@ export default function FavouriteButton({
 
       try {
         if (previousState) {
-          await unfavouriteBlog(formData);
+          await unfavouriteBlog(formData, "/blog/" + blogId);
         } else {
-          await favouriteBlog(formData);
+          await favouriteBlog(formData, "/blog/" + blogId);
         }
       } catch {
         // Revert on error
         setOptimisticFavourited(previousState);
       }
     });
-  };
+  }, [user, optimisticFavourited, startTransition, blogId]);
 
   return (
     <button
       onClick={handleToggleFavourite}
-      className="absolute left-2 top-2 z-10 p-2.5 cursor-pointer bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-lg shadow-lg backdrop-blur-sm border border-gray-200/50 dark:border-slate-700 transition-all duration-300 group"
+      className="p-2.5 cursor-pointer bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-lg shadow-lg backdrop-blur-sm border border-gray-200/50 dark:border-slate-700 transition-all duration-300 group"
       title={optimisticFavourited ? "Remove from Saved" : "Save for later"}
     >
       <svg

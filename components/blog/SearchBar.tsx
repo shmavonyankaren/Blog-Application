@@ -75,7 +75,7 @@ export default function SearchBar() {
         value={query}
         onChange={handleInputChange}
         placeholder="Search blogs..."
-        className="w-full pl-12 pr-12 py-3 border border-gray-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 shadow-sm hover:border-gray-400 dark:hover:border-slate-600 transition-all duration-200"
+        className="w-full pl-12 pr-12 py-3 border border-gray-300 dark:border-slate-700 rounded-xl bg-white dark:bg-[#0f172a] text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 shadow-sm hover:border-gray-400 dark:hover:border-slate-600 transition-all duration-200"
       />
 
       {/* Loading Spinner */}
