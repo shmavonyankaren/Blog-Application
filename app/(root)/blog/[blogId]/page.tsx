@@ -25,6 +25,7 @@ import ViewCount from "@/components/blog/ViewCount";
 import { create } from "domain";
 import SaveLikeButtons from "@/components/blog/SaveLikeButtons";
 import RecommendationContainer from "@/components/blog/RecommendationContainer";
+import { title } from "process";
 
 export default async function BlogPage({
   params,
@@ -51,7 +52,13 @@ export default async function BlogPage({
   const isLiked = user ? await checkIfUserLikedBlog(user.id, blog.id) : false;
   const likeCount = await getBlogLikeCount(blog.id);
   const viewCount = await getBlogViewCount(blog.id);
-
+  const recommendationSetting = {
+    category: blog.category_id ? String(blog.category_id) : undefined,
+    creator: blog.user_id ? String(blog.user_id) : undefined,
+    title: blog.title ? String(blog.title) : undefined,
+    excludeBlogId: Number(blog.id),
+    excludeUserId: user ? user.id : undefined,
+  };
   return (
     <main className="w-full min-h-screen bg-linear-to-br from-gray-50 via-indigo-50 to-purple-50 dark:bg-linear-to-br dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 px-4 py-12 transition-colors duration-300">
       <div className="w-full max-w-5xl mx-auto">
@@ -214,7 +221,7 @@ export default async function BlogPage({
         </div>
       </div>
 
-      <RecommendationContainer />
+      <RecommendationContainer recSettings={recommendationSetting} />
     </main>
   );
 }
