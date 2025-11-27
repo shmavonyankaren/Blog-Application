@@ -1,20 +1,23 @@
 import { getAllBlogs } from "@/lib/actions/blog.actions";
 import { BlogList, Pagination, SearchBar } from "@/components";
 import CategoryFilter from "./CategorySearchFilter";
+import SortBy from "./SortBy";
 
 interface AllBlogsContainerProps {
   searchQuery?: string;
   page?: number;
   categoryId?: string;
+  sort?: "newest" | "oldest" | "most_viewed" | "most_liked" | "most_commented";
 }
 
 export default async function AllBlogsContainer({
   searchQuery,
   page = 1,
   categoryId,
+  sort,
 }: AllBlogsContainerProps) {
   try {
-    const result = await getAllBlogs(searchQuery, page, 9, categoryId);
+    const result = await getAllBlogs(searchQuery, page, 9, categoryId, sort);
     const blogs = result?.data || [];
     const totalPages = result?.totalPages || 1;
     const totalCount = result?.totalCount || 0;
@@ -49,6 +52,7 @@ export default async function AllBlogsContainer({
 
           {/* Content Section */}
           <div className="px-6 py-8">
+            <SortBy />
             {searchQuery && (
               <div className="mb-6 flex items-center gap-2 text-sm">
                 <span className="text-gray-600 dark:text-gray-300 transition-colors duration-300">

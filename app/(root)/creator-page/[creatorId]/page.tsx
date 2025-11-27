@@ -5,16 +5,18 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTotalBlogViewsForUser } from "@/lib/actions/blogView.actions";
 import { getTotalBlogLikesForUser } from "@/lib/actions/blogLike.actions";
+import SortBy from "@/components/blog/SortBy";
+import { SortOption } from "@/lib/types";
 
 export default async function CreatorPage({
   params,
   searchParams,
 }: {
   params: Promise<{ creatorId: string }>;
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; sort: SortOption }>;
 }) {
   const { creatorId } = await params;
-  const { page: pageParam } = await searchParams;
+  const { page: pageParam, sort } = await searchParams;
   const page = pageParam ? parseInt(pageParam, 10) : 1;
 
   // Fetch creator information
@@ -25,7 +27,13 @@ export default async function CreatorPage({
   }
 
   // Fetch creator's blogs
-  const result = await getBlogsByUser({ userId: creatorId }, page, 9);
+  const result = await getBlogsByUser(
+    { userId: creatorId },
+    page,
+    9,
+    undefined,
+    sort
+  );
   const blogs = result?.data || [];
   const totalPages = result?.totalPages || 1;
   const totalCount = result?.totalCount || 0;
@@ -112,6 +120,7 @@ export default async function CreatorPage({
 
             {blogs && blogs.length > 0 ? (
               <>
+                {/* <SortBy /> */}
                 <BlogList cardType="viewer" blogs={blogs} />
                 <div className="mt-8">
                   <Pagination
