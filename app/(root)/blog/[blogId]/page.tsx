@@ -1,4 +1,4 @@
-import { BlogCreatorButtons, CreateEditBlogModal } from "@/components";
+import { BlogCreatorButtons } from "@/components";
 import { getBlogById } from "@/lib/actions/blog.actions";
 import { getUserById } from "@/lib/actions/user.actions";
 import { BlogType } from "@/lib/types";
@@ -6,26 +6,17 @@ import Image from "next/image";
 import { formatDateHour } from "@/lib/utils/";
 import { currentUser } from "@clerk/nextjs/server";
 import CommentsSection from "@/components/blog/comments/CommentsSection";
-import BlogDetailDeleteButton from "@/components/blog/BlogDetailDeleteButton";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import FavouriteButton from "@/components/blog/FavouriteButton";
 import { checkIfBlogIsFavourited } from "@/lib/actions/favourite.action";
-import LikeButton from "@/components/blog/LikeButton";
 import {
   checkIfUserLikedBlog,
   getBlogLikeCount,
 } from "@/lib/actions/blogLike.actions";
-import { get } from "http";
-import {
-  getBlogViewCount,
-  incrementBlogView,
-} from "@/lib/actions/blogView.actions";
+import { getBlogViewCount } from "@/lib/actions/blogView.actions";
 import ViewCount from "@/components/blog/ViewCount";
-import { create } from "domain";
 import SaveLikeButtons from "@/components/blog/SaveLikeButtons";
 import RecommendationContainer from "@/components/blog/RecommendationContainer";
-import { title } from "process";
 
 export default async function BlogPage({
   params,
