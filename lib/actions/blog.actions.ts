@@ -5,7 +5,11 @@ import { revalidatePath } from "next/cache";
 
 import { handleError } from "@/lib/utils/";
 
-import { BlogType as Blog, GetBlogsByUserParams } from "@/lib/types";
+import {
+  BlogType as Blog,
+  GetBlogsByUserParams,
+  SortOption,
+} from "@/lib/types";
 
 type CountResult = { total: number };
 
@@ -132,42 +136,109 @@ export async function getAllBlogs(
   searchQuery?: string,
   page: number = 1,
   limit: number = 9,
-  categoryId?: string
+  categoryId?: string,
+  sort?: "newest" | "oldest" | "most_viewed" | "most_liked" | "most_commented"
 ) {
   try {
     const offset = (page - 1) * limit;
 
-    let countQuery = "SELECT COUNT(*) as total FROM blogs";
-    let dataQuery =
-      "SELECT id, title, description, image, user_id, category_id, created_at FROM blogs";
+    // Helper to retry a query once on transient connection errors
+    const execQuery = async (q: string, p: (string | number)[]) => {
+      try {
+        return await pool!.query(q, p);
+      } catch (err: unknown) {
+        // Retry on common transient errors
+        if (
+          err &&
+          typeof err === "object" &&
+          err !== null &&
+          "code" in err &&
+          ((err as { code?: string }).code === "ECONNRESET" ||
+            (err as { code?: string }).code === "PROTOCOL_CONNECTION_LOST")
+        ) {
+          // small delay then retry once
+          await new Promise((r) => setTimeout(r, 200));
+          return await pool!.query(q, p);
+        }
+        throw err;
+      }
+    };
+
+    // Base queries
+    let countQuery = `
+      SELECT COUNT(*) as total
+      FROM blogs b
+    `;
+
+    let dataQuery = `
+      SELECT 
+        b.id, b.title, b.description, b.image, b.user_id, 
+        b.category_id, b.created_at,
+
+        -- view count
+        (SELECT COUNT(*) FROM blog_views v WHERE v.blog_id = b.id) AS views,
+
+        -- like count
+        (SELECT COUNT(*) FROM blog_likes l WHERE l.blog_id = b.id) AS likes,
+
+        -- comment count
+        (SELECT COUNT(*) FROM comments c WHERE c.blog_id = b.id) AS comments
+      FROM blogs b
+    `;
+
     const params: (string | number)[] = [];
     const whereClauses: string[] = [];
 
+    // Search filter
     if (searchQuery && searchQuery.trim()) {
-      whereClauses.push("(title LIKE ? OR description LIKE ?)");
+      whereClauses.push("(b.title LIKE ? OR b.description LIKE ?)");
       const searchPattern = `%${searchQuery.trim()}%`;
       params.push(searchPattern, searchPattern);
     }
 
+    // Category filter
     if (categoryId && categoryId !== "all") {
-      whereClauses.push("category_id = ?");
+      whereClauses.push("b.category_id = ?");
       params.push(parseInt(categoryId));
     }
 
+    // Add WHERE clauses if exist
     if (whereClauses.length > 0) {
       const whereClause = " WHERE " + whereClauses.join(" AND ");
       countQuery += whereClause;
       dataQuery += whereClause;
     }
 
-    dataQuery += " ORDER BY created_at DESC LIMIT ? OFFSET ?";
+    // Sorting
+    switch (sort) {
+      case "oldest":
+        dataQuery += " ORDER BY b.created_at ASC";
+        break;
 
-    // Get total count
-    const [countResult] = await pool!.query(countQuery, params);
+      case "most_viewed":
+        dataQuery += " ORDER BY views DESC";
+        break;
+
+      case "most_liked":
+        dataQuery += " ORDER BY likes DESC";
+        break;
+
+      case "most_commented":
+        dataQuery += " ORDER BY comments DESC";
+        break;
+
+      default: // newest
+        dataQuery += " ORDER BY b.created_at DESC";
+    }
+
+    dataQuery += " LIMIT ? OFFSET ?";
+
+    // Total count
+    const [countResult] = await execQuery(countQuery, params);
     const total = (countResult as CountResult[])[0].total;
 
-    // Get paginated data
-    const [blogs] = await pool!.query(dataQuery, [...params, limit, offset]);
+    // Get paginated blogs
+    const [blogs] = await execQuery(dataQuery, [...params, limit, offset]);
 
     return {
       data: JSON.parse(JSON.stringify(blogs)),
@@ -186,34 +257,110 @@ export async function getAllBlogs(
   }
 }
 
+// GET Recommended Blogs
+
+export async function getRecommendedBlogs() {
+  try {
+    const [rows] = await pool!.query(
+      `SELECT 
+        b.id, b.title, b.description, b.image, b.user_id, 
+        b.category_id, b.created_at,
+        (SELECT COUNT(*) FROM blog_views v WHERE v.blog_id = b.id) AS views,
+        (SELECT COUNT(*) FROM blog_likes l WHERE l.blog_id = b.id) AS likes,
+        (SELECT COUNT(*) FROM comments c WHERE c.blog_id = b.id) AS comments
+      FROM blogs b
+      ORDER BY likes DESC
+      LIMIT 5`
+    );
+    return JSON.parse(JSON.stringify(rows));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
 // GET Blogs BY ORGANIZER
 export async function getBlogsByUser(
   { userId }: GetBlogsByUserParams,
   page: number = 1,
   limit: number = 9,
-  categoryId?: string
+  categoryId?: string,
+  sort?: SortOption
 ) {
   try {
     const offset = (page - 1) * limit;
-    let countQuery = "SELECT COUNT(*) as total FROM blogs WHERE user_id = ?";
-    let dataQuery =
-      "SELECT id, title, description, image, user_id, category_id, created_at FROM blogs WHERE user_id = ?";
+
+    // Helper to retry a query once on transient connection errors
+    const execQuery = async (q: string, p: (string | number)[]) => {
+      try {
+        return await pool!.query(q, p);
+      } catch (err: unknown) {
+        if (
+          err &&
+          typeof err === "object" &&
+          err !== null &&
+          "code" in err &&
+          ((err as { code?: string }).code === "ECONNRESET" ||
+            (err as { code?: string }).code === "PROTOCOL_CONNECTION_LOST")
+        ) {
+          await new Promise((r) => setTimeout(r, 200));
+          return await pool!.query(q, p);
+        }
+        throw err;
+      }
+    };
+
+    // Base queries with counts (views, likes, comments)
+    let countQuery = `SELECT COUNT(*) as total FROM blogs WHERE user_id = ?`;
+    let dataQuery = `
+      SELECT
+        b.id, b.title, b.description, b.image, b.user_id,
+        b.category_id, b.created_at,
+        (SELECT COUNT(*) FROM blog_views v WHERE v.blog_id = b.id) AS views,
+        (SELECT COUNT(*) FROM blog_likes l WHERE l.blog_id = b.id) AS likes,
+        (SELECT COUNT(*) FROM comments c WHERE c.blog_id = b.id) AS comments
+      FROM blogs b
+      WHERE b.user_id = ?
+    `;
+
     const params: (string | number)[] = [userId];
 
     if (categoryId && categoryId !== "all") {
       countQuery += " AND category_id = ?";
-      dataQuery += " AND category_id = ?";
+      dataQuery += " AND b.category_id = ?";
       params.push(parseInt(categoryId));
     }
 
-    dataQuery += " ORDER BY created_at DESC LIMIT ? OFFSET ?";
+    // Sorting - mirror getAllBlogs logic and also support title sorts
+    switch (sort as string) {
+      case "oldest":
+        dataQuery += " ORDER BY b.created_at ASC";
+        break;
+      case "most_viewed":
+        dataQuery += " ORDER BY views DESC";
+        break;
+      case "most_liked":
+        dataQuery += " ORDER BY likes DESC";
+        break;
+      case "most_commented":
+        dataQuery += " ORDER BY comments DESC";
+        break;
+      case "title-asc":
+        dataQuery += " ORDER BY b.title ASC";
+        break;
+      case "title-desc":
+        dataQuery += " ORDER BY b.title DESC";
+        break;
+      default:
+        dataQuery += " ORDER BY b.created_at DESC";
+    }
 
-    // Get total count
-    const [countResult] = await pool!.query(countQuery, params);
+    dataQuery += " LIMIT ? OFFSET ?";
+
+    // Get counts and data with retry helper
+    const [countResult] = await execQuery(countQuery, params);
     const total = (countResult as CountResult[])[0].total;
 
-    // Get paginated data
-    const [blogs] = await pool!.query(dataQuery, [...params, limit, offset]);
+    const [blogs] = await execQuery(dataQuery, [...params, limit, offset]);
 
     return {
       data: JSON.parse(JSON.stringify(blogs)),

@@ -2,7 +2,17 @@ import React from "react";
 import { AllBlogsContainer } from "@/components";
 
 interface AllBlogsPageProps {
-  searchParams: Promise<{ q?: string; page?: string; category?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    page?: string;
+    category?: string;
+    sort?:
+      | "newest"
+      | "oldest"
+      | "most_viewed"
+      | "most_liked"
+      | "most_commented";
+  }>;
 }
 
 export default async function AllBlogsPage({
@@ -11,6 +21,7 @@ export default async function AllBlogsPage({
   const params = await searchParams;
   const searchQuery = params.q;
   const categoryId = params.category;
+  const sort = params.sort;
   const pageParam = params.page ? parseInt(params.page, 10) : 1;
   const page = isNaN(pageParam) || pageParam < 1 ? 1 : pageParam;
 
@@ -20,6 +31,7 @@ export default async function AllBlogsPage({
         searchQuery={searchQuery}
         page={page}
         categoryId={categoryId}
+        sort={sort}
       />
     </div>
   );

@@ -7,7 +7,7 @@ export default function SignUpPage() {
       <div className="w-full max-w-md flex justify-center items-center flex-col">
         <div className="mb-8 text-center">
           <div className="flex items-center justify-center mb-6">
-            <LogoName />
+            <LogoName color="text-black dark:text-white" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
             Join our community

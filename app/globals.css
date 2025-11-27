@@ -307,3 +307,113 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Endless scroll animation */
+/* @keyframes scroll {
+  0% {
+    transform: translateX(0);
+  } 
+  100% {
+    transform: translateX(-50%);
+  }
+} */
+
+/* .animate-scroll {
+  animation: scroll 8s linear infinite;
+} */
+
+/* Responsive animation speeds - optimized for different screen sizes */
+/* @media (min-width: 375px) {
+  .animate-scroll {
+    animation: scroll 10s linear infinite;
+  }
+}
+
+@media (min-width: 640px) {
+  .animate-scroll {
+    animation: scroll 12s linear infinite;
+  }
+}
+
+@media (min-width: 768px) {
+  .animate-scroll {
+    animation: scroll 15s linear infinite;
+  }
+}
+
+@media (min-width: 1024px) {
+  .animate-scroll {
+    animation: scroll 18s linear infinite;
+  }
+}
+
+@media (min-width: 1280px) {
+  .animate-scroll {
+    animation: scroll 22s linear infinite;
+  }
+}
+
+@media (min-width: 1536px) {
+  .animate-scroll {
+    animation: scroll 25s linear infinite;
+  }
+} */
+
+/* Pause animation on very small screens or when user prefers reduced motion */
+/* @media (max-width: 374px) { */
+  /* .animate-scroll { */
+    /* animation: scroll 12s linear infinite; */
+  /* } */
+/* } */
+
+/* @media (prefers-reduced-motion: reduce) { */
+  /* .animate-scroll { */
+    /* animation: none; */
+  /* } */
+/* } */
+
+/* Endless scroll animation with customizable speed */
+:root {
+  --scroll-speed: 7s; /* Default animation duration - can be adjusted */
+}
+
+@media (max-width: 640px) {
+  :root {
+    --scroll-speed: 5s; /* Faster on mobile */
+  }
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-25%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll var(--scroll-speed) linear infinite;
+}
+
+/* Pause animation on hover */
+.animate-scroll:hover {
+  animation-play-state: paused;
+}
+
+/* Also pause when hovering over individual items */
+.recommendation-item:hover ~ .animate-scroll,
+.animate-scroll:has(.recommendation-item:hover) {
+  animation-play-state: paused;
+}
+
+/* Optimize for high DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .animate-scroll {
+    /* Smoother animation on high DPI displays */
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}

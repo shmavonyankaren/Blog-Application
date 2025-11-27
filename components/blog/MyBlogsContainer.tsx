@@ -3,15 +3,19 @@ import CategoryFilter from "./CategorySearchFilter";
 
 import { getBlogsByUser } from "@/lib/actions/blog.actions";
 import { currentUser } from "@clerk/nextjs/server";
+import SortBy from "./SortBy";
+import { SortOption } from "@/lib/types";
 
 interface MyBlogsContainerProps {
   page?: number;
   categoryId?: string;
+  sortOption?: SortOption;
 }
 
 export default async function BlogContainer({
   page = 1,
   categoryId,
+  sortOption,
 }: MyBlogsContainerProps) {
   try {
     const user = await currentUser();
@@ -20,7 +24,8 @@ export default async function BlogContainer({
       { userId: user!.id },
       page,
       9,
-      categoryId
+      categoryId,
+      sortOption
     );
     const blogs = result?.data || [];
     const totalPages = result?.totalPages || 1;
@@ -56,6 +61,8 @@ export default async function BlogContainer({
           <div className="px-6 py-8">
             {blogs && blogs.length > 0 ? (
               <>
+                <SortBy />
+
                 <BlogList cardType="creator" blogs={blogs} />
                 <BlogFooter blogs={blogs} />
                 <Pagination

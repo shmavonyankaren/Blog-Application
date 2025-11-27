@@ -58,6 +58,8 @@ export type UpdateBlogParams = {
   image?: string;
 };
 
+export type SortOption = "newest" | "oldest" | "title-asc" | "title-desc";
+
 export interface User {
   user_id: string;
   first_name: string | null;

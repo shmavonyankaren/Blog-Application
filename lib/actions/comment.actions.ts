@@ -77,3 +77,81 @@ export async function deleteAllCommentsFromBlog(
     handleError(error);
   }
 }
+
+// Comment like/unlike actions
+
+export async function likeComment(formData: FormData, path: string) {
+  try {
+    const commentId = formData.get("commentId");
+    const userId = formData.get("userId");
+    await pool!.query(
+      "INSERT INTO comment_likes (comment_id, user_id) VALUES (?, ?)",
+      [commentId, userId]
+    );
+    revalidatePath(path);
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function unlikeComment(formData: FormData, path: string) {
+  try {
+    const commentId = formData.get("commentId");
+    const userId = formData.get("userId");
+    await pool!.query(
+      "DELETE FROM comment_likes WHERE comment_id = ? AND user_id = ?",
+      [commentId, userId]
+    );
+    revalidatePath(path);
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function getCommentLikeCount(commentId: number) {
+  try {
+    const [rows] = await pool!.query(
+      "SELECT COUNT(*) AS likeCount FROM comment_likes WHERE comment_id = ?",
+      [commentId]
+    );
+    const result = JSON.parse(JSON.stringify(rows)) as { likeCount: number }[];
+    return result[0]?.likeCount || 0;
+  } catch (error) {
+    handleError(error);
+    return 0;
+  }
+}
+
+// export async function checkIfUserLikedComment(
+//   userId: string,
+//   commentId: number
+// ) {
+//   try {
+//     const [rows] = await pool!.query(
+//       "SELECT COUNT(*) AS count FROM comment_likes WHERE comment_id = ? AND user_id = ?",
+//       [commentId, userId]
+//     );
+//     const result = JSON.parse(JSON.stringify(rows)) as { count: number }[];
+//     return result[0]?.count > 0;
+//   } catch (error) {
+//     handleError(error);
+//     return false;
+//   }
+// }
+
+export async function checkIfUserLikedComment(
+  userId: string,
+  commentId: number
+) {
+  try {
+    const [rows] = await pool!.query(
+      "SELECT COUNT(*) as total FROM comment_likes WHERE comment_id = ? AND user_id = ?",
+      [commentId, userId]
+    );
+    const countResult = (rows as { total: number }[])[0];
+    return countResult.total > 0;
+  } catch (error) {
+    handleError(error);
+    return false;
+  }
+}

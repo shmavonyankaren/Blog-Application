@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LogoName from "./LogoName";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -53,9 +54,10 @@ export default function Footer() {
         >
           {/* Brand Section */}
           <div className="md:col-span-2">
-            <h3 className="text-2xl font-bold bg-linear-to-r from-indigo-200 to-purple-200 bg-clip-text text-transparent mb-4">
-              BlogSpace
-            </h3>
+            {/* <h3 className="text-2xl font-bold bg-linear-to-r from-indigo-200 to-purple-200 bg-clip-text text-transparent mb-4">
+              BlogSpace */}
+            {/* </h3> */}
+            <LogoName />
             <p className="text-indigo-200 text-sm leading-relaxed max-w-md">
               Share your thoughts, stories, and ideas with the world. Join our
               community of writers and readers passionate about meaningful

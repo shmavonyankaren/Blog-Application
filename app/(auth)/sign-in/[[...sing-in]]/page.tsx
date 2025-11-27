@@ -6,8 +6,8 @@ export default function SignInPage() {
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-indigo-50 to-purple-50 dark:bg-linear-to-br dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center py-12 px-4 transition-colors duration-300">
       <div className="w-full max-w-md flex justify-center items-center flex-col">
         <div className="mb-8 text-center">
-          <div className="flex items-center justify-center mb-6">
-            <LogoName />
+          <div className="flex items-center text-black dark:text-white justify-center mb-6">
+            <LogoName color="text-black dark:text-white" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
             Welcome back

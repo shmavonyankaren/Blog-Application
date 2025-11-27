@@ -27,7 +27,7 @@ export default function DarkModeButton() {
       onClick={() => {
         setTheme(theme === "dark" ? "light" : "dark");
       }}
-      className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/30 group"
+      className="cursor-pointer p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/30 group"
       aria-label="Toggle theme"
     >
       {theme === "dark" ? (
