@@ -259,22 +259,169 @@ export async function getAllBlogs(
 
 // GET Recommended Blogs
 
-export async function getRecommendedBlogs() {
+export async function getRecommendedBlogs(recSettings: {
+  category?: string;
+  creator?: string;
+  title?: string;
+  excludeBlogId?: number;
+  excludeUserId?: string; // Add parameter to exclude current user's blogs
+}) {
   try {
-    const [rows] = await pool!.query(
-      `SELECT 
-        b.id, b.title, b.description, b.image, b.user_id, 
-        b.category_id, b.created_at,
-        (SELECT COUNT(*) FROM blog_views v WHERE v.blog_id = b.id) AS views,
-        (SELECT COUNT(*) FROM blog_likes l WHERE l.blog_id = b.id) AS likes,
-        (SELECT COUNT(*) FROM comments c WHERE c.blog_id = b.id) AS comments
-      FROM blogs b
-      ORDER BY likes DESC
-      LIMIT 5`
-    );
-    return JSON.parse(JSON.stringify(rows));
+    // First, try to get blogs based on recSettings (excluding current blog)
+    let filteredBlogs: Blog[] = [];
+
+    if (recSettings.category || recSettings.creator || recSettings.title) {
+      let query = `
+        SELECT
+          b.id, b.title, b.description, b.image, b.user_id,
+          b.category_id, b.created_at
+        FROM blogs b
+      `;
+      const conditions: string[] = [];
+      const params: (string | number)[] = [];
+
+      if (recSettings.category) {
+        conditions.push("b.category_id = ?");
+        params.push(parseInt(recSettings.category));
+      }
+      if (recSettings.creator) {
+        conditions.push("b.user_id = ?");
+        params.push(recSettings.creator);
+      }
+      if (recSettings.title) {
+        conditions.push("b.title LIKE ?");
+        params.push(`%${recSettings.title}%`);
+      }
+      if (recSettings.excludeBlogId) {
+        conditions.push("b.id != ?");
+        params.push(recSettings.excludeBlogId);
+      }
+      if (recSettings.excludeUserId) {
+        conditions.push("b.user_id != ?");
+        params.push(recSettings.excludeUserId);
+      }
+
+      if (conditions.length > 0) {
+        query += " WHERE " + conditions.join(" AND ");
+      }
+
+      query += " ORDER BY RAND() LIMIT 7";
+
+      const [rows] = await pool!.query(query, params);
+      filteredBlogs = JSON.parse(JSON.stringify(rows));
+    }
+
+    // If we have 7 or more filtered blogs, return the first 7
+    if (filteredBlogs.length >= 7) {
+      return filteredBlogs.slice(0, 7);
+    }
+
+    // If we have some filtered blogs but less than 7, get random blogs to fill the gap
+    const remainingCount = 7 - filteredBlogs.length;
+    let randomBlogs: Blog[] = [];
+
+    if (remainingCount > 0) {
+      let randomQuery = `
+        SELECT
+          b.id, b.title, b.description, b.image, b.user_id,
+          b.category_id, b.created_at
+        FROM blogs b
+      `;
+
+      const randomConditions: string[] = [];
+      const randomParams: (string | number)[] = [];
+
+      // Exclude the current blog if specified
+      if (recSettings.excludeBlogId) {
+        randomConditions.push("b.id != ?");
+        randomParams.push(recSettings.excludeBlogId);
+      }
+      // Exclude current user's blogs
+      if (recSettings.excludeUserId) {
+        randomConditions.push("b.user_id != ?");
+        randomParams.push(recSettings.excludeUserId);
+      }
+
+      // Exclude blogs that are already in filteredBlogs
+      if (filteredBlogs.length > 0) {
+        const excludeIds = filteredBlogs.map((blog) => blog.id);
+        randomConditions.push(
+          `b.id NOT IN (${excludeIds.map(() => "?").join(",")})`
+        );
+        randomParams.push(...excludeIds);
+      }
+
+      if (randomConditions.length > 0) {
+        randomQuery += " WHERE " + randomConditions.join(" AND ");
+      }
+
+      randomQuery += " ORDER BY RAND() LIMIT ?";
+      randomParams.push(remainingCount);
+
+      const [randomRows] = await pool!.query(randomQuery, randomParams);
+      randomBlogs = JSON.parse(JSON.stringify(randomRows));
+    }
+
+    // Combine filtered and random blogs
+    const allBlogs = [...filteredBlogs, ...randomBlogs];
+
+    // If we still don't have 7 blogs (very unlikely), fill with any random blogs
+    if (allBlogs.length < 7) {
+      const finalCount = 7 - allBlogs.length;
+      let finalQuery = `
+        SELECT
+          b.id, b.title, b.description, b.image, b.user_id,
+          b.category_id, b.created_at
+        FROM blogs b
+      `;
+
+      const finalConditions: string[] = [];
+      const finalParams: (string | number)[] = [];
+
+      // Exclude already selected blogs
+      if (allBlogs.length > 0) {
+        const excludeIds = allBlogs.map((blog) => blog.id);
+        finalConditions.push(
+          `b.id NOT IN (${excludeIds.map(() => "?").join(",")})`
+        );
+        finalParams.push(...excludeIds);
+      }
+      // Exclude current user's blogs
+      if (recSettings.excludeUserId) {
+        finalConditions.push("b.user_id != ?");
+        finalParams.push(recSettings.excludeUserId);
+      }
+
+      if (finalConditions.length > 0) {
+        finalQuery += " WHERE " + finalConditions.join(" AND ");
+      }
+
+      finalQuery += " ORDER BY RAND() LIMIT ?";
+      finalParams.push(finalCount);
+
+      const [finalRows] = await pool!.query(finalQuery, finalParams);
+      const finalBlogs = JSON.parse(JSON.stringify(finalRows));
+      allBlogs.push(...finalBlogs);
+    }
+
+    // Ensure we return exactly 7 blogs (slice if somehow more)
+    return allBlogs.slice(0, 7);
   } catch (error) {
     handleError(error);
+    // Fallback: return 7 random blogs
+    try {
+      const [rows] = await pool!.query(`
+        SELECT
+          b.id, b.title, b.description, b.image, b.user_id,
+          b.category_id, b.created_at
+        FROM blogs b
+        ORDER BY RAND() LIMIT 7
+      `);
+      return JSON.parse(JSON.stringify(rows));
+    } catch (fallbackError) {
+      handleError(fallbackError);
+      return [];
+    }
   }
 }
 

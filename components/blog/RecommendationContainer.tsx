@@ -2,9 +2,18 @@ import { getRecommendedBlogs } from "@/lib/actions/blog.actions";
 import RecommendationList from "./RecommendationList";
 import { SparklesIcon } from "@heroicons/react/24/outline";
 
-export default async function RecommendationContainer() {
-  const blogs = await getRecommendedBlogs();
-
+export default async function RecommendationContainer({
+  recSettings,
+}: {
+  recSettings: {
+    category?: string;
+    creator?: string;
+    title?: string;
+    excludeBlogId?: number;
+    excludeUserId?: string;
+  };
+}) {
+  const blogs = await getRecommendedBlogs(recSettings);
   return (
     <section className="relative mt-8 sm:mt-12 lg:mt-16 mb-6 sm:mb-8 lg:mb-12 overflow-hidden">
       {/* Background decoration */}
