@@ -257,6 +257,27 @@ export async function getAllBlogs(
   }
 }
 
+// GET Recommended Blogs
+
+export async function getRecommendedBlogs() {
+  try {
+    const [rows] = await pool!.query(
+      `SELECT 
+        b.id, b.title, b.description, b.image, b.user_id, 
+        b.category_id, b.created_at,
+        (SELECT COUNT(*) FROM blog_views v WHERE v.blog_id = b.id) AS views,
+        (SELECT COUNT(*) FROM blog_likes l WHERE l.blog_id = b.id) AS likes,
+        (SELECT COUNT(*) FROM comments c WHERE c.blog_id = b.id) AS comments
+      FROM blogs b
+      ORDER BY likes DESC
+      LIMIT 5`
+    );
+    return JSON.parse(JSON.stringify(rows));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
 // GET Blogs BY ORGANIZER
 export async function getBlogsByUser(
   { userId }: GetBlogsByUserParams,

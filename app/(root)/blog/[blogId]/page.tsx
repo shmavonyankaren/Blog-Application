@@ -24,6 +24,7 @@ import {
 import ViewCount from "@/components/blog/ViewCount";
 import { create } from "domain";
 import SaveLikeButtons from "@/components/blog/SaveLikeButtons";
+import RecommendationContainer from "@/components/blog/RecommendationContainer";
 
 export default async function BlogPage({
   params,
@@ -212,6 +213,8 @@ export default async function BlogPage({
           />
         </div>
       </div>
+
+      <RecommendationContainer />
     </main>
   );
 }

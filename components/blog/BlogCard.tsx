@@ -7,9 +7,7 @@ import { getUserById } from "@/lib/actions/user.actions";
 import BlogCreatorButtons from "./BlogCreatorButtons";
 import { formatDateHour } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
-import FavouriteButton from "./FavouriteButton";
 import { checkIfBlogIsFavourited } from "@/lib/actions/favourite.action";
-import LikeButton from "./LikeButton";
 import { checkIfUserLikedBlog } from "@/lib/actions/blogLike.actions";
 import SaveLikeButtons from "./SaveLikeButtons";
 
