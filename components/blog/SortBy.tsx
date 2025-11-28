@@ -50,14 +50,14 @@ export default function SortBy() {
         Sort
       </span> */}
 
-      <div className="relative" ref={ref}>
+      <div className="relative " ref={ref}>
         <label htmlFor="sortBy" className="sr-only">
           Sort By
         </label>
         <button
           type="button"
           onClick={() => setIsOpen((s) => !s)}
-          className="inline-flex items-center gap-2 pr-3 pl-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 text-sm text-gray-700 dark:text-gray-200 shadow-sm hover:shadow-md transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+          className=" cursor-pointer inline-flex items-center gap-2 pr-3 pl-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-800 text-sm text-gray-700 dark:text-gray-200 shadow-sm hover:shadow-md dark:hover:bg-gray-700 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
           aria-expanded={isOpen}
         >
           <span className="truncate max-w-48">{currentLabel}</span>
@@ -87,7 +87,7 @@ export default function SortBy() {
                   key={option.value}
                   type="button"
                   onClick={() => handleSelect(option.value)}
-                  className={`w-full px-4 py-2.5 text-left hover:bg-indigo-50 dark:hover:bg-[#302b63] transition-colors duration-300 ${
+                  className={`cursor-pointer w-full px-4 py-2.5 text-left hover:bg-indigo-50 dark:hover:bg-[#302b63] transition-colors duration-300 ${
                     selected
                       ? "bg-indigo-100 dark:bg-[#302b63] text-indigo-700 dark:text-white font-medium"
                       : "text-gray-700 dark:text-gray-200"

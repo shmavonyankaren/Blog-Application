@@ -1,38 +1,29 @@
-import { useEffect, useState } from "react";
 import CommentLikeButton from "./CommentLikeButton";
-import { getCommentLikeCount } from "@/lib/actions/comment.actions";
+import {
+  checkIfUserLikedComment,
+  getCommentLikeCount,
+} from "@/lib/actions/comment.actions";
 
-export default function CommentLikeSection({
+export default async function CommentLikeSection({
   blogId,
   commentId,
   userId,
-  isLiked,
 }: {
   blogId: number;
   commentId: number;
   userId: string;
-  isLiked: boolean;
 }) {
-  const [likes, setLikes] = useState<number>(0);
-  useEffect(() => {
-    async function fetchLikeCount() {
-      const count = await getCommentLikeCount(commentId);
-
-      setLikes(count);
-    }
-    fetchLikeCount();
-  }, [commentId, userId]);
+  const likes = await getCommentLikeCount(commentId);
+  const isLiked = await checkIfUserLikedComment(userId, commentId);
   // Fetch like count when component mounts
   return (
-    <div>
+    <div className="">
       <CommentLikeButton
         blogId={blogId}
         commentId={commentId}
         isLiked={isLiked}
+        likes={likes}
       />
-      <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
-        {likes} {likes === 1 ? "Like" : "Likes"}
-      </span>
     </div>
   );
 }

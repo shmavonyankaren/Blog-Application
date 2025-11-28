@@ -77,7 +77,7 @@ export default function CreateEditBlogModal({
       {actionType === "create" ? (
         <button
           onClick={handleOpen}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-linear-to-r dark:from-indigo-600 dark:to-purple-600 text-indigo-600 dark:text-slate-100 font-semibold rounded-lg hover:bg-indigo-50 dark:hover:bg-linear-to-r dark:hover:from-indigo-700 dark:hover:to-purple-800  focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600 transition-all duration-200 shadow-lg hover:shadow-xl border border-indigo-200 dark:border-slate-700"
+          className="cursor-pointer inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-linear-to-r dark:from-indigo-600 dark:to-purple-600 text-indigo-600 dark:text-slate-100 font-semibold rounded-lg hover:bg-indigo-50 dark:hover:bg-linear-to-r dark:hover:from-indigo-700 dark:hover:to-purple-800  focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600 transition-all duration-200 shadow-lg hover:shadow-xl border border-indigo-200 dark:border-slate-700"
         >
           <svg
             className="w-5 h-5"

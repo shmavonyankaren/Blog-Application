@@ -54,7 +54,7 @@ export default function CategorySelector({
         <button
           type="button"
           onClick={onToggleCreateForm}
-          className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium flex items-center gap-1 transition-colors duration-300"
+          className="cursor-pointer text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium flex items-center gap-1 transition-colors duration-300"
         >
           <svg
             className="w-3.5 h-3.5"
@@ -88,7 +88,7 @@ export default function CategorySelector({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full px-4 py-2.5 text-left bg-white dark:bg-[#0f172a] border border-gray-300 dark:border-slate-700 rounded-lg shadow-sm hover:border-indigo-400 dark:hover:border-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 transition-all duration-300"
+          className=" cursor-pointer w-full px-4 py-2.5 text-left bg-white dark:bg-[#0f172a] border border-gray-300 dark:border-slate-700 rounded-lg shadow-sm hover:border-indigo-400 dark:hover:border-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <span
@@ -128,7 +128,7 @@ export default function CategorySelector({
                 onCategorySelect("");
                 setIsOpen(false);
               }}
-              className={`w-full px-4 py-2.5 text-left hover:bg-indigo-50 dark:hover:bg-[#302b63] transition-colors duration-300 ${
+              className={` cursor-pointer w-full px-4 py-2.5 text-left hover:bg-indigo-50 dark:hover:bg-[#302b63] transition-colors duration-300 ${
                 selectedCategory === ""
                   ? "bg-indigo-100 dark:bg-[#302b63] text-indigo-700 dark:text-white font-medium"
                   : "text-gray-700 dark:text-gray-200"
@@ -155,7 +155,7 @@ export default function CategorySelector({
                       onCategorySelect(category.id.toString());
                       setIsOpen(false);
                     }}
-                    className={`flex-1 text-left transition-colors duration-300 ${
+                    className={`cursor-pointer flex-1 text-left transition-colors duration-300 ${
                       isSelected
                         ? "text-indigo-700 dark:text-white font-medium"
                         : "text-gray-700 dark:text-gray-200"
@@ -170,7 +170,7 @@ export default function CategorySelector({
                       onClick={(e) =>
                         handleDeleteClick(e, category.id, category.name)
                       }
-                      className="ml-2 p-1.5 rounded hover:bg-red-100 transition-colors text-red-500 hover:text-red-700"
+                      className="cursor-pointer ml-2 p-1.5 rounded hover:bg-red-100 transition-colors text-red-500 hover:text-red-700"
                       title="Delete category"
                     >
                       <svg

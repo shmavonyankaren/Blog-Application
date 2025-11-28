@@ -59,6 +59,7 @@ export default function CategoryFilter() {
       <button
         onClick={() => handleCategoryClick("all")}
         className={`
+          cursor-pointer 
           px-4 py-2 rounded-full font-medium text-sm transition-all duration-300 ease-in-out
           ${
             selectedCategory === "all"
