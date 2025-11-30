@@ -2,6 +2,7 @@ import { CommentType } from "@/lib/types";
 import CommentItem from "./CommentItem";
 import { getUserById } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs/server";
+import CommentLikeSection from "./CommentLikeSection";
 
 export default async function CommentsList({
   comments,
@@ -9,7 +10,6 @@ export default async function CommentsList({
   comments: CommentType[];
 }) {
   const currUser = await currentUser();
-
   // Fetch all user data for comments
   const userDataPromises = comments.map((comment) =>
     getUserById(comment.user_id)
@@ -24,6 +24,13 @@ export default async function CommentsList({
               comment={comment}
               creatorOfComment={usersData[index]}
               isOwner={currUser?.id === comment.user_id}
+              CommentLikeSection={
+                <CommentLikeSection
+                  blogId={comment.blog_id}
+                  commentId={comment.id}
+                  userId={currUser!.id}
+                />
+              }
             />
           </li>
         ))}

@@ -51,12 +51,12 @@ export default function Header() {
           <SignedOut>
             <div className="flex gap-3">
               <SignInButton>
-                <button className="cursor-pointer px-5 py-2 bg-white text-indigo-600 font-semibold rounded-lg hover:bg-indigo-50 transition-all shadow-md hover:shadow-lg dark:bg-[#302b63] dark:text-white dark:hover:bg-[#24243e]">
+                <button className="cursor-pointer px-6 py-2.5 bg-white/90 backdrop-blur-sm text-indigo-700 font-semibold rounded-full border border-indigo-200/50 shadow-lg hover:shadow-xl hover:bg-white hover:scale-105 transition-all duration-300 dark:bg-linear-to-br dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 dark:text-indigo-200 dark:border-indigo-500/50 dark:hover:bg-slate-700 dark:hover:text-indigo-100">
                   Sign In
                 </button>
               </SignInButton>
               <SignUpButton>
-                <button className="cursor-pointer px-5 py-2 bg-indigo-700 text-white font-semibold rounded-lg hover:bg-indigo-800 transition-all shadow-md hover:shadow-lg border border-indigo-500 dark:bg-indigo-600 dark:hover:bg-indigo-700">
+                <button className="cursor-pointer px-6 py-2.5 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:from-indigo-700 hover:to-purple-700 hover:scale-105 transition-all duration-300 dark:from-indigo-500 dark:to-purple-500 dark:hover:from-indigo-600 dark:hover:to-purple-600">
                   Sign Up
                 </button>
               </SignUpButton>
@@ -113,12 +113,18 @@ export default function Header() {
                 <SignedOut>
                   <div className="flex flex-col gap-3">
                     <SignInButton>
-                      <button className="cursor-pointer w-full px-5 py-3 bg-white text-indigo-600 font-semibold rounded-lg hover:bg-indigo-50 transition-all shadow-md">
+                      <button
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="cursor-pointer w-full px-5 py-3 bg-white/90 backdrop-blur-sm text-indigo-700 font-semibold rounded-full border border-indigo-200/50 shadow-lg hover:shadow-xl hover:bg-white hover:scale-105 transition-all duration-300 dark:bg-linear-to-br dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 dark:text-indigo-200 dark:border-indigo-500/50 dark:hover:bg-slate-700 dark:hover:text-indigo-100"
+                      >
                         Sign In
                       </button>
                     </SignInButton>
                     <SignUpButton>
-                      <button className="cursor-pointer w-full px-5 py-3 bg-indigo-800 text-white font-semibold rounded-lg hover:bg-indigo-900 transition-all shadow-md border border-indigo-600">
+                      <button
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="cursor-pointer w-full px-5 py-3 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:from-indigo-700 hover:to-purple-700 hover:scale-105 transition-all duration-300 dark:from-indigo-500 dark:to-purple-500 dark:hover:from-indigo-600 dark:hover:to-purple-600"
+                      >
                         Sign Up
                       </button>
                     </SignUpButton>

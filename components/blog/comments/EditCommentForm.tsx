@@ -40,7 +40,7 @@ export default function EditCommentForm({
       <div className="flex items-center gap-2 mt-2">
         <button
           type="submit"
-          className="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+          className=" cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
         >
           <svg
             className="w-4 h-4"
@@ -60,7 +60,7 @@ export default function EditCommentForm({
         <button
           type="button"
           onClick={onCancel}
-          className="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-slate-300 text-sm font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-slate-700 border border-gray-300 dark:border-slate-700 transition-all duration-300"
+          className=" cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-slate-300 text-sm font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-slate-700 border border-gray-300 dark:border-slate-700 transition-all duration-300"
         >
           <svg
             className="w-4 h-4"

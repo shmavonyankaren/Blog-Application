@@ -97,7 +97,7 @@ export default function LoadingBlogDetail() {
                   key={i}
                   className="flex-none basis-[5em] flex justify-center items-center"
                 >
-                  <div className="bg-gray-100 dark:bg-slate-800 rounded-2xl h-[200px] sm:h-[220px] lg:h-[240px] w-72 sm:w-80 lg:w-96 animate-pulse"></div>
+                  <div className="bg-gray-100 dark:bg-slate-800 rounded-2xl h-[200px] sm:h-[220px] lg:h-60 w-72 sm:w-80 lg:w-96 animate-pulse"></div>
                 </div>
               ))}
             </div>

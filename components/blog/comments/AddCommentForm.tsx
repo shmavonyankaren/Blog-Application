@@ -61,7 +61,7 @@ export default async function AddCommentForm({ blogId }: { blogId: string }) {
         <div className="flex justify-end">
           <button
             type="submit"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-indigo-600 to-purple-600 dark:bg-linear-to-r dark:from-indigo-700 dark:to-purple-700 text-white font-semibold rounded-lg hover:from-indigo-700 hover:to-purple-700 dark:hover:from-indigo-800 dark:hover:to-purple-800   focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all shadow-md hover:shadow-lg dark:focus:ring-indigo-600 dark:focus:ring-offset-slate-900"
+            className=" cursor-pointer inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-indigo-600 to-purple-600 dark:bg-linear-to-r dark:from-indigo-700 dark:to-purple-700 text-white font-semibold rounded-lg hover:from-indigo-700 hover:to-purple-700 dark:hover:from-indigo-800 dark:hover:to-purple-800   focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all shadow-md hover:shadow-lg dark:focus:ring-indigo-600 dark:focus:ring-offset-slate-900"
           >
             <svg
               className="w-5 h-5"

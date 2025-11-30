@@ -53,14 +53,14 @@ export default function CreateCategoryForm({
         <button
           type="button"
           onClick={handleAddClick}
-          className="px-3 py-2 bg-indigo-600 dark:bg-indigo-700 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors duration-300"
+          className="cursor-pointer px-3 py-2 bg-indigo-600 dark:bg-indigo-700 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors duration-300"
         >
           Add
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="px-3 py-2 bg-gray-300 dark:bg-slate-700 text-gray-700 dark:text-slate-300 text-sm font-medium rounded-lg hover:bg-gray-400 dark:hover:bg-slate-600 transition-colors duration-300"
+          className="cursor-pointer px-3 py-2 bg-gray-300 dark:bg-slate-700 text-gray-700 dark:text-slate-300 text-sm font-medium rounded-lg hover:bg-gray-400 dark:hover:bg-slate-600 transition-colors duration-300"
         >
           Cancel
         </button>

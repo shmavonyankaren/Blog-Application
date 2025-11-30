@@ -10,10 +10,12 @@ export default function CommentItem({
   comment,
   creatorOfComment,
   isOwner,
+  CommentLikeSection,
 }: {
   comment: CommentType;
   creatorOfComment: User;
   isOwner: boolean;
+  CommentLikeSection: React.JSX.Element;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   return (
@@ -50,6 +52,9 @@ export default function CommentItem({
           {comment.content}
         </p>
       )}
+
+      {/* Like Section */}
+      <div className="mt-4 pl-[52px]">{CommentLikeSection}</div>
     </div>
   );
 }
