@@ -119,7 +119,11 @@ export default async function CommentsSection({
         <AddCommentForm blogId={blogId} />
 
         {comments.length > 0 && (
-          <CommentsFooter creatorId={creatorId} comments={comments} />
+          <CommentsFooter
+            creatorId={creatorId}
+            comments={comments}
+            currentUserId={user?.id || null}
+          />
         )}
       </div>
     </div>

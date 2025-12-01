@@ -46,8 +46,8 @@ export default function ContactForm() {
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-8 md:p-10 border border-gray-200 dark:border-slate-800 transition-colors duration-300">
-      <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 transition-colors duration-300">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-6 sm:p-8 md:p-10 border border-gray-200 dark:border-slate-800 transition-colors duration-300">
+      <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 transition-colors duration-300">
         Send us a Message
       </h2>
       {status === "success" && (
@@ -147,7 +147,7 @@ export default function ContactForm() {
         {/* Submit Button */}
         <button
           type="submit"
-          className=" cursor-pointer w-full bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold py-4 px-6 rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-2 group"
+          className=" cursor-pointer w-full bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-2 group"
         >
           Send Message
           <svg

@@ -2,11 +2,11 @@ import ValueItem from "./ValueItem";
 
 export default function ValuesSection() {
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-8 md:p-12 mb-12 border border-gray-200 dark:border-slate-800 transition-colors duration-300">
-      <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center transition-colors duration-300">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-6 sm:p-8 md:p-12 mb-8 sm:mb-12 border border-gray-200 dark:border-slate-800 transition-colors duration-300">
+      <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-6 sm:mb-8 text-center transition-colors duration-300">
         Our Core Values
       </h2>
-      <div className="grid md:grid-cols-2 gap-8">
+      <div className="grid sm:grid-cols-2 gap-6 sm:gap-8">
         <ValueItem
           emoji="🎯"
           title="Authenticity"

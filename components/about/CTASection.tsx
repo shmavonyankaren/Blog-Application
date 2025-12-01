@@ -2,11 +2,11 @@ import Link from "next/link";
 
 export default function CTASection() {
   return (
-    <div className="bg-linear-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-2xl p-8 md:p-12 text-center text-white">
-      <h2 className="text-3xl md:text-4xl font-bold mb-4">
+    <div className="bg-linear-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-2xl p-6 sm:p-8 md:p-12 text-center text-white">
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
         Join Our Community Today
       </h2>
-      <p className="text-xl text-indigo-100 mb-8 max-w-2xl mx-auto">
+      <p className="text-lg sm:text-xl text-indigo-100 mb-6 sm:mb-8 max-w-2xl mx-auto">
         Start sharing your stories, connect with readers, and be part of a
         growing community of passionate writers.
       </p>

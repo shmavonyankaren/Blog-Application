@@ -3,16 +3,16 @@ import LogoName from "@/components/LogoName";
 
 export default function SignUpPage() {
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-indigo-50 to-purple-50 dark:bg-linear-to-br dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center py-12 px-4 transition-colors duration-300">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-indigo-50 to-purple-50 dark:bg-linear-to-br dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center py-8 sm:py-12 px-4 transition-colors duration-300">
       <div className="w-full max-w-md flex justify-center items-center flex-col">
-        <div className="mb-8 text-center">
-          <div className="flex items-center justify-center mb-6">
+        <div className="mb-6 sm:mb-8 text-center">
+          <div className="flex items-center justify-center mb-4 sm:mb-6">
             <LogoName color="text-black dark:text-white" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
             Join our community
           </h1>
-          <p className="text-sm text-gray-600 dark:text-gray-300">
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
             Create an account to start sharing your stories
           </p>
         </div>

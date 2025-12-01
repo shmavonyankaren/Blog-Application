@@ -2,11 +2,11 @@ import ContactInfoItem from "./ContactInfoItem";
 
 export default function ContactInfo() {
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-slate-800 transition-colors duration-300">
-      <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 transition-colors duration-300">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-200 dark:border-slate-800 transition-colors duration-300">
+      <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 transition-colors duration-300">
         Get in Touch
       </h2>
-      <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-8 transition-colors duration-300">
+      <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6 sm:mb-8 transition-colors duration-300">
         We&apos;re here to help and answer any questions you might have. We look
         forward to hearing from you!
       </p>
