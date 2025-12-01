@@ -167,6 +167,7 @@ export default async function BlogPage({
                 blogId={blog.id}
                 isFavourited={isFavourited}
                 isLiked={isLiked}
+                shouldReRenderViewCount={true}
               />
             )}
 
