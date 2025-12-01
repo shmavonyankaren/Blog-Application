@@ -125,7 +125,7 @@ export default function CreateEditBlogModal({
       ) : (
         <button
           onClick={handleOpen}
-          className="p-1.5 sm:p-2 md:p-2.5 cursor-pointer bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-lg shadow-lg backdrop-blur-sm border border-gray-200/50 dark:border-slate-700 transition-all duration-300 group"
+          className="p-2 sm:p-2.5 md:p-2.5 cursor-pointer bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-lg shadow-lg backdrop-blur-sm border border-gray-200/50 dark:border-slate-700 transition-all duration-300 group"
         >
           <Image
             className="w-4 h-4 sm:w-5 sm:h-5"
