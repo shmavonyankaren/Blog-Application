@@ -1,7 +1,13 @@
-import { getAllCommentsByBlog } from "@/lib/actions/comment.actions";
+import {
+  getAllCommentsByBlog,
+  getCommentLikeCount,
+  checkIfUserLikedComment,
+} from "@/lib/actions/comment.actions";
 import CommentsList from "./CommentsList";
 import AddCommentForm from "./AddCommentForm";
 import CommentsFooter from "./CommentsFooter";
+import { currentUser } from "@clerk/nextjs/server";
+import { CommentType } from "@/lib/types";
 
 export default async function CommentsSection({
   blogId,
@@ -11,6 +17,45 @@ export default async function CommentsSection({
   creatorId: string;
 }) {
   const comments = (await getAllCommentsByBlog(blogId)) || [];
+  const user = await currentUser();
+
+  // Fetch all like data at server level - modern approach for instant rendering
+  const likesData: Record<number, { count: number; isLiked: boolean }> = {};
+
+  if (user && comments.length > 0) {
+    // Flatten all comments including nested replies
+    const flattenComments = (comms: CommentType[]): CommentType[] => {
+      const result: CommentType[] = [];
+      const traverse = (cs: CommentType[]) => {
+        cs.forEach((c) => {
+          result.push(c);
+          if (c.replies && c.replies.length > 0) {
+            traverse(c.replies);
+          }
+        });
+      };
+      traverse(comms);
+      return result;
+    };
+
+    const allComments = flattenComments(comments);
+
+    // Fetch all likes data in parallel
+    const likesResults = await Promise.all(
+      allComments.map(async (comment) => {
+        const [count, isLiked] = await Promise.all([
+          getCommentLikeCount(comment.id),
+          checkIfUserLikedComment(user.id, comment.id),
+        ]);
+        return { id: comment.id, count, isLiked };
+      })
+    );
+
+    // Convert to object for easy lookup
+    likesResults.forEach((like) => {
+      likesData[like.id] = { count: like.count, isLiked: like.isLiked };
+    });
+  }
   return (
     <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-slate-800 transition-colors duration-300">
       {/* Header */}
@@ -64,7 +109,11 @@ export default async function CommentsSection({
           </div>
         ) : (
           <div className="mb-6">
-            <CommentsList initialComments={comments} blogId={blogId} />
+            <CommentsList
+              initialComments={comments}
+              blogId={blogId}
+              likesData={likesData}
+            />
           </div>
         )}
         <AddCommentForm blogId={blogId} />

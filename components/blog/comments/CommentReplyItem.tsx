@@ -103,7 +103,12 @@ export default function CommentReplyItem({ reply }: { reply: CommentType }) {
       {user && (
         <div className="flex justify-between">
           <div className="mt-4 pl-11 flex items-center gap-4">
-            <CommentLikeSection blogId={reply.blog_id} commentId={reply.id} />
+            <CommentLikeSection
+              blogId={reply.blog_id}
+              commentId={reply.id}
+              initialLikes={0}
+              initialIsLiked={false}
+            />
             <CommentReply isOpen={isReplying} setIsOpen={setIsReplying} />
           </div>
           <div>

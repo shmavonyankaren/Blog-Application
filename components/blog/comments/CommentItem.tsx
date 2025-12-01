@@ -17,7 +17,7 @@ function CommentItem({
   initialLikes,
   initialIsLiked,
   usersMap,
-  likesMap,
+  likesData,
 }: {
   comment: CommentType;
   creatorOfComment?: User;
@@ -25,7 +25,7 @@ function CommentItem({
   initialLikes?: number;
   initialIsLiked?: boolean;
   usersMap: Map<string, User>;
-  likesMap: Map<number, { count: number; isLiked: boolean }>;
+  likesData: Record<number, { count: number; isLiked: boolean }>;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
@@ -37,7 +37,7 @@ function CommentItem({
   const maxDepth = 3;
   const hasReplies = comment.replies && comment.replies.length > 0;
   const creator = creatorOfComment || usersMap.get(comment.user_id);
-  const likes = likesMap.get(comment.id);
+  const likes = likesData[comment.id];
   const likesCount = likes?.count ?? initialLikes ?? 0;
   const isLiked = likes?.isLiked ?? initialIsLiked ?? false;
 
@@ -118,6 +118,8 @@ function CommentItem({
             <CommentLikeSection
               blogId={comment.blog_id}
               commentId={comment.id}
+              initialLikes={likesCount}
+              initialIsLiked={isLiked}
             />
             {depth < maxDepth && (
               <button
@@ -184,7 +186,7 @@ function CommentItem({
         <div className="mt-3 space-y-3">
           {comment.replies.map((reply: CommentType) => {
             const replyCreator = usersMap.get(reply.user_id);
-            const replyLikes = likesMap.get(reply.id);
+            const replyLikes = likesData[reply.id];
             return (
               <CommentItem
                 key={reply.id}
@@ -194,7 +196,7 @@ function CommentItem({
                 initialLikes={replyLikes?.count || 0}
                 initialIsLiked={replyLikes?.isLiked || false}
                 usersMap={usersMap}
-                likesMap={likesMap}
+                likesData={likesData}
               />
             );
           })}
