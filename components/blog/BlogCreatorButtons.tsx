@@ -42,7 +42,7 @@ export default function BlogCreatorButtons({
       <div className="absolute right-2 sm:right-3 md:right-4 top-2 sm:top-3 md:top-4 flex justify-center items-center flex-col gap-1.5 sm:gap-2 z-10">
         <CreateEditBlogModal actionType="edit" blog={blog} />
         <button
-          className="p-1.5 sm:p-2 md:p-2.5 cursor-pointer bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-lg shadow-lg backdrop-blur-sm border border-gray-200/50 dark:border-slate-700 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed"
+          className="p-2 sm:p-2.5 md:p-2.5 cursor-pointer bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-lg shadow-lg backdrop-blur-sm border border-gray-200/50 dark:border-slate-700 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleDeleteClick}
           type="button"
           disabled={isDeleting}
