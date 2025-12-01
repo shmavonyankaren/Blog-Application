@@ -57,12 +57,12 @@ export default async function CommentsSection({
     });
   }
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-slate-800 transition-colors duration-300">
+    <div className="w-full bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-slate-800 transition-colors duration-300">
       {/* Header */}
-      <div className="bg-linear-to-r from-indigo-600 to-purple-600 dark:from-indigo-700 dark:to-purple-700 px-6 py-5">
-        <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+      <div className="bg-linear-to-r from-indigo-600 to-purple-600 dark:from-indigo-700 dark:to-purple-700 px-3 sm:px-4 md:px-6 py-4 sm:py-5">
+        <h2 className="text-xl sm:text-2xl font-bold text-white flex flex-wrap items-center gap-2 sm:gap-3">
           <svg
-            className="w-7 h-7"
+            className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 shrink-0"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -74,9 +74,9 @@ export default async function CommentsSection({
               d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
             />
           </svg>
-          <span>Comments</span>
+          <span className="wrap-break-word">Comments</span>
           {comments.length > 0 && (
-            <span className="ml-2 px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold">
+            <span className="px-2 sm:px-3 py-0.5 sm:py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs sm:text-sm font-semibold">
               {comments.length}
             </span>
           )}
@@ -84,7 +84,7 @@ export default async function CommentsSection({
       </div>
 
       {/* Content */}
-      <div className="p-6">
+      <div className="p-3 sm:p-4 md:p-6">
         {comments.length === 0 ? (
           <div className="text-center py-12">
             <svg

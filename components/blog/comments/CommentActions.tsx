@@ -35,15 +35,15 @@ export default function CommentActions({
 
   return (
     <>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-0.5 sm:gap-1">
         {!isEditing && (
           <button
             onClick={onEditClick}
-            className=" cursor-pointer p-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900 rounded-lg transition-colors"
+            className="cursor-pointer p-1.5 sm:p-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900 rounded-lg transition-colors"
             aria-label="Edit comment"
           >
             <svg
-              className="w-4 h-4"
+              className="w-3.5 h-3.5 sm:w-4 sm:h-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -60,12 +60,12 @@ export default function CommentActions({
         <button
           onClick={() => setShowDeleteModal(true)}
           disabled={isDeleting}
-          className="cursor-pointer p-2 text-red-600 hover:bg-red-50 dark:hover:bg-white dark:text-red-600 dark:hover:text-red-700 duration-300 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="cursor-pointer p-1.5 sm:p-2 text-red-600 hover:bg-red-50 dark:hover:bg-white dark:text-red-600 dark:hover:text-red-700 duration-300 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Delete comment"
         >
           {isDeleting ? (
             <svg
-              className="w-4 h-4 animate-spin"
+              className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin"
               fill="none"
               viewBox="0 0 24 24"
             >

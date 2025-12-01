@@ -59,22 +59,22 @@ export default function CommentReplyForm({
   };
 
   return (
-    <div className="mt-4 p-4 bg-gray-50 dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 shadow-sm">
+    <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-gray-50 dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 shadow-sm">
       <form onSubmit={handleSubmit}>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           disabled={isPending}
-          className="w-full px-3 py-2 border border-indigo-300 dark:border-slate-700 rounded-lg bg-white dark:bg-[#0f172a] text-gray-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 transition-all duration-300 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-indigo-300 dark:border-slate-700 rounded-lg bg-white dark:bg-[#0f172a] text-gray-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 transition-all duration-300 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
           rows={4}
           placeholder="Write your reply..."
           required
         ></textarea>
-        <div className="flex justify-end mt-3 space-x-2">
+        <div className="flex justify-end mt-2 sm:mt-3 space-x-2">
           <button
             type="submit"
             disabled={isPending || !content.trim()}
-            className="inline-flex items-center gap-1 px-3 sm:px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 dark:focus:ring-offset-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="cursor-pointer inline-flex items-center gap-1 px-3 sm:px-4 py-2 bg-indigo-600 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 dark:focus:ring-offset-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isPending ? (
               <>
@@ -122,7 +122,7 @@ export default function CommentReplyForm({
             type="button"
             onClick={onClose}
             disabled={isPending}
-            className="inline-flex items-center gap-1 px-3 sm:px-4 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-1 dark:focus:ring-offset-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="cursor-pointer inline-flex items-center gap-1 px-3 sm:px-4 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 text-xs sm:text-sm font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-1 dark:focus:ring-offset-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg
               className="w-4 h-4"

@@ -46,34 +46,30 @@ export default function Footer() {
 
   return (
     <footer className="bg-linear-to-r from-indigo-900 to-purple-900 dark:bg-linear-to-r dark:from-slate-900 dark:to-slate-800 transition-colors duration-300 text-white mt-auto">
-      <div className="max-w-7xl mx-auto px-6 py-12 lg:px-8">
-        <div
-          // className="grid grid-cols-1 md:grid-cols-4 gap-8"
-
-          className="flex justify-between gap-8 flex-col sm:flex-row md:flex-r"
-        >
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-8 sm:py-10 md:py-12">
+        <div className="flex justify-between gap-6 sm:gap-8 flex-col sm:flex-row">
           {/* Brand Section */}
           <div className="md:col-span-2">
             {/* <h3 className="text-2xl font-bold bg-linear-to-r from-indigo-200 to-purple-200 bg-clip-text text-transparent mb-4">
               BlogSpace */}
             {/* </h3> */}
             <LogoName />
-            <p className="text-indigo-200 text-sm leading-relaxed max-w-md">
+            <p className="text-indigo-200 text-xs sm:text-sm leading-relaxed max-w-md mt-3 sm:mt-4">
               Share your thoughts, stories, and ideas with the world. Join our
               community of writers and readers passionate about meaningful
               content.
             </p>
-            <div className="flex gap-4 mt-6">
+            <div className="flex gap-3 sm:gap-4 mt-4 sm:mt-6">
               {/* Social Links */}
               {socialLinks.map((link, index) => (
                 <a
                   key={index}
                   href={link.href}
-                  className="text-indigo-300 hover:text-white transition-colors"
+                  className="cursor-pointer text-indigo-300 hover:text-white transition-colors"
                   aria-label={link.name}
                 >
                   <svg
-                    className="w-6 h-6"
+                    className="w-5 h-5 sm:w-6 sm:h-6"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -86,15 +82,15 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-white">
+            <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-white">
               Quick Links
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-2 sm:space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-indigo-200 hover:text-white transition-colors text-sm"
+                    className="cursor-pointer text-indigo-200 hover:text-white transition-colors text-xs sm:text-sm"
                   >
                     {link.name}
                   </Link>
@@ -106,15 +102,15 @@ export default function Footer() {
           {/* Resources */}
           {resourseLinks.length ? (
             <div>
-              <h4 className="text-lg font-semibold mb-4 text-white">
+              <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-white">
                 Resources
               </h4>
-              <ul className="space-y-3">
+              <ul className="space-y-2 sm:space-y-3">
                 {resourseLinks.map((link, index) => (
                   <li key={index}>
                     <a
                       href={link.href}
-                      className="text-indigo-200 hover:text-white transition-colors text-sm"
+                      className="cursor-pointer text-indigo-200 hover:text-white transition-colors text-xs sm:text-sm"
                     >
                       {link.name}
                     </a>
@@ -126,18 +122,18 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-indigo-800/50">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-indigo-300 text-sm">
+        <div className="mt-8 sm:mt-10 md:mt-12 pt-6 sm:pt-8 border-t border-indigo-800/50">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-4">
+            <p className="text-indigo-300 text-xs sm:text-sm">
               © {currentYear} BlogSpace. All rights reserved.
             </p>
             {privacyLinks.length ? (
-              <div className="flex gap-6">
+              <div className="flex gap-4 sm:gap-6">
                 {privacyLinks.map((link, index) => (
                   <a
                     key={index}
                     href={link.href}
-                    className="text-indigo-300 hover:text-white transition-colors text-sm"
+                    className="cursor-pointer text-indigo-300 hover:text-white transition-colors text-xs sm:text-sm"
                   >
                     {link.name}
                   </a>

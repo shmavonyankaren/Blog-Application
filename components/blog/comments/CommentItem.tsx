@@ -9,6 +9,7 @@ import { useUser } from "@clerk/nextjs";
 import CommentLikeSection from "./CommentLikeSection";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 
 function CommentItem({
   comment,
@@ -49,44 +50,55 @@ function CommentItem({
 
   if (!creator) return null;
 
-  const indentClass = depth > 0 ? "ml-6 sm:ml-8 md:ml-10" : "";
+  const indentClass = depth > 0 ? "ml-3 sm:ml-6 md:ml-8 lg:ml-10" : "";
   const borderClass =
     depth > 0
-      ? "border-l-2 border-indigo-100 dark:border-indigo-900/30 pl-4"
+      ? "border-l-2 border-indigo-100 dark:border-indigo-900/30 pl-2 sm:pl-3 md:pl-4"
       : "";
 
   return (
     <div className={`${indentClass} ${borderClass}`}>
-      <div className="group relative bg-white dark:bg-slate-800/40 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md border border-gray-100 dark:border-slate-700/50 transition-all duration-200">
+      <div className="group relative bg-white dark:bg-slate-800/40 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 shadow-sm hover:shadow-md border border-gray-100 dark:border-slate-700/50 transition-all duration-200">
         {/* Header */}
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <div className="flex items-center gap-3 flex-1 min-w-0">
-            <Image
-              src={creator.photo || "/assets/images/user_avatar.png"}
-              alt={creator.username || "User"}
-              width={40}
-              height={40}
-              className="rounded-full ring-2 ring-gray-100 dark:ring-slate-700 shrink-0"
-            />
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm truncate">
-                {creator.username ||
-                  `${creator.first_name} ${creator.last_name}`}
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                {new Date(comment.created_at).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-                {comment.updated_at !== comment.created_at && (
-                  <span className="ml-1 italic">(edited)</span>
-                )}
-              </p>
+        <div className="flex items-start justify-between gap-2 sm:gap-3 mb-2 sm:mb-3">
+          <Link
+            href={
+              user?.id === creator.user_id
+                ? `/my-blogs`
+                : `/creator-page/${creator.user_id}`
+            }
+            className="cursor-pointer"
+          >
+            <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+              <Image
+                src={creator.photo || "/assets/images/user_avatar.png"}
+                alt={creator.username || "User"}
+                width={32}
+                height={32}
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full ring-2 ring-gray-100 dark:ring-slate-700 shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-gray-900 dark:text-gray-100 text-xs sm:text-sm truncate">
+                  {user?.id === creator.user_id
+                    ? "You"
+                    : creator.username ||
+                      `${creator.first_name} ${creator.last_name}`}
+                </p>
+                <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 truncate">
+                  {new Date(comment.created_at).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                  {comment.updated_at !== comment.created_at && (
+                    <span className="ml-1 italic">(edited)</span>
+                  )}
+                </p>
+              </div>
             </div>
-          </div>
+          </Link>
           {ownerCheck && (
             <CommentActions
               commentId={comment.id}
@@ -107,14 +119,14 @@ function CommentItem({
             onSuccess={handleSuccess}
           />
         ) : (
-          <p className="text-gray-700 dark:text-gray-300 text-sm sm:text-base leading-relaxed mb-3 whitespace-pre-wrap wrap-break-word">
+          <p className="text-gray-700 dark:text-gray-300 text-xs sm:text-sm md:text-base leading-relaxed mb-2 sm:mb-3 whitespace-pre-wrap wrap-break-word overflow-wrap-anywhere">
             {comment.content}
           </p>
         )}
 
         {/* Actions */}
         {user && !isEditing && (
-          <div className="flex items-center gap-4 pt-2">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 pt-1 sm:pt-2">
             <CommentLikeSection
               blogId={comment.blog_id}
               commentId={comment.id}
@@ -124,7 +136,7 @@ function CommentItem({
             {depth < maxDepth && (
               <button
                 onClick={() => setIsReplying(!isReplying)}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-all"
+                className="cursor-pointer flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-all"
               >
                 <svg
                   className="w-4 h-4"
@@ -145,7 +157,7 @@ function CommentItem({
             {hasReplies && (
               <button
                 onClick={() => setShowReplies(!showReplies)}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-all"
+                className="cursor-pointer flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-all"
               >
                 <svg
                   className="w-4 h-4"

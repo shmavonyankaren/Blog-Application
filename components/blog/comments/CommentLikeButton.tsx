@@ -73,7 +73,7 @@ export default function CommentLikeButton({
 
   return (
     <button
-      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer group ${
+      className={`cursor-pointer inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 group ${
         liked
           ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800/50"
           : "bg-white/80 dark:bg-slate-800/80 text-gray-600 dark:text-gray-300 border border-gray-200/50 dark:border-slate-700/50 hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600/50"
@@ -83,7 +83,7 @@ export default function CommentLikeButton({
       title={liked ? "Unlike" : "Like"}
     >
       <svg
-        className={`w-4 h-4 transition-all duration-200 ${
+        className={`w-3 h-3 sm:w-4 sm:h-4 transition-all duration-200 shrink-0 ${
           liked
             ? "text-red-600 dark:text-red-400 fill-current scale-110"
             : "text-gray-500 dark:text-gray-400 group-hover:text-red-500 dark:group-hover:text-red-400"

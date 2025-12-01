@@ -77,15 +77,15 @@ export default function Pagination({
   };
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-8 mb-4">
+    <div className="flex items-center justify-center gap-1.5 sm:gap-2 mt-6 sm:mt-8 mb-3 sm:mb-4 px-2">
       {/* Previous Button */}
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-indigo-400 dark:hover:border-slate-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-slate-800 transition-colors duration-300"
+        className="cursor-pointer inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-indigo-400 dark:hover:border-slate-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-slate-800 transition-colors duration-300"
       >
         <svg
-          className="w-4 h-4"
+          className="w-3 h-3 sm:w-4 sm:h-4"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -97,17 +97,18 @@ export default function Pagination({
             d="M15 19l-7-7 7-7"
           />
         </svg>
-        Previous
+        <span className="hidden sm:inline">Previous</span>
+        <span className="sm:hidden">Prev</span>
       </button>
 
       {/* Page Numbers */}
-      <div className="hidden sm:flex items-center gap-2">
+      <div className="hidden sm:flex items-center gap-1.5 sm:gap-2">
         {getPageNumbers().map((page, index) => {
           if (page === "...") {
             return (
               <span
                 key={`ellipsis-${index}`}
-                className="px-4 py-2 text-gray-500 dark:text-gray-400 transition-colors duration-300"
+                className="px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300"
               >
                 ...
               </span>
@@ -121,7 +122,7 @@ export default function Pagination({
             <button
               key={pageNumber}
               onClick={() => handlePageChange(pageNumber)}
-              className={`min-w-10 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+              className={`min-w-8 sm:min-w-10 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors ${
                 isActive
                   ? "bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-md"
                   : " cursor-pointer text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-indigo-400 dark:hover:border-slate-600 transition-colors duration-300"
@@ -134,7 +135,7 @@ export default function Pagination({
       </div>
 
       {/* Mobile: Current Page Indicator */}
-      <div className="sm:hidden px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg transition-colors duration-300">
+      <div className="sm:hidden px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg transition-colors duration-300">
         {currentPage} / {totalPages}
       </div>
 
@@ -142,11 +143,12 @@ export default function Pagination({
       <button
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className=" cursor-pointer inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-indigo-400 dark:hover:border-slate-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-slate-800 transition-colors duration-300"
+        className="cursor-pointer inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-indigo-400 dark:hover:border-slate-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-slate-800 transition-colors duration-300"
       >
-        Next
+        <span className="hidden sm:inline">Next</span>
+        <span className="sm:hidden">Next</span>
         <svg
-          className="w-4 h-4"
+          className="w-3 h-3 sm:w-4 sm:h-4"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

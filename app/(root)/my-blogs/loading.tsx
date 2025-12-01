@@ -6,9 +6,25 @@ export default function LoadingMyBlogs() {
           {/* Header Skeleton */}
           <div className="bg-linear-to-r from-indigo-600 to-purple-600 dark:from-slate-800 dark:to-slate-700 duration-300 transition-colors px-6 py-10">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-              <div className="space-y-2">
-                <div className="h-10 bg-white/20 rounded w-48 animate-pulse"></div>
-                <div className="h-5 bg-white/10 rounded w-64 animate-pulse"></div>
+              <div className="text-center sm:text-left space-y-3">
+                <div className="h-10 bg-white/20 rounded w-48 animate-pulse mx-auto sm:mx-0"></div>
+                <div className="h-5 bg-white/10 rounded w-64 animate-pulse mx-auto sm:mx-0"></div>
+
+                {/* Stats Skeleton */}
+                <div className="flex gap-6 mt-4 justify-center sm:justify-start">
+                  <div className="text-center">
+                    <div className="h-8 w-12 bg-white/20 rounded animate-pulse mb-1 mx-auto"></div>
+                    <div className="h-3 w-10 bg-white/10 rounded animate-pulse mx-auto"></div>
+                  </div>
+                  <div className="text-center">
+                    <div className="h-8 w-12 bg-white/20 rounded animate-pulse mb-1 mx-auto"></div>
+                    <div className="h-3 w-10 bg-white/10 rounded animate-pulse mx-auto"></div>
+                  </div>
+                  <div className="text-center">
+                    <div className="h-8 w-12 bg-white/20 rounded animate-pulse mb-1 mx-auto"></div>
+                    <div className="h-3 w-10 bg-white/10 rounded animate-pulse mx-auto"></div>
+                  </div>
+                </div>
               </div>
               <div className="h-12 w-32 bg-white/20 rounded-lg animate-pulse"></div>
             </div>

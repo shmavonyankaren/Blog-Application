@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useTransition } from "react";
 import { createPortal } from "react-dom";
 import { useUser } from "@clerk/nextjs";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createBlog, updateBlog } from "@/lib/actions/blog.actions";
 import { CreateEditBlogTypes } from "@/lib/types";
 import CategorySelector from "./modal/CategorySelector";
@@ -17,8 +17,12 @@ export default function CreateEditBlogModal({
   blog,
 }: CreateEditBlogTypes) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [shouldCloseAfterRefresh, setShouldCloseAfterRefresh] = useState(false);
   const { user } = useUser();
   const pathname = usePathname();
+  const router = useRouter();
+  const [isRefreshing, startTransition] = useTransition();
   const [imageUrl, setImageUrl] = useState<string | null>(
     actionType === "edit" ? blog?.image || null : null
   );
@@ -55,21 +59,44 @@ export default function CreateEditBlogModal({
   }, []);
 
   const handleSubmit = useCallback(
-    async (formData: FormData) => {
-      setIsOpen(false);
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      setIsSubmitting(true);
 
       try {
+        const formData = new FormData(e.currentTarget);
+
         if (actionType === "create") {
           await createBlog(formData, pathname);
         } else {
           await updateBlog(formData, pathname);
         }
+
+        // After success, refresh the page and close only when refresh completes
+        startTransition(() => {
+          router.refresh();
+        });
+        setShouldCloseAfterRefresh(true);
       } catch (error) {
         // Error is already handled by server action
+        console.error("Blog operation failed:", error);
+        setIsSubmitting(false);
       }
     },
-    [actionType, pathname]
+    [actionType, pathname, router, startTransition]
   );
+
+  useEffect(() => {
+    if (shouldCloseAfterRefresh && !isRefreshing) {
+      // Defer state updates to avoid synchronous setState in effect
+      const id = setTimeout(() => {
+        setIsOpen(false);
+        setIsSubmitting(false);
+        setShouldCloseAfterRefresh(false);
+      }, 0);
+      return () => clearTimeout(id);
+    }
+  }, [shouldCloseAfterRefresh, isRefreshing]);
 
   return (
     <>
@@ -77,10 +104,10 @@ export default function CreateEditBlogModal({
       {actionType === "create" ? (
         <button
           onClick={handleOpen}
-          className="cursor-pointer inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-linear-to-r dark:from-indigo-600 dark:to-purple-600 text-indigo-600 dark:text-slate-100 font-semibold rounded-lg hover:bg-indigo-50 dark:hover:bg-linear-to-r dark:hover:from-indigo-700 dark:hover:to-purple-800  focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600 transition-all duration-200 shadow-lg hover:shadow-xl border border-indigo-200 dark:border-slate-700"
+          className="cursor-pointer inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 text-xs sm:text-sm md:text-base bg-white dark:bg-linear-to-r dark:from-indigo-600 dark:to-purple-600 text-indigo-600 dark:text-slate-100 font-semibold rounded-lg hover:bg-indigo-50 dark:hover:bg-linear-to-r dark:hover:from-indigo-700 dark:hover:to-purple-800  focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600 transition-all duration-200 shadow-lg hover:shadow-xl border border-indigo-200 dark:border-slate-700"
         >
           <svg
-            className="w-5 h-5"
+            className="w-4 h-4 sm:w-5 sm:h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -92,14 +119,16 @@ export default function CreateEditBlogModal({
               d="M12 4v16m8-8H4"
             />
           </svg>
-          New Blog
+          <span className="hidden sm:inline">New Blog</span>
+          <span className="sm:hidden">New</span>
         </button>
       ) : (
         <button
           onClick={handleOpen}
-          className="p-2.5 cursor-pointer bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-lg shadow-lg backdrop-blur-sm border border-gray-200/50 dark:border-slate-700 transition-all duration-300 group"
+          className="p-1.5 sm:p-2 md:p-2.5 cursor-pointer bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-lg shadow-lg backdrop-blur-sm border border-gray-200/50 dark:border-slate-700 transition-all duration-300 group"
         >
           <Image
+            className="w-4 h-4 sm:w-5 sm:h-5"
             src="/assets/icons/edit.svg"
             alt="edit"
             width={20}
@@ -115,7 +144,7 @@ export default function CreateEditBlogModal({
           <div className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto">
             <div
               className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-              onClick={handleClose}
+              onClick={isSubmitting || isRefreshing ? undefined : handleClose}
             />
 
             {/* modal panel */}
@@ -128,7 +157,8 @@ export default function CreateEditBlogModal({
                   </h3>
                   <button
                     onClick={handleClose}
-                    className="cursor-pointer inline-flex items-center justify-center w-9 h-9 rounded-full hover:bg-white/20 text-white transition-colors"
+                    disabled={isSubmitting || isRefreshing}
+                    className="cursor-pointer inline-flex items-center justify-center w-9 h-9 rounded-full hover:bg-white/20 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     aria-label="Close"
                   >
                     <svg
@@ -148,7 +178,7 @@ export default function CreateEditBlogModal({
                 </div>
 
                 <div className="p-4 sm:p-6 bg-gray-50 dark:bg-slate-800/50 transition-colors duration-300">
-                  <form action={handleSubmit} className="space-y-6">
+                  <form onSubmit={handleSubmit} className="space-y-6">
                     <input type="hidden" name="userId" value={user?.id ?? ""} />
                     {actionType === "edit" && blog?.id && (
                       <input
@@ -244,16 +274,45 @@ export default function CreateEditBlogModal({
                       <button
                         type="button"
                         onClick={() => setIsOpen(false)}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-[#0f172a] border border-gray-300 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all duration-300 cursor-pointer shadow-sm"
+                        disabled={isSubmitting || isRefreshing}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-[#0f172a] border border-gray-300 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all duration-300 cursor-pointer shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Cancel
                       </button>
 
                       <button
                         type="submit"
-                        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold cursor-pointer hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all shadow-md hover:shadow-lg"
+                        disabled={isSubmitting || isRefreshing}
+                        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold cursor-pointer hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-600"
                       >
-                        {actionType === "create" ? (
+                        {isSubmitting || isRefreshing ? (
+                          <>
+                            <svg
+                              className="w-4 h-4 animate-spin"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              ></path>
+                            </svg>
+                            {isRefreshing
+                              ? "Finalizing..."
+                              : actionType === "create"
+                              ? "Creating..."
+                              : "Saving..."}
+                          </>
+                        ) : actionType === "create" ? (
                           <>
                             <svg
                               className="w-4 h-4"

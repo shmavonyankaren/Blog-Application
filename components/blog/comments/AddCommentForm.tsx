@@ -30,9 +30,9 @@ export default function AddCommentForm({ blogId }: { blogId: string }) {
 
   if (!user) {
     return (
-      <div className="mt-6 mb-6 bg-linear-to-r border-2 border-indigo-200 dark:bg-slate-800 shadow-sm dark:shadow-slate-800/50 dark:border-slate-500 border-b rounded-xl p-6 text-center">
+      <div className="mt-4 sm:mt-6 mb-4 sm:mb-6 bg-linear-to-r border-2 border-indigo-200 dark:bg-slate-800 shadow-sm dark:shadow-slate-800/50 dark:border-slate-500 border-b rounded-xl p-4 sm:p-6 text-center">
         <svg
-          className="mx-auto h-12 w-12 text-indigo-600 mb-3"
+          className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-indigo-600 mb-2 sm:mb-3"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -44,15 +44,15 @@ export default function AddCommentForm({ blogId }: { blogId: string }) {
             d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
           />
         </svg>
-        <h3 className="text-xl font-bold  text-gray-900 dark:text-white mb-2 transition-colors duration-300">
+        <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors duration-300">
           Join the Conversation
         </h3>
-        <p className="text-gray-600 dark:text-gray-300 mb-4 transition-colors duration-300">
+        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4 transition-colors duration-300">
           Sign in to share your thoughts and engage with the community.
         </p>
         <Link
           href="/sign-in"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg"
+          className="cursor-pointer inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-linear-to-r from-indigo-600 to-purple-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg"
         >
           Sign In to Comment
         </Link>
@@ -61,11 +61,11 @@ export default function AddCommentForm({ blogId }: { blogId: string }) {
   }
 
   return (
-    <div className="mt-6 mb-6">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 transition-colors duration-300">
+    <div className="mt-4 sm:mt-6 mb-4 sm:mb-6">
+      <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2 sm:mb-3 transition-colors duration-300">
         Add a Comment
       </h3>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-2 sm:gap-3">
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -73,18 +73,18 @@ export default function AddCommentForm({ blogId }: { blogId: string }) {
           rows={4}
           placeholder="Share your thoughts..."
           disabled={isPending}
-          className="w-full px-4 py-3 border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 transition-all duration-300 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 transition-all duration-300 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
         />
         <div className="flex justify-end">
           <button
             type="submit"
             disabled={isPending || !content.trim()}
-            className="cursor-pointer inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-indigo-600 to-purple-600 dark:bg-linear-to-r dark:from-indigo-700 dark:to-purple-700 text-white font-semibold rounded-lg hover:from-indigo-700 hover:to-purple-700 dark:hover:from-indigo-800 dark:hover:to-purple-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all shadow-md hover:shadow-lg dark:focus:ring-indigo-600 dark:focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="cursor-pointer inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-linear-to-r from-indigo-600 to-purple-600 dark:bg-linear-to-r dark:from-indigo-700 dark:to-purple-700 text-white text-sm sm:text-base font-semibold rounded-lg hover:from-indigo-700 hover:to-purple-700 dark:hover:from-indigo-800 dark:hover:to-purple-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all shadow-md hover:shadow-lg dark:focus:ring-indigo-600 dark:focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isPending ? (
               <>
                 <svg
-                  className="w-5 h-5 animate-spin"
+                  className="w-4 h-4 sm:w-5 sm:h-5 animate-spin"
                   fill="none"
                   viewBox="0 0 24 24"
                 >

@@ -9,8 +9,8 @@ type BlogListProps = {
 
 export default function BlogList({ cardType, blogs }: BlogListProps) {
   return (
-    <div className="w-full ">
-      <ul className="flex flex-wrap gap-6 w-full justify-center items-stretch">
+    <div className="w-full">
+      <ul className="flex flex-wrap gap-4 sm:gap-5 md:gap-6 w-full justify-center items-stretch">
         {blogs.map((blog) => {
           return (
             <li

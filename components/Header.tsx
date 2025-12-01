@@ -22,10 +22,10 @@ export default function Header() {
   const { user } = useUser();
 
   return (
-    <header className="bg-linear-to-r from-indigo-900 to-purple-900 dark:from-slate-900 dark:to-slate-800 backdrop-blur-xl border-b border-white/30 shadow-2xl transition-all duration-300 relative before:absolute before:inset-0 before:bg-linear-to-r before:from-white/5 before:to-transparent before:pointer-events-none h-16 md:h-19">
+    <header className="bg-linear-to-r from-indigo-900 to-purple-900 dark:from-slate-900 dark:to-slate-800 backdrop-blur-xl border-b border-white/30 shadow-2xl transition-all duration-300 relative before:absolute before:inset-0 before:bg-linear-to-r before:from-white/5 before:to-transparent before:pointer-events-none h-14 sm:h-16 md:h-18">
       <nav
         aria-label="Global"
-        className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-6 relative z-10 min-h-0"
+        className="mx-auto flex max-w-7xl items-center justify-between px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4 relative z-10 min-h-0"
       >
         {/* Logo section */}
         <div className="flex lg:flex-1">
@@ -35,10 +35,10 @@ export default function Header() {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(true)}
-            className="-m-2.5 cursor-pointer inline-flex items-center justify-center rounded-md p-2.5 text-white hover:bg-white/10 transition-colors"
+            className="-m-2 cursor-pointer inline-flex items-center justify-center rounded-md p-2 sm:p-2.5 text-white hover:bg-white/10 transition-colors"
           >
             <span className="sr-only">Open main menu</span>
-            <Bars3Icon aria-hidden="true" className="size-6" />
+            <Bars3Icon aria-hidden="true" className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
         {/* App navigation links */}
@@ -51,20 +51,20 @@ export default function Header() {
           <SignedOut>
             <div className="flex gap-3">
               <SignInButton>
-                <button className="cursor-pointer px-6 py-2.5 bg-white/90 backdrop-blur-sm text-indigo-700 font-semibold rounded-full border border-indigo-200/50 shadow-lg hover:shadow-xl hover:bg-white hover:scale-105 transition-all duration-300 dark:bg-linear-to-br dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 dark:text-indigo-200 dark:border-indigo-500/50 dark:hover:bg-slate-700 dark:hover:text-indigo-100">
+                <button className="cursor-pointer px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 text-xs sm:text-sm md:text-base bg-white/90 backdrop-blur-sm text-indigo-700 font-semibold rounded-full border border-indigo-200/50 shadow-lg hover:shadow-xl hover:bg-white hover:scale-105 transition-all duration-300 dark:bg-linear-to-br dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 dark:text-indigo-200 dark:border-indigo-500/50 dark:hover:bg-slate-700 dark:hover:text-indigo-100">
                   Sign In
                 </button>
               </SignInButton>
               <SignUpButton>
-                <button className="cursor-pointer px-6 py-2.5 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:from-indigo-700 hover:to-purple-700 hover:scale-105 transition-all duration-300 dark:from-indigo-500 dark:to-purple-500 dark:hover:from-indigo-600 dark:hover:to-purple-600">
+                <button className="cursor-pointer px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 text-xs sm:text-sm md:text-base bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:from-indigo-700 hover:to-purple-700 hover:scale-105 transition-all duration-300 dark:from-indigo-500 dark:to-purple-500 dark:hover:from-indigo-600 dark:hover:to-purple-600">
                   Sign Up
                 </button>
               </SignUpButton>
             </div>
           </SignedOut>
           <SignedIn>
-            <div className="flex justify-center items-center gap-3">
-              <span className="text-sm font-medium text-white">
+            <div className="flex justify-center items-center gap-2 sm:gap-3">
+              <span className="text-xs sm:text-sm font-medium text-white">
                 {user?.username
                   ? user.username
                   : user?.firstName + " " + user?.lastName}
@@ -115,7 +115,7 @@ export default function Header() {
                     <SignInButton>
                       <button
                         onClick={() => setMobileMenuOpen(false)}
-                        className="cursor-pointer w-full px-5 py-3 bg-white/90 backdrop-blur-sm text-indigo-700 font-semibold rounded-full border border-indigo-200/50 shadow-lg hover:shadow-xl hover:bg-white hover:scale-105 transition-all duration-300 dark:bg-linear-to-br dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 dark:text-indigo-200 dark:border-indigo-500/50 dark:hover:bg-slate-700 dark:hover:text-indigo-100"
+                        className="cursor-pointer w-full px-4 sm:px-5 py-2.5 sm:py-3 text-sm sm:text-base bg-white/90 backdrop-blur-sm text-indigo-700 font-semibold rounded-full border border-indigo-200/50 shadow-lg hover:shadow-xl hover:bg-white hover:scale-105 transition-all duration-300 dark:bg-linear-to-br dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 dark:text-indigo-200 dark:border-indigo-500/50 dark:hover:bg-slate-700 dark:hover:text-indigo-100"
                       >
                         Sign In
                       </button>
@@ -123,7 +123,7 @@ export default function Header() {
                     <SignUpButton>
                       <button
                         onClick={() => setMobileMenuOpen(false)}
-                        className="cursor-pointer w-full px-5 py-3 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:from-indigo-700 hover:to-purple-700 hover:scale-105 transition-all duration-300 dark:from-indigo-500 dark:to-purple-500 dark:hover:from-indigo-600 dark:hover:to-purple-600"
+                        className="cursor-pointer w-full px-4 sm:px-5 py-2.5 sm:py-3 text-sm sm:text-base bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:from-indigo-700 hover:to-purple-700 hover:scale-105 transition-all duration-300 dark:from-indigo-500 dark:to-purple-500 dark:hover:from-indigo-600 dark:hover:to-purple-600"
                       >
                         Sign Up
                       </button>
@@ -131,9 +131,9 @@ export default function Header() {
                   </div>
                 </SignedOut>
                 <SignedIn>
-                  <div className="flex justify-start items-center gap-3">
+                  <div className="flex justify-start items-center gap-2 sm:gap-3">
                     <UserButton />
-                    <span className="text-base font-medium text-white">
+                    <span className="text-sm sm:text-base font-medium text-white">
                       {user?.firstName}
                     </span>
                   </div>

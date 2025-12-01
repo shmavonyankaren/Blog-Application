@@ -15,6 +15,14 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "plus.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "shorthand.com",
+      },
+      {
+        protocol: "https",
         hostname: "images.clerk.dev",
       },
       {

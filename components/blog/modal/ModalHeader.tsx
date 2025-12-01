@@ -5,17 +5,17 @@ interface ModalHeaderProps {
 
 export default function ModalHeader({ actionType, onClose }: ModalHeaderProps) {
   return (
-    <div className="flex items-center justify-between px-4 sm:px-6 py-5 bg-linear-to-r from-indigo-600 to-purple-600">
-      <h3 className="text-xl font-bold text-white">
+    <div className="flex items-center justify-between px-3 sm:px-4 md:px-6 py-4 sm:py-5 bg-linear-to-r from-indigo-600 to-purple-600">
+      <h3 className="text-base sm:text-lg md:text-xl font-bold text-white">
         {actionType === "create" ? "Create New Blog" : "Edit Blog"}
       </h3>
       <button
         onClick={onClose}
-        className="cursor-pointer inline-flex items-center justify-center w-9 h-9 rounded-full hover:bg-white/20 text-white transition-colors"
+        className="cursor-pointer inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full hover:bg-white/20 text-white transition-colors"
         aria-label="Close"
       >
         <svg
-          className="w-5 h-5"
+          className="w-4 h-4 sm:w-5 sm:h-5"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

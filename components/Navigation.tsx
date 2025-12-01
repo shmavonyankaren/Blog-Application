@@ -27,7 +27,7 @@ export default function Navigation({ onNavigate }: NavigationProps) {
 
   return (
     <div>
-      <ul className="flex flex-col md:flex-row md:gap-8 sm: gap-3">
+      <ul className="flex flex-col md:flex-row md:gap-6 lg:gap-8 gap-3">
         {navLinks.map((link) => {
           // Skip links that require auth if user is not logged in
           if (link.requiresAuth && !user) return null;
@@ -38,11 +38,11 @@ export default function Navigation({ onNavigate }: NavigationProps) {
               : pathname.startsWith(link.href);
 
           return (
-            <li className="" key={link.name}>
+            <li key={link.name}>
               <Link
                 href={link.href}
                 onClick={onNavigate}
-                className={`text-sm font-medium transition-all ${
+                className={`cursor-pointer text-xs sm:text-sm md:text-base font-medium transition-all ${
                   isActive
                     ? "text-purple-500 dark:text-yellow-400 font-bold underline underline-offset-4"
                     : "text-indigo-100 dark:text-gray-300 hover:text-white dark:hover:text-white"
