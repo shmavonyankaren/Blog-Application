@@ -28,11 +28,11 @@ export default function BlogDetailDeleteButton({
     <>
       <button
         onClick={handleDeleteClick}
-        className="p-2.5 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 border border-gray-200/50 dark:border-slate-700 rounded-lg shadow-lg transition-all duration-300"
+        className="cursor-pointer p-1.5 sm:p-2 md:p-2.5 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 border border-gray-200/50 dark:border-slate-700 rounded-lg shadow-lg transition-all duration-300"
         type="button"
       >
         <Image
-          className="cursor-pointer"
+          className="cursor-pointer w-4 h-4 sm:w-5 sm:h-5"
           src="/assets/icons/delete.svg"
           alt="delete"
           width={20}

@@ -77,10 +77,10 @@ export default function CreateEditBlogModal({
       {actionType === "create" ? (
         <button
           onClick={handleOpen}
-          className="cursor-pointer inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-linear-to-r dark:from-indigo-600 dark:to-purple-600 text-indigo-600 dark:text-slate-100 font-semibold rounded-lg hover:bg-indigo-50 dark:hover:bg-linear-to-r dark:hover:from-indigo-700 dark:hover:to-purple-800  focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600 transition-all duration-200 shadow-lg hover:shadow-xl border border-indigo-200 dark:border-slate-700"
+          className="cursor-pointer inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 text-xs sm:text-sm md:text-base bg-white dark:bg-linear-to-r dark:from-indigo-600 dark:to-purple-600 text-indigo-600 dark:text-slate-100 font-semibold rounded-lg hover:bg-indigo-50 dark:hover:bg-linear-to-r dark:hover:from-indigo-700 dark:hover:to-purple-800  focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600 transition-all duration-200 shadow-lg hover:shadow-xl border border-indigo-200 dark:border-slate-700"
         >
           <svg
-            className="w-5 h-5"
+            className="w-4 h-4 sm:w-5 sm:h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -92,14 +92,16 @@ export default function CreateEditBlogModal({
               d="M12 4v16m8-8H4"
             />
           </svg>
-          New Blog
+          <span className="hidden sm:inline">New Blog</span>
+          <span className="sm:hidden">New</span>
         </button>
       ) : (
         <button
           onClick={handleOpen}
-          className="p-2.5 cursor-pointer bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-lg shadow-lg backdrop-blur-sm border border-gray-200/50 dark:border-slate-700 transition-all duration-300 group"
+          className="p-1.5 sm:p-2 md:p-2.5 cursor-pointer bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-lg shadow-lg backdrop-blur-sm border border-gray-200/50 dark:border-slate-700 transition-all duration-300 group"
         >
           <Image
+            className="w-4 h-4 sm:w-5 sm:h-5"
             src="/assets/icons/edit.svg"
             alt="edit"
             width={20}

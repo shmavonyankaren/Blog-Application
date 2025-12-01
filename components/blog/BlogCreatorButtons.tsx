@@ -33,15 +33,15 @@ export default function BlogCreatorButtons({
 
   return (
     <>
-      <div className="absolute right-4 top-4 flex justify-center items-center flex-col gap-2 z-10">
+      <div className="absolute right-2 sm:right-3 md:right-4 top-2 sm:top-3 md:top-4 flex justify-center items-center flex-col gap-1.5 sm:gap-2 z-10">
         <CreateEditBlogModal actionType="edit" blog={blog} />
         <button
-          className="p-2.5 cursor-pointer bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-lg shadow-lg backdrop-blur-sm border border-gray-200/50 dark:border-slate-700 transition-all duration-300 group"
+          className="p-1.5 sm:p-2 md:p-2.5 cursor-pointer bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-lg shadow-lg backdrop-blur-sm border border-gray-200/50 dark:border-slate-700 transition-all duration-300 group"
           onClick={handleDeleteClick}
           type="button"
         >
           <Image
-            className="cursor-pointer"
+            className="cursor-pointer w-4 h-4 sm:w-5 sm:h-5"
             src="/assets/icons/delete.svg"
             alt="delete"
             width={20}

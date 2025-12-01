@@ -54,13 +54,13 @@ export default function CategoryFilter() {
   );
 
   return (
-    <div className="flex flex-wrap gap-2 items-center">
+    <div className="flex flex-wrap gap-1.5 sm:gap-2 items-center">
       {/* All Button */}
       <button
         onClick={() => handleCategoryClick("all")}
         className={`
           cursor-pointer 
-          px-4 py-2 rounded-full font-medium text-sm transition-all duration-300 ease-in-out
+          px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-xs sm:text-sm transition-all duration-300 ease-in-out
           ${
             selectedCategory === "all"
               ? "bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/50 scale-105"
@@ -68,7 +68,8 @@ export default function CategoryFilter() {
           }
         `}
       >
-        All Categories
+        <span className="hidden sm:inline">All Categories</span>
+        <span className="sm:hidden">All</span>
       </button>
 
       {/* Category Buttons */}
@@ -77,7 +78,7 @@ export default function CategoryFilter() {
           key={category.id}
           onClick={() => handleCategoryClick(category.id.toString())}
           className={`
-            px-4 py-2 rounded-full font-medium text-sm transition-all duration-300 ease-in-out cursor-pointer
+            px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-xs sm:text-sm transition-all duration-300 ease-in-out cursor-pointer
             ${
               selectedCategory === category.id.toString()
                 ? "bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/50 scale-105"
