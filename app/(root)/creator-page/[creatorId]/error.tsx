@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { startTransition } from "react";
 import Link from "next/link";
 
-export default function ErrorPage({
+export default function CreatorError({
   error,
   reset,
 }: {
@@ -37,7 +37,7 @@ export default function ErrorPage({
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                 />
               </svg>
             </div>
@@ -47,11 +47,10 @@ export default function ErrorPage({
 
         {/* Message */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 transition-colors duration-300">
-          Oops! Something went wrong
+          Failed to Load Creator
         </h1>
         <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-3 transition-colors duration-300">
-          We encountered an unexpected error. Don&apos;t worry, it&apos;s not
-          your fault!
+          We couldn&apos;t load this creator&apos;s profile. Please try again.
         </p>
 
         {/* Error Details */}
@@ -83,7 +82,7 @@ export default function ErrorPage({
             Try Again
           </button>
           <Link
-            href="/"
+            href="/all-blogs"
             className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-white dark:bg-slate-800 text-indigo-600 dark:text-slate-100 font-semibold rounded-xl hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all duration-300 shadow-md hover:shadow-lg border border-indigo-200 dark:border-slate-700"
           >
             <svg
@@ -96,10 +95,10 @@ export default function ErrorPage({
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
               />
             </svg>
-            Go Home
+            Discover Creators
           </Link>
         </div>
       </div>
