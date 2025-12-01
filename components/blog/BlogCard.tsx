@@ -26,7 +26,7 @@ export default async function BlogCard({ cardType, blog }: BlogCardProps) {
   const isOwnBlog = user?.id === blog.user_id;
 
   return (
-    <div className="group relative flex min-h-[320px] sm:min-h-[360px] md:min-h-[380px] w-full max-w-[450px] sm:max-w-[480px] md:max-w-[500px] min-w-[280px] sm:min-w-[320px] md:min-w-[350px] flex-col overflow-hidden rounded-xl sm:rounded-2xl bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-950/50 hover:shadow-2xl border border-gray-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-slate-600 transform transition-all duration-300 ease-in-out">
+    <div className="group relative flex min-h-80 sm:min-h-[360px] md:min-h-[380px] w-full max-w-[450px] sm:max-w-[480px] md:max-w-[500px] min-w-[280px] sm:min-w-[320px] md:min-w-[350px] flex-col overflow-hidden rounded-xl sm:rounded-2xl bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-950/50 hover:shadow-2xl border border-gray-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-slate-600 transform transition-all duration-300 ease-in-out">
       <Link
         scroll={true}
         href={`/blog/${blog.id}`}
