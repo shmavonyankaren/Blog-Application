@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { notFound } from "next/navigation";
 
 import pool from "@/lib/db/index";
 import { handleError, sendEmail } from "@/lib/utils";
@@ -69,7 +70,7 @@ export async function getUserById(userId: string) {
 
     const targetUser = (rows as BlogCreator[])[0];
 
-    if (!targetUser) throw new Error("User not found");
+    if (!targetUser) notFound();
 
     return JSON.parse(JSON.stringify(targetUser));
   } catch (error) {

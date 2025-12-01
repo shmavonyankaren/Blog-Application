@@ -2,6 +2,7 @@
 
 import pool from "@/lib/db/index";
 import { revalidatePath } from "next/cache";
+import { notFound } from "next/navigation";
 
 import { handleError } from "@/lib/utils/";
 
@@ -59,7 +60,7 @@ export async function getBlogById(blogId: string) {
     );
     const blog = (rows as Blog[])[0];
 
-    if (!blog) throw new Error("Blog not found");
+    if (!blog) notFound();
 
     return JSON.parse(JSON.stringify(blog));
   } catch (error) {

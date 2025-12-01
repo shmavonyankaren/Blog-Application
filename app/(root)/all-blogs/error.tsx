@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { startTransition } from "react";
 import Link from "next/link";
 
-export default function ErrorPage({
+export default function AllBlogsError({
   error,
   reset,
 }: {
@@ -37,7 +37,7 @@ export default function ErrorPage({
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
                 />
               </svg>
             </div>
@@ -47,11 +47,10 @@ export default function ErrorPage({
 
         {/* Message */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 transition-colors duration-300">
-          Oops! Something went wrong
+          Failed to Load Blogs
         </h1>
         <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-3 transition-colors duration-300">
-          We encountered an unexpected error. Don&apos;t worry, it&apos;s not
-          your fault!
+          We couldn&apos;t load the blog list. Please try again.
         </p>
 
         {/* Error Details */}
