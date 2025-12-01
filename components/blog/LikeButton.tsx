@@ -7,9 +7,11 @@ import { useCallback, useState, useTransition } from "react";
 export default function LikeButton({
   blogId,
   isLiked,
+  shouldReRenderViewCount = false,
 }: {
   blogId: number;
   isLiked: boolean;
+  shouldReRenderViewCount?: boolean;
 }) {
   const { user } = useUser();
   const [, startTransition] = useTransition();
@@ -29,16 +31,24 @@ export default function LikeButton({
 
       try {
         if (previousState) {
-          await unlikeBlog(formData, "/blog/" + blogId);
+          if (shouldReRenderViewCount) {
+            await unlikeBlog(formData, "/blog/" + blogId);
+          } else {
+            await unlikeBlog(formData);
+          }
         } else {
-          await likeBlog(formData, "/blog/" + blogId);
+          if (shouldReRenderViewCount) {
+            await likeBlog(formData, "/blog/" + blogId);
+          } else {
+            await likeBlog(formData);
+          }
         }
       } catch {
         // Revert on error
         setLiked(previousState);
       }
     });
-  }, [user, liked, blogId]);
+  }, [user, liked, blogId, shouldReRenderViewCount]);
 
   return (
     <button

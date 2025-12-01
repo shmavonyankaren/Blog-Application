@@ -2,59 +2,67 @@
 
 import { likeComment, unlikeComment } from "@/lib/actions/comment.actions";
 import { useUser } from "@clerk/nextjs";
-import { useCallback, useState, useTransition, useEffect } from "react";
+import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CommentLikeButton({
   blogId,
   commentId,
-  isLiked,
-  likes,
+  initialIsLiked,
+  initialLikes,
 }: {
   blogId: number;
   commentId: number;
-  isLiked: boolean;
-  likes: number;
+  initialIsLiked: boolean;
+  initialLikes: number;
 }) {
   const { user } = useUser();
-  const [, startTransition] = useTransition();
-  const [liked, setLiked] = useState(isLiked);
-  const [count, setCount] = useState(likes);
+  const router = useRouter();
+  const [liked, setLiked] = useState(initialIsLiked);
+  const [count, setCount] = useState(initialLikes);
+  const pendingActionRef = useRef<Promise<void> | null>(null);
 
-  useEffect(() => {
-    setLiked(isLiked);
-  }, [isLiked]);
-
-  useEffect(() => {
-    setCount(likes);
-  }, [likes]);
-
-  const handleToggleLike = useCallback(() => {
+  const handleToggleLike = async () => {
     if (!user?.id) return;
-    // Store the current state before changing
-    const previousLiked = liked;
-    const previousCount = count;
-    // Optimistically update UI immediately
-    setLiked(!previousLiked);
-    setCount(previousLiked ? previousCount - 1 : previousCount + 1);
-    // Run the async operation in the background
-    startTransition(async () => {
+
+    // Store current state
+    const currentLiked = liked;
+    const currentCount = count;
+
+    // Immediate optimistic update - no loading UI needed
+    setLiked(!currentLiked);
+    setCount(currentLiked ? currentCount - 1 : currentCount + 1);
+
+    // Wait for any pending action to complete first
+    if (pendingActionRef.current) {
+      await pendingActionRef.current;
+    }
+
+    // Create new pending action (silent background update)
+    const actionPromise = (async () => {
       const formData = new FormData();
       formData.append("userId", user.id);
       formData.append("commentId", String(commentId));
 
       try {
-        if (previousLiked) {
+        if (currentLiked) {
           await unlikeComment(formData, "/blog/" + blogId);
         } else {
           await likeComment(formData, "/blog/" + blogId);
         }
-      } catch {
-        // Revert on error
-        setLiked(previousLiked);
-        setCount(previousCount);
+        router.refresh();
+      } catch (error) {
+        // Rollback on error
+        setLiked(currentLiked);
+        setCount(currentCount);
+        console.error("Failed to toggle like:", error);
+      } finally {
+        pendingActionRef.current = null;
       }
-    });
-  }, [user, liked, count, commentId, blogId]);
+    })();
+
+    pendingActionRef.current = actionPromise;
+  };
 
   return (
     <button
@@ -68,9 +76,9 @@ export default function CommentLikeButton({
       title={liked ? "Unlike" : "Like"}
     >
       <svg
-        className={`w-4 h-4 transition-colors duration-300 ${
+        className={`w-4 h-4 transition-all duration-200 ${
           liked
-            ? "text-red-600 dark:text-red-400 fill-current"
+            ? "text-red-600 dark:text-red-400 fill-current scale-110"
             : "text-gray-500 dark:text-gray-400 group-hover:text-red-500 dark:group-hover:text-red-400"
         }`}
         fill={liked ? "currentColor" : "none"}

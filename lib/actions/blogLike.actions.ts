@@ -32,7 +32,7 @@ export async function checkIfUserLikedBlog(userId: string, blogId: number) {
   }
 }
 
-export async function likeBlog(formData: FormData, path: string) {
+export async function likeBlog(formData: FormData, path?: string) {
   try {
     const blogId = formData.get("blogId");
     const userId = formData.get("userId");
@@ -40,13 +40,13 @@ export async function likeBlog(formData: FormData, path: string) {
       "INSERT INTO blog_likes (blog_id, user_id) VALUES (?, ?)",
       [blogId, userId]
     );
-    revalidatePath(path);
+    if (path) revalidatePath(path);
   } catch (error) {
     handleError(error);
   }
 }
 
-export async function unlikeBlog(formData: FormData, path: string) {
+export async function unlikeBlog(formData: FormData, path?: string) {
   try {
     const blogId = formData.get("blogId");
     const userId = formData.get("userId");
@@ -54,7 +54,7 @@ export async function unlikeBlog(formData: FormData, path: string) {
       "DELETE FROM blog_likes WHERE blog_id = ? AND user_id = ?",
       [blogId, userId]
     );
-    revalidatePath(path);
+    if (path) revalidatePath(path);
   } catch (error) {
     handleError(error);
   }

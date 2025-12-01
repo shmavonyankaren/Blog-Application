@@ -19,6 +19,8 @@ export interface CommentType extends RowDataPacket {
   created_at: string; // ISO string (timestamp from DB)
   updated_at: string; // ISO string (timestamp from DB)
   content: string;
+  parent_comment_id?: number | null; // References comments.id (nullable)
+  replies: CommentType[]; // Nested replies
 }
 
 export interface BlogType extends RowDataPacket {
