@@ -5,6 +5,8 @@ import { getBlogsByUser } from "@/lib/actions/blog.actions";
 import { currentUser } from "@clerk/nextjs/server";
 import SortBy from "./SortBy";
 import { SortOption } from "@/lib/types";
+import { getTotalBlogViewsForUser } from "@/lib/actions/blogView.actions";
+import { getTotalBlogLikesForUser } from "@/lib/actions/blogLike.actions";
 
 interface MyBlogsContainerProps {
   page?: number;
@@ -30,6 +32,8 @@ export default async function BlogContainer({
     const blogs = result?.data || [];
     const totalPages = result?.totalPages || 1;
     const totalCount = result?.totalCount || 0;
+    const totalViews = await getTotalBlogViewsForUser(user!.id);
+    const totalLikes = await getTotalBlogLikesForUser(user!.id);
 
     return (
       <div className="min-h-full py-8 px-4">
@@ -37,16 +41,39 @@ export default async function BlogContainer({
           {/* Header Section with Gradient Background */}
           <div className="bg-linear-to-r from-indigo-600 to-purple-600  dark:from-slate-800 dark:to-slate-700 duration-300 transition-colors px-6 py-10">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-              <div>
+              <div className="text-center sm:text-left">
                 <h1 className="text-4xl font-bold text-white mb-2">My Blogs</h1>
-                <p className="text-indigo-100 text-sm">
+                <p className="text-indigo-100 text-sm mb-4">
                   Create, manage, and share your stories with the world
-                  {totalCount > 0 && (
-                    <span className="ml-1 font-semibold">
-                      ({totalCount} {totalCount === 1 ? "blog" : "blogs"})
-                    </span>
-                  )}
                 </p>
+
+                {/* Stats */}
+                <div className="flex gap-6 mt-4 justify-center sm:justify-start">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-white">
+                      {totalCount}
+                    </p>
+                    <p className="text-indigo-100 text-xs">
+                      {totalCount === 0 || totalCount === 1 ? "Blog" : "Blogs"}
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-white">
+                      {totalViews}
+                    </p>
+                    <p className="text-indigo-100 text-xs">
+                      {totalViews === 0 || totalViews === 1 ? "View" : "Views"}
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-white">
+                      {totalLikes}
+                    </p>
+                    <p className="text-indigo-100 text-xs">
+                      {totalLikes === 0 || totalLikes === 1 ? "Like" : "Likes"}
+                    </p>
+                  </div>
+                </div>
               </div>
               <AddBlog />
             </div>
