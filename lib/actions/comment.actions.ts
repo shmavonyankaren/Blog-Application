@@ -152,8 +152,9 @@ export async function likeComment(formData: FormData, path: string) {
   try {
     const commentId = formData.get("commentId");
     const userId = formData.get("userId");
+    // INSERT IGNORE prevents duplicate entry errors during rapid clicking
     await pool!.query(
-      "INSERT INTO comment_likes (comment_id, user_id) VALUES (?, ?)",
+      "INSERT IGNORE INTO comment_likes (comment_id, user_id) VALUES (?, ?)",
       [commentId, userId]
     );
     // revalidatePath(path);
@@ -166,6 +167,7 @@ export async function unlikeComment(formData: FormData, path: string) {
   try {
     const commentId = formData.get("commentId");
     const userId = formData.get("userId");
+    // DELETE is idempotent - won't error if already removed
     await pool!.query(
       "DELETE FROM comment_likes WHERE comment_id = ? AND user_id = ?",
       [commentId, userId]

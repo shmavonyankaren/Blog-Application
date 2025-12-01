@@ -3,7 +3,6 @@
 import { likeComment, unlikeComment } from "@/lib/actions/comment.actions";
 import { useUser } from "@clerk/nextjs";
 import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
 
 export default function CommentLikeButton({
   blogId,
@@ -17,44 +16,52 @@ export default function CommentLikeButton({
   initialLikes: number;
 }) {
   const { user } = useUser();
-  const router = useRouter();
   const [liked, setLiked] = useState(initialIsLiked);
   const [count, setCount] = useState(initialLikes);
   const pendingActionRef = useRef<Promise<void> | null>(null);
+  const targetStateRef = useRef<boolean>(initialIsLiked);
 
   const handleToggleLike = async () => {
     if (!user?.id) return;
 
-    // Store current state
-    const currentLiked = liked;
-    const currentCount = count;
+    // Store current UI state before toggle
+    const previousLiked = liked;
+    const previousCount = count;
 
-    // Immediate optimistic update - no loading UI needed
-    setLiked(!currentLiked);
-    setCount(currentLiked ? currentCount - 1 : currentCount + 1);
+    // Immediate optimistic update
+    const newLikedState = !previousLiked;
+    setLiked(newLikedState);
+    setCount(newLikedState ? previousCount + 1 : previousCount - 1);
+
+    // Update target state - this is what we want the final DB state to be
+    targetStateRef.current = newLikedState;
 
     // Wait for any pending action to complete first
     if (pendingActionRef.current) {
       await pendingActionRef.current;
     }
 
-    // Create new pending action (silent background update)
+    // Only execute if target state still matches what we just set
+    // (if user clicked again, targetStateRef will be different)
+    const targetAtExecution = targetStateRef.current;
+
+    // Create new pending action
     const actionPromise = (async () => {
       const formData = new FormData();
       formData.append("userId", user.id);
       formData.append("commentId", String(commentId));
 
       try {
-        if (currentLiked) {
-          await unlikeComment(formData, "/blog/" + blogId);
-        } else {
+        // Execute action based on target state when this action runs
+        if (targetAtExecution) {
           await likeComment(formData, "/blog/" + blogId);
+        } else {
+          await unlikeComment(formData, "/blog/" + blogId);
         }
-        router.refresh();
       } catch (error) {
         // Rollback on error
-        setLiked(currentLiked);
-        setCount(currentCount);
+        setLiked(previousLiked);
+        setCount(previousCount);
         console.error("Failed to toggle like:", error);
       } finally {
         pendingActionRef.current = null;
