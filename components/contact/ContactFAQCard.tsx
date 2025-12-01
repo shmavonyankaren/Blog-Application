@@ -1,14 +1,16 @@
 export default function ContactFAQCard() {
   return (
-    <div className="bg-linear-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-xl p-8 text-white">
-      <h3 className="text-2xl font-bold mb-4">Frequently Asked Questions</h3>
-      <p className="text-indigo-100 mb-6">
+    <div className="bg-linear-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-xl p-6 sm:p-8 text-white">
+      <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">
+        Frequently Asked Questions
+      </h3>
+      <p className="text-indigo-100 mb-4 sm:mb-6">
         Before reaching out, you might find your answer in our FAQ section.
         Check it out for quick solutions to common questions.
       </p>
       <a
         href="/faq"
-        className="bg-white dark:bg-slate-800 text-indigo-600 dark:text-slate-100 font-semibold py-3 px-6 rounded-xl hover:bg-indigo-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-slate-600 transition-all duration-300 inline-flex items-center gap-2"
+        className="bg-white dark:bg-slate-800 text-indigo-600 dark:text-slate-100 font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-xl hover:bg-indigo-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-slate-600 transition-all duration-300 inline-flex items-center gap-2"
       >
         View FAQ
         <svg

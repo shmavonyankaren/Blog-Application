@@ -8,12 +8,12 @@ type ContactItemProps = {
 
 function ContactInfoItem({ icon, title, content }: ContactItemProps) {
   return (
-    <div className="flex items-start gap-4">
-      <div className="bg-linear-to-r from-indigo-600 to-purple-600 p-3 rounded-xl shrink-0">
+    <div className="flex items-start gap-3 sm:gap-4">
+      <div className="bg-linear-to-r from-indigo-600 to-purple-600 p-2 sm:p-3 rounded-xl shrink-0">
         {icon}
       </div>
       <div>
-        <h3 className="text-lg font-semibold dark:text-white text-gray-900 mb-1 transition-colors duration-300">
+        <h3 className="text-base sm:text-lg font-semibold dark:text-white text-gray-900 mb-1 transition-colors duration-300">
           {title}
         </h3>
         {typeof content === "string" ? (
