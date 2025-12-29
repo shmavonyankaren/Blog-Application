@@ -4,12 +4,12 @@ import pool from "@/lib/db/index";
 import { revalidatePath } from "next/cache";
 import { handleError } from "@/lib/utils/";
 
-type ViewType = {
-  id: number;
-  blog_id: number;
-  user_id: string;
-  view_date: string;
-};
+// type ViewType = {
+//   id: number;
+//   blog_id: number;
+//   user_id: string;
+//   view_date: string;
+// };
 
 async function canUserViewBlog(blogId: number, userId: string) {
   try {
