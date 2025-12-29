@@ -56,6 +56,17 @@ CREATE TABLE comments (
     INDEX idx_parent_comment_id (parent_comment_id)
 );
 
+-- Table: comment_likes
+CREATE TABLE comment_likes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    comment_id INT NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_comment_user_like (comment_id, user_id),
+    INDEX idx_comment_id (comment_id),
+    INDEX idx_user_id (user_id)
+);
+
 -- Table: blog_likes
 CREATE TABLE blog_likes (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -70,7 +81,7 @@ CREATE TABLE blog_views (
     id INT AUTO_INCREMENT PRIMARY KEY,
     blog_id INT NOT NULL,
     user_id VARCHAR(255) NOT NULL,
-    view_date DATE NOT NULL,
+    view_date DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_blog_user_date (blog_id, user_id, view_date)
 );
