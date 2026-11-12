@@ -8,7 +8,7 @@ Use Node **22.12+ on the 22.x line** (Vercel: Node 22.x) and npm. Prisma CLI, Cl
 
 1. Copy `.env.example` to `.env.local` only if you do not already have that file. Merge missing names manually when it exists. Never commit credentials.
 2. Obtain an isolated development database and development Clerk/UploadThing/Resend configuration. Do not point local development or preview deployments at production.
-3. Set `DATABASE_URL` to the direct PostgreSQL URL and `DATABASE_URL_POOLED` to the pooled URL. The app deliberately does not silently fall back to the direct URL. On a local PostgreSQL server both variables may use the same local URL.
+3. Set `PRISMA_DATABASE_URL` to the direct PostgreSQL URL and `DATABASE_URL_POOLED` to the pooled URL. The app deliberately does not silently fall back to the direct URL. On a local PostgreSQL server both variables may use the same local URL.
 4. Run the following only after confirming that the configured database is the intended development database:
 
 ```sh
@@ -25,7 +25,7 @@ npm run dev
 
 | Name | Purpose / format | Environment |
 | --- | --- | --- |
-| `DATABASE_URL` | Direct `postgresql://USER:PASSWORD@HOST:5432/DATABASE?sslmode=require` | Development and explicitly authorized migration/seed jobs |
+| `PRISMA_DATABASE_URL` | Direct `postgresql://USER:PASSWORD@HOST:5432/DATABASE?sslmode=require` | Development and explicitly authorized migration/seed jobs |
 | `DATABASE_URL_POOLED` | Pooled PostgreSQL URL, normally host `pooled.db.prisma.io` | Every application runtime |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key (`pk_test_...` / `pk_live_...`) | Build and runtime; matching Clerk instance |
 | `CLERK_SECRET_KEY` | Clerk server secret (`sk_test_...` / `sk_live_...`) | Server runtime |
@@ -37,7 +37,7 @@ npm run dev
 | `UPLOADTHING_TOKEN` | UploadThing-issued token | Server runtime |
 | `RESEND_EMAIL_API_KEY` | Resend-issued API key | Server runtime |
 
-The current Prisma Vercel integration also supplies `POSTGRES_URL` and `PRISMA_DATABASE_URL` as direct-URL aliases. This application does not read those aliases. Verify URLs in the dashboard: names alone do not prove that an older integration is configured correctly. Existing `MYSQL_*` values are unused and can be removed after verification.
+For this Vercel integration, `PRISMA_DATABASE_URL` is the direct connection used by Prisma CLI and seeding; `POSTGRES_URL` is an unused direct-connection alias. Application runtime exclusively uses `DATABASE_URL_POOLED`. No additional direct-connection variable is required. Verify the endpoint type in the dashboard and preserve TLS verification. Legacy MySQL settings are not used.
 
 ## Schema and deletion policy
 
@@ -85,7 +85,7 @@ npx prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script -
 
 1. In Vercel Storage/Marketplace choose Prisma Postgres, the **Free** plan, and a region near your function region. Confirm current allowances and select the free plan explicitly.
 2. Connect a development/preview database to Development and Preview only. Create/connect a separate production database to Production only. Do not accept a shared production database for every environment by accident.
-3. Verify direct `DATABASE_URL` and pooled `DATABASE_URL_POOLED` for each scope. Older integrations may require adding the pooled variable manually. Preserve TLS verification.
+3. Verify direct `PRISMA_DATABASE_URL` and pooled `DATABASE_URL_POOLED` for each scope. Older integrations may require adding the pooled variable manually. Preserve TLS verification.
 4. Set Node 22.x; install with `npm ci`; build with `npm run build`. Ensure development dependencies are installed during builds so the pinned Prisma CLI exists.
 5. Set matching Clerk, UploadThing and Resend variables. Configure webhook endpoints and signing secrets for each deployment environment.
 6. In an authorized shell targeting the isolated preview database, run `npm ci`, `npm run db:deploy`, and `npm run db:seed`. Deploy a preview through Vercel and perform the checklist below.

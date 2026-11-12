@@ -3,10 +3,10 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../lib/generated/prisma/client";
 config({ path: ".env.local", quiet: true });
 config({ quiet: true });
-if (!process.env.DATABASE_URL)
-  throw new Error("DATABASE_URL is required to seed.");
+if (!process.env.PRISMA_DATABASE_URL)
+  throw new Error("PRISMA_DATABASE_URL is required to seed.");
 const db = new PrismaClient({
-  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL, max: 1 }),
+  adapter: new PrismaPg({ connectionString: process.env.PRISMA_DATABASE_URL, max: 1 }),
 });
 try {
   await db.category.createMany({
