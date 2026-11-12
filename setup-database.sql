@@ -1,3 +1,4 @@
+-- LEGACY MYSQL REFERENCE ONLY. Use prisma/migrations for PostgreSQL setup.
 -- BlogSpace Database Setup
 -- Run these commands to create all tables
 

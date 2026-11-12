@@ -5,7 +5,6 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTotalBlogViewsForUser } from "@/lib/actions/blogView.actions";
 import { getTotalBlogLikesForUser } from "@/lib/actions/blogLike.actions";
-import SortBy from "@/components/blog/SortBy";
 import { SortOption } from "@/lib/types";
 
 export default async function CreatorPage({
@@ -76,11 +75,6 @@ export default async function CreatorPage({
                 <p className="text-purple-100 dark:text-slate-300 text-lg transition-colors duration-300">
                   Content Creator
                 </p>
-                {creator.email && (
-                  <p className="text-purple-200 dark:text-slate-400 text-sm mt-2 transition-colors duration-300">
-                    {creator.email}
-                  </p>
-                )}
               </div>
 
               {/* Stats */}
