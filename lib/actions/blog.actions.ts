@@ -1,618 +1,268 @@
-"use server";
+﻿"use server";
+import { auth } from "@clerk/nextjs/server";
+import { notFound, redirect } from "next/navigation";
+import db from "@/lib/db";
+import { Prisma } from "@/lib/generated/prisma/client";
+import { requireUser, publicProfile } from "@/lib/server/users";
+import { mutation, positiveId, text, refresh } from "@/lib/server/action-utils";
+import type { GetBlogsByUserParams, SortOption } from "@/lib/types";
 
-import pool from "@/lib/db/index";
-import { revalidatePath } from "next/cache";
-import { notFound } from "next/navigation";
-
-import { handleError } from "@/lib/utils/";
-
-import {
-  BlogType as Blog,
-  GetBlogsByUserParams,
-  SortOption,
-} from "@/lib/types";
-
-type CountResult = { total: number };
-
-// const getCategoryByName = async (name: string) => {
-//   return Category.findOne({ name: { $regex: name, $options: "i" } });
-// };
-
-// const populateEvent = (query: any) => {
-//   return query
-//     .populate({
-//       path: "organizer",
-//       model: User,
-//       select: "_id firstName lastName photo",
-//     })
-//     .populate({ path: "category", model: Category, select: "_id name" });
-// };
-
-// CREATE
-export async function createBlog(formData: FormData, path: string) {
-  try {
-    const title = formData.get("title");
-    const description = formData.get("description");
-    const image = formData.get("image");
-    const userId = formData.get("userId");
-    const categoryId = formData.get("categoryId");
-
-    await pool!.query(
-      "INSERT INTO blogs (title, description, image, user_id, category_id) VALUES (?, ?, ?, ?, ?)",
-      [title, description, image, userId, categoryId || null]
-    );
-
-    revalidatePath(path);
-  } catch (error) {
-    handleError(error);
-  }
+function blogData(form: FormData) {
+  const category = form.get("categoryId");
+  const image = form.get("image");
+  if (image && (typeof image !== "string" || !/^https?:\/\//.test(image)))
+    throw new Error("Invalid image URL.");
+  return {
+    title: text(form, "title", 500),
+    description: text(form, "description"),
+    image: typeof image === "string" && image ? image : null,
+    category_id: category ? positiveId(category) : null,
+  };
 }
-
-// GET ONE Blog BY ID
+async function blogInclude() {
+  const { userId } = await auth();
+  return {
+    author: { select: publicProfile },
+    category: { select: { name: true } },
+    _count: { select: { views: true, likes: true, comments: true } },
+    likes: { where: { user_id: userId ?? "" }, select: { id: true } },
+    favourites: { where: { user_id: userId ?? "" }, select: { id: true } },
+  } satisfies Prisma.BlogInclude;
+}
+type LoadedBlog = Prisma.BlogGetPayload<{
+  include: Awaited<ReturnType<typeof blogInclude>>;
+}>;
+function serialize(blog: LoadedBlog) {
+  const { author, category, _count, likes, favourites, ...data } = blog;
+  return {
+    ...data,
+    created_at: data.created_at.toISOString(),
+    updated_at: data.updated_at.toISOString(),
+    creator: author,
+    category_name: category?.name ?? null,
+    views: _count.views,
+    likes: _count.likes,
+    comments: _count.comments,
+    isLiked: likes.length > 0,
+    isFavourited: favourites.length > 0,
+  };
+}
+function order(sort?: string): Prisma.BlogOrderByWithRelationInput[] {
+  const first: Prisma.BlogOrderByWithRelationInput =
+    sort === "oldest"
+      ? { created_at: "asc" }
+      : sort === "title-asc"
+        ? { title: "asc" }
+        : sort === "title-desc"
+          ? { title: "desc" }
+          : sort === "most_viewed"
+            ? { views: { _count: "desc" } }
+            : sort === "most_liked"
+              ? { likes: { _count: "desc" } }
+              : sort === "most_commented"
+                ? { comments: { _count: "desc" } }
+                : { created_at: "desc" };
+  return [first, { id: "desc" }];
+}
+async function listing(
+  where: Prisma.BlogWhereInput,
+  page: number,
+  limit: number,
+  sort?: string,
+) {
+  page = Number.isSafeInteger(page) && page > 0 ? page : 1;
+  limit = Number.isSafeInteger(limit) ? Math.min(50, Math.max(1, limit)) : 9;
+  const include = await blogInclude();
+  const [totalCount, blogs] = await Promise.all([
+    db.blog.count({ where }),
+    db.blog.findMany({
+      where,
+      include,
+      orderBy: order(sort),
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+  ]);
+  return {
+    data: blogs.map(serialize),
+    totalPages: Math.max(1, Math.ceil(totalCount / limit)),
+    currentPage: page,
+    totalCount,
+  };
+}
+export async function createBlog(form: FormData, path: string) {
+  return mutation(async () => {
+    const user = await requireUser();
+    await db.blog.create({
+      data: { ...blogData(form), user_id: user.user_id },
+    });
+    refresh(path);
+  });
+}
 export async function getBlogById(blogId: string) {
-  try {
-    const [rows] = await pool!.query(
-      `SELECT b.*, c.name as category_name 
-       FROM blogs b 
-       LEFT JOIN categories c ON b.category_id = c.id 
-       WHERE b.id = ?`,
-      [blogId]
-    );
-    const blog = (rows as Blog[])[0];
-
-    if (!blog) notFound();
-
-    return JSON.parse(JSON.stringify(blog));
-  } catch (error) {
-    handleError(error);
-  }
+  if (
+    !/^\d+$/.test(blogId) ||
+    Number(blogId) > 2147483647 ||
+    Number(blogId) < 1
+  )
+    notFound();
+  const blog = await db.blog.findUnique({
+    where: { id: Number(blogId) },
+    include: await blogInclude(),
+  });
+  if (!blog) notFound();
+  return serialize(blog);
 }
-
-// UPDATE
-export async function updateBlog(formData: FormData, path: string) {
-  try {
-    const title = formData.get("title");
-    const description = formData.get("description");
-    const image = formData.get("image");
-    const blogId = formData.get("blogId");
-    const categoryId = formData.get("categoryId");
-
-    await pool!.query(
-      `UPDATE blogs SET title = ?, description = ?, image = ?, category_id = ? WHERE id = ?`,
-      [title, description, image, categoryId || null, blogId]
-    );
-
-    revalidatePath(path);
-  } catch (error) {
-    handleError(error);
-  }
+export async function updateBlog(form: FormData, path: string) {
+  return mutation(async () => {
+    const user = await requireUser();
+    const result = await db.blog.updateMany({
+      where: { id: positiveId(form.get("blogId")), user_id: user.user_id },
+      data: blogData(form),
+    });
+    if (!result.count) throw new Error("Not authorized.");
+    refresh(path);
+  });
 }
-
-// DELETE
-export async function deleteBlog(formData: FormData, path: string) {
-  try {
-    const blogId = formData.get("blogId");
-
-    await pool!.query("DELETE FROM blogs WHERE id = ?", [blogId]);
-
-    revalidatePath(path);
-  } catch (error) {
-    handleError(error);
-  }
+export async function deleteBlog(form: FormData, path: string) {
+  return mutation(async () => {
+    const user = await requireUser();
+    const result = await db.blog.deleteMany({
+      where: { id: positiveId(form.get("blogId")), user_id: user.user_id },
+    });
+    if (!result.count) throw new Error("Not authorized or already deleted.");
+    refresh(path);
+  });
 }
-
-// DELETE BLOG FROM DETAIL PAGE WITH REDIRECT
-export async function deleteBlogAndRedirect(formData: FormData, path: string) {
-  const { redirect } = await import("next/navigation");
-
-  try {
-    const blogId = formData.get("blogId");
-
-    await pool!.query("DELETE FROM blogs WHERE id = ?", [blogId]);
-
-    revalidatePath(path);
-  } catch (error) {
-    handleError(error);
-  }
-
-  redirect(path);
+export async function deleteBlogAndRedirect(form: FormData, path: string) {
+  await deleteBlog(form, path);
+  redirect(path.startsWith("/") && !path.startsWith("//") ? path : "/my-blogs");
 }
-
-// Delete all blogs by current User
-
-export async function deleteAllBlogsByUser(formData: FormData, path: string) {
-  try {
-    const userId = formData.get("deleteId"); // Changed from "userId" to "deleteId" to match DeleteButton
-
-    await pool!.query("DELETE FROM blogs WHERE user_id = ?", [userId]);
-
-    revalidatePath(path);
-  } catch (error) {
-    handleError(error);
-  }
+export async function deleteAllBlogsByUser(_form: FormData, path: string) {
+  return mutation(async () => {
+    const user = await requireUser();
+    await db.blog.deleteMany({ where: { user_id: user.user_id } });
+    refresh(path);
+  });
 }
-
-// GET ALL Blogs
 export async function getAllBlogs(
   searchQuery?: string,
-  page: number = 1,
-  limit: number = 9,
+  page = 1,
+  limit = 9,
   categoryId?: string,
-  sort?: "newest" | "oldest" | "most_viewed" | "most_liked" | "most_commented"
+  sort?: "newest" | "oldest" | "most_viewed" | "most_liked" | "most_commented",
 ) {
-  try {
-    const offset = (page - 1) * limit;
-
-    // Helper to retry a query once on transient connection errors
-    const execQuery = async (q: string, p: (string | number)[]) => {
-      try {
-        return await pool!.query(q, p);
-      } catch (err: unknown) {
-        // Retry on common transient errors
-        if (
-          err &&
-          typeof err === "object" &&
-          err !== null &&
-          "code" in err &&
-          ((err as { code?: string }).code === "ECONNRESET" ||
-            (err as { code?: string }).code === "PROTOCOL_CONNECTION_LOST")
-        ) {
-          // small delay then retry once
-          await new Promise((r) => setTimeout(r, 200));
-          return await pool!.query(q, p);
-        }
-        throw err;
-      }
-    };
-
-    // Base queries
-    let countQuery = `
-      SELECT COUNT(*) as total
-      FROM blogs b
-    `;
-
-    let dataQuery = `
-      SELECT 
-        b.id, b.title, b.description, b.image, b.user_id, 
-        b.category_id, b.created_at,
-
-        -- view count
-        (SELECT COUNT(*) FROM blog_views v WHERE v.blog_id = b.id) AS views,
-
-        -- like count
-        (SELECT COUNT(*) FROM blog_likes l WHERE l.blog_id = b.id) AS likes,
-
-        -- comment count
-        (SELECT COUNT(*) FROM comments c WHERE c.blog_id = b.id) AS comments
-      FROM blogs b
-    `;
-
-    const params: (string | number)[] = [];
-    const whereClauses: string[] = [];
-
-    // Search filter
-    if (searchQuery && searchQuery.trim()) {
-      whereClauses.push("(b.title LIKE ? OR b.description LIKE ?)");
-      const searchPattern = `%${searchQuery.trim()}%`;
-      params.push(searchPattern, searchPattern);
-    }
-
-    // Category filter
-    if (categoryId && categoryId !== "all") {
-      whereClauses.push("b.category_id = ?");
-      params.push(parseInt(categoryId));
-    }
-
-    // Add WHERE clauses if exist
-    if (whereClauses.length > 0) {
-      const whereClause = " WHERE " + whereClauses.join(" AND ");
-      countQuery += whereClause;
-      dataQuery += whereClause;
-    }
-
-    // Sorting
-    switch (sort) {
-      case "oldest":
-        dataQuery += " ORDER BY b.created_at ASC";
-        break;
-
-      case "most_viewed":
-        dataQuery += " ORDER BY views DESC";
-        break;
-
-      case "most_liked":
-        dataQuery += " ORDER BY likes DESC";
-        break;
-
-      case "most_commented":
-        dataQuery += " ORDER BY comments DESC";
-        break;
-
-      default: // newest
-        dataQuery += " ORDER BY b.created_at DESC";
-    }
-
-    dataQuery += " LIMIT ? OFFSET ?";
-
-    // Total count
-    const [countResult] = await execQuery(countQuery, params);
-    const total = (countResult as CountResult[])[0].total;
-
-    // Get paginated blogs
-    const [blogs] = await execQuery(dataQuery, [...params, limit, offset]);
-
-    return {
-      data: JSON.parse(JSON.stringify(blogs)),
-      totalPages: Math.ceil(total / limit),
-      currentPage: page,
-      totalCount: total,
-    };
-  } catch (error) {
-    handleError(error);
-    return {
-      data: [],
-      totalPages: 1,
-      currentPage: page,
-      totalCount: 0,
-    };
-  }
+  const where: Prisma.BlogWhereInput = {};
+  if (searchQuery?.trim())
+    where.OR = [
+      { title: { contains: searchQuery.trim(), mode: "insensitive" } },
+      { description: { contains: searchQuery.trim(), mode: "insensitive" } },
+    ];
+  if (categoryId && categoryId !== "all")
+    where.category_id = positiveId(categoryId);
+  return listing(where, page, limit, sort);
 }
-
-// GET Recommended Blogs
-
-export async function getRecommendedBlogs(recSettings: {
+export async function getBlogsByUser(
+  { userId }: GetBlogsByUserParams,
+  page = 1,
+  limit = 9,
+  categoryId?: string,
+  sort?: SortOption,
+) {
+  const session = await auth();
+  if (session.userId === userId) await requireUser();
+  return listing(
+    {
+      user_id: userId,
+      ...(categoryId && categoryId !== "all"
+        ? { category_id: positiveId(categoryId) }
+        : {}),
+    },
+    page,
+    limit,
+    sort,
+  );
+}
+export async function getRecommendedBlogs(settings: {
   category?: string;
   creator?: string;
   title?: string;
   excludeBlogId?: number;
-  excludeUserId?: string; // Add parameter to exclude current user's blogs
+  excludeUserId?: string;
 }) {
-  try {
-    // First, try to get blogs based on recSettings (excluding current blog)
-    let filteredBlogs: Blog[] = [];
-
-    if (recSettings.category || recSettings.creator || recSettings.title) {
-      let query = `
-        SELECT
-          b.id, b.title, b.description, b.image, b.user_id,
-          b.category_id, b.created_at
-        FROM blogs b
-      `;
-      const conditions: string[] = [];
-      const params: (string | number)[] = [];
-
-      if (recSettings.category) {
-        conditions.push("b.category_id = ?");
-        params.push(parseInt(recSettings.category));
-      }
-      if (recSettings.creator) {
-        conditions.push("b.user_id = ?");
-        params.push(recSettings.creator);
-      }
-      if (recSettings.title) {
-        conditions.push("b.title LIKE ?");
-        params.push(`%${recSettings.title}%`);
-      }
-      if (recSettings.excludeBlogId) {
-        conditions.push("b.id != ?");
-        params.push(recSettings.excludeBlogId);
-      }
-      if (recSettings.excludeUserId) {
-        conditions.push("b.user_id != ?");
-        params.push(recSettings.excludeUserId);
-      }
-
-      if (conditions.length > 0) {
-        query += " WHERE " + conditions.join(" AND ");
-      }
-
-      query += " ORDER BY RAND() LIMIT 7";
-
-      const [rows] = await pool!.query(query, params);
-      filteredBlogs = JSON.parse(JSON.stringify(rows));
-    }
-
-    // If we have 7 or more filtered blogs, return the first 7
-    if (filteredBlogs.length >= 7) {
-      return filteredBlogs.slice(0, 7);
-    }
-
-    // If we have some filtered blogs but less than 7, get random blogs to fill the gap
-    const remainingCount = 7 - filteredBlogs.length;
-    let randomBlogs: Blog[] = [];
-
-    if (remainingCount > 0) {
-      let randomQuery = `
-        SELECT
-          b.id, b.title, b.description, b.image, b.user_id,
-          b.category_id, b.created_at
-        FROM blogs b
-      `;
-
-      const randomConditions: string[] = [];
-      const randomParams: (string | number)[] = [];
-
-      // Exclude the current blog if specified
-      if (recSettings.excludeBlogId) {
-        randomConditions.push("b.id != ?");
-        randomParams.push(recSettings.excludeBlogId);
-      }
-      // Exclude current user's blogs
-      if (recSettings.excludeUserId) {
-        randomConditions.push("b.user_id != ?");
-        randomParams.push(recSettings.excludeUserId);
-      }
-
-      // Exclude blogs that are already in filteredBlogs
-      if (filteredBlogs.length > 0) {
-        const excludeIds = filteredBlogs.map((blog) => blog.id);
-        randomConditions.push(
-          `b.id NOT IN (${excludeIds.map(() => "?").join(",")})`
-        );
-        randomParams.push(...excludeIds);
-      }
-
-      if (randomConditions.length > 0) {
-        randomQuery += " WHERE " + randomConditions.join(" AND ");
-      }
-
-      randomQuery += " ORDER BY RAND() LIMIT ?";
-      randomParams.push(remainingCount);
-
-      const [randomRows] = await pool!.query(randomQuery, randomParams);
-      randomBlogs = JSON.parse(JSON.stringify(randomRows));
-    }
-
-    // Combine filtered and random blogs
-    const allBlogs = [...filteredBlogs, ...randomBlogs];
-
-    // If we still don't have 7 blogs (very unlikely), fill with any random blogs
-    if (allBlogs.length < 7) {
-      const finalCount = 7 - allBlogs.length;
-      let finalQuery = `
-        SELECT
-          b.id, b.title, b.description, b.image, b.user_id,
-          b.category_id, b.created_at
-        FROM blogs b
-      `;
-
-      const finalConditions: string[] = [];
-      const finalParams: (string | number)[] = [];
-
-      // Exclude already selected blogs
-      if (allBlogs.length > 0) {
-        const excludeIds = allBlogs.map((blog) => blog.id);
-        finalConditions.push(
-          `b.id NOT IN (${excludeIds.map(() => "?").join(",")})`
-        );
-        finalParams.push(...excludeIds);
-      }
-      // Exclude current user's blogs
-      if (recSettings.excludeUserId) {
-        finalConditions.push("b.user_id != ?");
-        finalParams.push(recSettings.excludeUserId);
-      }
-
-      if (finalConditions.length > 0) {
-        finalQuery += " WHERE " + finalConditions.join(" AND ");
-      }
-
-      finalQuery += " ORDER BY RAND() LIMIT ?";
-      finalParams.push(finalCount);
-
-      const [finalRows] = await pool!.query(finalQuery, finalParams);
-      const finalBlogs = JSON.parse(JSON.stringify(finalRows));
-      allBlogs.push(...finalBlogs);
-    }
-
-    // Ensure we return exactly 7 blogs (slice if somehow more)
-    return allBlogs.slice(0, 7);
-  } catch (error) {
-    handleError(error);
-    // Fallback: return 7 random blogs
-    try {
-      const [rows] = await pool!.query(`
-        SELECT
-          b.id, b.title, b.description, b.image, b.user_id,
-          b.category_id, b.created_at
-        FROM blogs b
-        ORDER BY RAND() LIMIT 7
-      `);
-      return JSON.parse(JSON.stringify(rows));
-    } catch (fallbackError) {
-      handleError(fallbackError);
-      return [];
-    }
-  }
-}
-
-// GET Blogs BY ORGANIZER
-export async function getBlogsByUser(
-  { userId }: GetBlogsByUserParams,
-  page: number = 1,
-  limit: number = 9,
-  categoryId?: string,
-  sort?: SortOption
-) {
-  try {
-    const offset = (page - 1) * limit;
-
-    // Helper to retry a query once on transient connection errors
-    const execQuery = async (q: string, p: (string | number)[]) => {
-      try {
-        return await pool!.query(q, p);
-      } catch (err: unknown) {
-        if (
-          err &&
-          typeof err === "object" &&
-          err !== null &&
-          "code" in err &&
-          ((err as { code?: string }).code === "ECONNRESET" ||
-            (err as { code?: string }).code === "PROTOCOL_CONNECTION_LOST")
-        ) {
-          await new Promise((r) => setTimeout(r, 200));
-          return await pool!.query(q, p);
-        }
-        throw err;
-      }
-    };
-
-    // Base queries with counts (views, likes, comments)
-    let countQuery = `SELECT COUNT(*) as total FROM blogs WHERE user_id = ?`;
-    let dataQuery = `
-      SELECT
-        b.id, b.title, b.description, b.image, b.user_id,
-        b.category_id, b.created_at,
-        (SELECT COUNT(*) FROM blog_views v WHERE v.blog_id = b.id) AS views,
-        (SELECT COUNT(*) FROM blog_likes l WHERE l.blog_id = b.id) AS likes,
-        (SELECT COUNT(*) FROM comments c WHERE c.blog_id = b.id) AS comments
-      FROM blogs b
-      WHERE b.user_id = ?
-    `;
-
-    const params: (string | number)[] = [userId];
-
-    if (categoryId && categoryId !== "all") {
-      countQuery += " AND category_id = ?";
-      dataQuery += " AND b.category_id = ?";
-      params.push(parseInt(categoryId));
-    }
-
-    // Sorting - mirror getAllBlogs logic and also support title sorts
-    switch (sort as string) {
-      case "oldest":
-        dataQuery += " ORDER BY b.created_at ASC";
-        break;
-      case "most_viewed":
-        dataQuery += " ORDER BY views DESC";
-        break;
-      case "most_liked":
-        dataQuery += " ORDER BY likes DESC";
-        break;
-      case "most_commented":
-        dataQuery += " ORDER BY comments DESC";
-        break;
-      case "title-asc":
-        dataQuery += " ORDER BY b.title ASC";
-        break;
-      case "title-desc":
-        dataQuery += " ORDER BY b.title DESC";
-        break;
-      default:
-        dataQuery += " ORDER BY b.created_at DESC";
-    }
-
-    dataQuery += " LIMIT ? OFFSET ?";
-
-    // Get counts and data with retry helper
-    const [countResult] = await execQuery(countQuery, params);
-    const total = (countResult as CountResult[])[0].total;
-
-    const [blogs] = await execQuery(dataQuery, [...params, limit, offset]);
-
-    return {
-      data: JSON.parse(JSON.stringify(blogs)),
-      totalPages: Math.ceil(total / limit),
-      currentPage: page,
-      totalCount: total,
-    };
-  } catch (error) {
-    handleError(error);
-    return {
-      data: [],
-      totalPages: 1,
-      currentPage: page,
-      totalCount: 0,
-    };
-  }
-}
-
-// CREATE CATEGORY
-
-export async function createCategory(formData: FormData, path: string) {
-  try {
-    const name = formData.get("name");
-    const creatorId = formData.get("creatorId");
-
-    await pool!.query(
-      "INSERT INTO categories (name, creator_id) VALUES (?, ?)",
-      [name, creatorId]
+  const exclusions = [Prisma.sql`TRUE`];
+  if (settings.excludeBlogId)
+    exclusions.push(Prisma.sql`id <> ${positiveId(settings.excludeBlogId)}`);
+  if (settings.excludeUserId)
+    exclusions.push(Prisma.sql`user_id <> ${settings.excludeUserId}`);
+  const filters = [...exclusions];
+  if (settings.category)
+    filters.push(Prisma.sql`category_id = ${positiveId(settings.category)}`);
+  if (settings.creator) filters.push(Prisma.sql`user_id = ${settings.creator}`);
+  if (settings.title)
+    filters.push(Prisma.sql`title ILIKE ${"%" + settings.title + "%"}`);
+  const selected = await db.$queryRaw<{ id: number }[]>(
+    Prisma.sql`SELECT id FROM blogs WHERE ${Prisma.join(filters, " AND ")} ORDER BY random() LIMIT 7`,
+  );
+  if (selected.length < 7) {
+    if (selected.length)
+      exclusions.push(
+        Prisma.sql`id NOT IN (${Prisma.join(selected.map((b) => b.id))})`,
+      );
+    selected.push(
+      ...(await db.$queryRaw<{ id: number }[]>(
+        Prisma.sql`SELECT id FROM blogs WHERE ${Prisma.join(exclusions, " AND ")} ORDER BY random() LIMIT ${7 - selected.length}`,
+      )),
     );
-
-    revalidatePath(path);
-  } catch (error) {
-    handleError(error);
   }
+  const blogs = await db.blog.findMany({
+    where: { id: { in: selected.map((b) => b.id) } },
+    include: await blogInclude(),
+  });
+  const byId = new Map(blogs.map((b) => [b.id, serialize(b)]));
+  return selected
+    .map((b) => byId.get(b.id))
+    .filter((b): b is NonNullable<typeof b> => !!b);
 }
-
-// UPDATE CATEGORY
-export async function updateCategory(formData: FormData, path: string) {
-  try {
-    const categoryId = formData.get("categoryId");
-    const name = formData.get("name");
-    await pool!.query("UPDATE categories SET name = ? WHERE id = ?", [
-      name,
-      categoryId,
-    ]);
-    revalidatePath(path);
-  } catch (error) {
-    handleError(error);
-  }
+export async function createCategory(form: FormData, path: string) {
+  return mutation(async () => {
+    const user = await requireUser();
+    await db.category.create({
+      data: { name: text(form, "name", 255), creator_id: user.user_id },
+    });
+    refresh(path);
+  });
 }
-
-// DELETE CATEGORY
-
-export async function deleteCategory(formData: FormData, path: string) {
-  try {
-    const categoryId = formData.get("categoryId");
-    await pool!.query("DELETE FROM categories WHERE id = ?", [categoryId]);
-    revalidatePath(path);
-  } catch (error) {
-    handleError(error);
-  }
+export async function updateCategory(form: FormData, path: string) {
+  return mutation(async () => {
+    const user = await requireUser();
+    const result = await db.category.updateMany({
+      where: {
+        id: positiveId(form.get("categoryId")),
+        creator_id: user.user_id,
+      },
+      data: { name: text(form, "name", 255) },
+    });
+    if (!result.count) throw new Error("Not authorized.");
+    refresh(path);
+  });
 }
-
-// GET ALL CATEGORIES
-
+export async function deleteCategory(form: FormData, path: string) {
+  return mutation(async () => {
+    const user = await requireUser();
+    const result = await db.category.deleteMany({
+      where: {
+        id: positiveId(form.get("categoryId")),
+        creator_id: user.user_id,
+      },
+    });
+    if (!result.count) throw new Error("Not authorized or already deleted.");
+    refresh(path);
+  });
+}
 export async function getAllCategories() {
-  try {
-    const [rows] = await pool!.query(
-      "SELECT id, name, creator_id FROM categories"
-    );
-    return JSON.parse(JSON.stringify(rows));
-  } catch (error) {
-    handleError(error);
-  }
+  return db.category.findMany({
+    select: { id: true, name: true, creator_id: true },
+    orderBy: { name: "asc" },
+  });
 }
-
-// GET RELATED EVENTS: EVENTS WITH SAME CATEGORY
-// export async function getRelatedEventsByCategory({
-//   categoryId,
-//   eventId,
-//   limit = 3,
-//   page = 1,
-// }: GetRelatedEventsByCategoryParams) {
-//   try {
-//     await connectToDatabase();
-
-//     const skipAmount = (Number(page) - 1) * limit;
-//     const conditions = {
-//       $and: [{ category: categoryId }, { _id: { $ne: eventId } }],
-//     };
-
-//     const eventsQuery = Event.find(conditions)
-//       .sort({ createdAt: "desc" })
-//       .skip(skipAmount)
-//       .limit(limit);
-
-//     const events = await populateEvent(eventsQuery);
-//     const eventsCount = await Event.countDocuments(conditions);
-
-//     return {
-//       data: JSON.parse(JSON.stringify(events)),
-//       totalPages: Math.ceil(eventsCount / limit),
-//     };
-//   } catch (error) {
-//     handleError(error);
-//   }
-// }

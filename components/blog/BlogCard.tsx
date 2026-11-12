@@ -17,12 +17,12 @@ type BlogCardProps = {
 };
 
 export default async function BlogCard({ cardType, blog }: BlogCardProps) {
-  const creatorUser: BlogCreator = await getUserById(blog.user_id);
+  const creatorUser: BlogCreator = blog.creator ?? await getUserById(blog.user_id);
   const user = await currentUser();
-  const isFavourited = user
+  const isFavourited = blog.isFavourited ?? (user
     ? await checkIfBlogIsFavourited(user.id, blog.id)
-    : false;
-  const isLiked = user ? await checkIfUserLikedBlog(user.id, blog.id) : false;
+    : false);
+  const isLiked = blog.isLiked ?? (user ? await checkIfUserLikedBlog(user.id, blog.id) : false);
   const isOwnBlog = user?.id === blog.user_id;
 
   return (

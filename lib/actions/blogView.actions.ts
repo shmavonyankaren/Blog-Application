@@ -1,96 +1,49 @@
-"use server";
-
-import pool from "@/lib/db/index";
-import { revalidatePath } from "next/cache";
-import { handleError } from "@/lib/utils/";
-
-// type ViewType = {
-//   id: number;
-//   blog_id: number;
-//   user_id: string;
-//   view_date: string;
-// };
-
-async function canUserViewBlog(blogId: number, userId: string) {
-  try {
-    const [rows] = await pool!.query(
-      `SELECT COUNT(*) AS total
-       FROM blog_views
-       WHERE blog_id = ? AND user_id = ? AND view_date = CURDATE()`,
-      [blogId, userId]
-    );
-
-    return (rows as { total: number }[])[0].total < 3; // limit: 3 views per day
-  } catch (error) {
-    handleError(error);
-    return false;
-  }
-}
-
+﻿"use server";
+import db from "@/lib/db";
+import { requireUser, requireSelf } from "@/lib/server/users";
+import { mutation, positiveId, refresh } from "@/lib/server/action-utils";
 export async function getBlogViewCount(blogId: number) {
-  try {
-    const [rows] = await pool!.query(
-      "SELECT COUNT(*) as total FROM blog_views WHERE blog_id = ?",
-      [blogId]
-    );
-    const countResult = (rows as { total: number }[])[0];
-    return countResult.total;
-  } catch (error) {
-    handleError(error);
-    return 0;
-  }
+  return db.blogView.count({ where: { blog_id: positiveId(blogId) } });
 }
-
 export async function incrementBlogView(
   blogId: number,
-  userId: string,
-  path: string
+  _userId: string,
+  path: string,
 ) {
-  try {
-    const allowed = await canUserViewBlog(blogId, userId);
-    if (!allowed) {
-      console.log("Daily view limit reached");
-      return;
-    }
-    await pool!.query(
-      "INSERT INTO blog_views (blog_id, user_id) VALUES (?, ?)",
-      [blogId, userId]
+  return mutation(async () => {
+    const user = await requireUser();
+    const id = positiveId(blogId);
+    await db.$transaction(
+      async (tx) => {
+        // Row locking works with transaction pooling and serializes concurrent views
+        // of the same blog, including requests from different function instances.
+        const blogs = await tx.$queryRaw<
+          { id: number }[]
+        >`SELECT id FROM blogs WHERE id = ${id} FOR UPDATE`;
+        if (!blogs.length) return;
+        // Use the database clock and explicit UTC, independent of client/host timezone.
+        const [clock] = await tx.$queryRaw<
+          { day: Date }[]
+        >`SELECT (clock_timestamp() AT TIME ZONE 'UTC')::date AS day`;
+        const where = {
+          blog_id: id,
+          user_id: user.user_id,
+          view_date: clock.day,
+        };
+        if ((await tx.blogView.count({ where })) < 3)
+          await tx.blogView.create({ data: where });
+      },
+      { maxWait: 5000, timeout: 10000 },
     );
-    revalidatePath(path);
-  } catch (error) {
-    handleError(error);
-  }
+    refresh(path);
+  });
 }
-
 export async function getUserBlogViewCount(userId: string, blogId: number) {
-  try {
-    const [rows] = await pool!.query(
-      "SELECT COUNT(*) as total FROM blog_views WHERE blog_id = ? AND user_id = ?",
-      [blogId, userId]
-    );
-    const countResult = (rows as { total: number }[])[0];
-    return countResult.total;
-  } catch (error) {
-    handleError(error);
-    return 0;
-  }
+  await requireSelf(userId);
+  return db.blogView.count({
+    where: { user_id: userId, blog_id: positiveId(blogId) },
+  });
 }
-
 export async function getTotalBlogViewsForUser(userId: string) {
-  try {
-    const [rows] = await pool!.query(
-      `
-      SELECT COUNT(*) AS total
-      FROM blog_views bv
-      JOIN blogs b ON bv.blog_id = b.id
-      WHERE b.user_id = ?
-      `,
-      [userId]
-    );
-
-    return (rows as { total: number }[])[0].total;
-  } catch (error) {
-    handleError(error);
-    return 0;
-  }
+  return db.blogView.count({ where: { blog: { user_id: userId } } });
 }

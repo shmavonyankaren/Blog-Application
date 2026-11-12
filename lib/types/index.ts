@@ -1,84 +1,77 @@
-import { RowDataPacket } from "mysql2";
-
-export interface CategoryType {
-  id: number; // Auto-incremented primary key
-  name: string; // Category name
-  creator_id: string; // References users.user_id (Clerk ID)
+﻿export interface CategoryType {
+  id: number;
+  name: string;
+  creator_id: string | null;
 }
-
-export interface FavouriteType extends RowDataPacket {
-  id: number; // Auto-incremented primary key
-  user_id: string; // References users.user_id (Clerk ID)
-  blog_id: number; // References blogs.id
+export interface FavouriteType {
+  id: number;
+  user_id: string;
+  blog_id: number;
 }
-
-export interface CommentType extends RowDataPacket {
-  id: number; // Auto-incremented primary key
-  blog_id: number; // References blogs.id
-  user_id: string; // References users.user_id (Clerk ID)
-  created_at: string; // ISO string (timestamp from DB)
-  updated_at: string; // ISO string (timestamp from DB)
-  content: string;
-  parent_comment_id?: number | null; // References comments.id (nullable)
-  replies: CommentType[]; // Nested replies
+export interface User {
+  user_id: string;
+  first_name: string | null;
+  last_name: string | null;
+  username: string | null;
+  photo: string | null;
 }
-
-export interface BlogType extends RowDataPacket {
-  id: number; // Auto-incremented primary key
-  image?: string | undefined; // Optional image URL
-  user_id: string; // References users.user_id (Clerk ID)
-  title: string; // Blog title, required
-  description?: string | undefined; // Optional description (TEXT in SQL can be null)
-  category_id?: number | undefined; // References categories.id
-  created_at: string; // ISO string (timestamp from DB)
+export type BlogCreator = User;
+export interface CommentType {
+  id: number;
+  blog_id: number;
+  user_id: string;
+  created_at: string;
   updated_at: string;
+  content: string;
+  parent_comment_id?: number | null;
+  replies: CommentType[];
+  creator?: User;
+  likeCount?: number;
+  isLiked?: boolean;
 }
-
+export interface BlogType {
+  id: number;
+  image: string | null;
+  user_id: string;
+  title: string;
+  description: string;
+  category_id: number | null;
+  created_at: string;
+  updated_at: string;
+  category_name?: string | null;
+  creator?: User;
+  isLiked?: boolean;
+  isFavourited?: boolean;
+  views?: number;
+  likes?: number;
+  comments?: number;
+}
 export type CreateEditBlogTypes = {
   actionType: "edit" | "create";
   blog?: {
     id: number;
     title: string;
     description?: string;
-    image?: string;
-    category_id?: number;
+    image?: string | null;
+    category_id?: number | null;
   };
 };
-
-export type DeleteBlogParams = {
-  id: number;
-};
-
-export type GetBlogsByUserParams = {
-  userId: string;
-};
-
+export type DeleteBlogParams = { id: number };
+export type GetBlogsByUserParams = { userId: string };
 export type UpdateBlogParams = {
   id: number;
   title?: string;
   description?: string;
-  image?: string;
+  image?: string | null;
 };
-
-export type SortOption = "newest" | "oldest" | "title-asc" | "title-desc";
-
-export interface User {
-  user_id: string;
-  first_name: string | null;
-  last_name: string | null;
-  username: string | null;
-  photo: string;
-  email: string;
-}
-
-export interface BlogCreator {
-  email: string;
-  username: string | null;
-  first_name: string | null;
-  last_name: string | null;
-  photo: string | null;
-}
-
+export type SortOption =
+  | "newest"
+  | "oldest"
+  | "title-asc"
+  | "title-desc"
+  | "most_viewed"
+  | "most_liked"
+  | "most_commented";
 export type CreateUserParams = {
   clerkId: string;
   firstName: string | null;
@@ -87,7 +80,6 @@ export type CreateUserParams = {
   email: string;
   photo: string;
 };
-
 export type UpdateUserParams = {
   firstName: string | null;
   lastName: string | null;

@@ -1,19 +1,10 @@
 import { BlogCreatorButtons } from "@/components";
 import { getBlogById } from "@/lib/actions/blog.actions";
-import { getUserById } from "@/lib/actions/user.actions";
-import { BlogType } from "@/lib/types";
 import Image from "next/image";
 import { formatDateHour } from "@/lib/utils/";
 import { currentUser } from "@clerk/nextjs/server";
 import CommentsSection from "@/components/blog/comments/CommentsSection";
-import { notFound } from "next/navigation";
 import Link from "next/link";
-import { checkIfBlogIsFavourited } from "@/lib/actions/favourite.action";
-import {
-  checkIfUserLikedBlog,
-  getBlogLikeCount,
-} from "@/lib/actions/blogLike.actions";
-import { getBlogViewCount } from "@/lib/actions/blogView.actions";
 import ViewCount from "@/components/blog/ViewCount";
 import SaveLikeButtons from "@/components/blog/SaveLikeButtons";
 import RecommendationContainer from "@/components/blog/RecommendationContainer";
@@ -26,23 +17,13 @@ export default async function BlogPage({
   const { blogId } = await params;
   const user = await currentUser();
 
-  let blog: BlogType;
-  try {
-    blog = await getBlogById(blogId);
-    if (!blog) {
-      notFound();
-    }
-  } catch {
-    notFound();
-  }
+  const blog = await getBlogById(blogId);
 
-  const creator = await getUserById(blog.user_id);
-  const isFavourited = user
-    ? await checkIfBlogIsFavourited(user.id, blog.id)
-    : false;
-  const isLiked = user ? await checkIfUserLikedBlog(user.id, blog.id) : false;
-  const likeCount = await getBlogLikeCount(blog.id);
-  const viewCount = await getBlogViewCount(blog.id);
+  const creator = blog.creator;
+  const isFavourited = blog.isFavourited;
+  const isLiked = blog.isLiked;
+  const likeCount = blog.likes;
+  const viewCount = blog.views;
   const recommendationSetting = {
     category: blog.category_id ? String(blog.category_id) : undefined,
     creator: blog.user_id ? String(blog.user_id) : undefined,
@@ -119,7 +100,7 @@ export default async function BlogPage({
                     {formatDateHour(blog.updated_at)}
                   </span>
                 </div>
-                {(blog as BlogType).category_name && (
+                {blog.category_name && (
                   <div className="flex items-center gap-2">
                     <svg
                       className="w-5 h-5"
@@ -135,7 +116,7 @@ export default async function BlogPage({
                       />
                     </svg>
                     <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium">
-                      {(blog as BlogType).category_name}
+                      {blog.category_name}
                     </span>
                   </div>
                 )}

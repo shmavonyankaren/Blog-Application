@@ -1,146 +1,61 @@
-"use server";
-
-import { revalidatePath } from "next/cache";
+﻿"use server";
+import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
-
-import pool from "@/lib/db/index";
-import { handleError, sendEmail } from "@/lib/utils";
-
-import { BlogCreator, CreateUserParams, UpdateUserParams } from "@/lib/types";
-
+import db from "@/lib/db";
+import {
+  publicProfile,
+  requireSelf,
+  requireUser,
+  syncClerkUser,
+} from "@/lib/server/users";
+import { mutation, refresh, text } from "@/lib/server/action-utils";
+import { sendEmail } from "@/lib/utils";
+import type { CreateUserParams, UpdateUserParams } from "@/lib/types";
 export async function createUser(user: CreateUserParams) {
-  try {
-    // Create new user in the database
-    await pool!.query(
-      "INSERT INTO users (user_id, email, first_name, last_name, photo, username) VALUES (?, ?, ?, ?, ?, ?)",
-      [
-        user.clerkId,
-        user.email,
-        user.firstName,
-        user.lastName,
-        user.photo,
-        user.username,
-      ]
-    );
-    const [rows] = await pool!.query("SELECT * FROM users WHERE user_id = ?", [
-      user.clerkId,
-    ]);
-    const newUser = (rows as CreateUserParams[])[0];
-
-    return JSON.parse(JSON.stringify(newUser));
-  } catch (error) {
-    handleError(error);
-  }
+  return mutation(async () => {
+    const id = await requireSelf(user.clerkId);
+    return syncClerkUser(id);
+  });
 }
-
-// export async function createOrUpdataUser(
-//   clerkId: string,
-//   user: UpdateUserParams
-// ) {
-//   try {
-//     // Update existing user or create new one if not exists
-//     await pool!.query(
-//       `INSERT INTO users (clerk_id, email, first_name, last_name, photo, username)<|diff_marker|> PATCH ADD A1000
-//        VALUES (?, ?, ?, ?, ?, ?)
-//        ON DUPLICATE KEY UPDATE
-//          first_name = VALUES(first_name),
-//             last_name = VALUES(last_name),
-//             photo = VALUES(photo),
-//             username = VALUES(username)`,
-//         [
-//           clerkId,
-//           user.firstName,
-//           user.lastName,
-//           user.photo,
-//           user.username,
-//         ]
-//     );
-
-//   } catch (error) {
-//     handleError(error);
-//   }
-// }
-
-export async function getUserById(userId: string) {
-  try {
-    const [rows] = await pool!.query(
-      "SELECT user_id, username, first_name, last_name, photo, email from users WHERE user_id = ?",
-      [userId]
-    );
-
-    const targetUser = (rows as BlogCreator[])[0];
-
-    if (!targetUser) notFound();
-
-    return JSON.parse(JSON.stringify(targetUser));
-  } catch (error) {
-    handleError(error);
-  }
+export async function updateUser(clerkId: string, _user: UpdateUserParams) {
+  void _user; // Provider profile is authoritative; never apply browser-submitted fields.
+  return mutation(async () => {
+    await requireSelf(clerkId);
+    return syncClerkUser(clerkId);
+  });
 }
-
-export async function updateUser(clerkId: string, user: UpdateUserParams) {
-  try {
-    await pool!.query(
-      `UPDATE users SET first_name = ?, last_name = ?, photo = ?, username = ? WHERE user_id = ?`,
-      [user.firstName, user.lastName, user.photo, user.username, clerkId]
-    );
-
-    const [rows] = await pool!.query(
-      "SELECT user_id, email, username, photo, first_name, last_name FROM users WHERE user_id = ?",
-      [clerkId]
-    );
-    const updatedUser = (rows as UpdateUserParams[])[0];
-
-    if (!updatedUser) throw new Error("User update failed");
-
-    return JSON.parse(JSON.stringify(updatedUser));
-  } catch (error) {
-    handleError(error);
-  }
-}
-
 export async function deleteUser(clerkId: string) {
-  try {
-    // Find user to delete
-    const userToDelete = await pool!
-      .query("SELECT * FROM users WHERE user_id = ?", [clerkId])
-      .then(([rows]) => (rows as CreateUserParams[])[0]);
-
-    if (!userToDelete) {
-      throw new Error("User not found");
-    }
-
-    //Delete user's blogs
-    await pool!.query("DELETE FROM blogs WHERE user_id = ?", [
-      userToDelete.clerkId,
-    ]);
-
-    // Delete user
-    await pool!.query("DELETE FROM users WHERE user_id = ?", [clerkId]);
-
-    const deletedUser = userToDelete;
-    revalidatePath("/");
-
-    return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
-  } catch (error) {
-    handleError(error);
-  }
+  return mutation(async () => {
+    await requireSelf(clerkId);
+    const result = await db.user.deleteMany({ where: { user_id: clerkId } });
+    refresh();
+    return result;
+  });
 }
-
+export async function getUserById(userId: string) {
+  const session = await auth();
+  if (session.userId === userId) await requireUser();
+  const user = await db.user.findUnique({
+    where: { user_id: userId },
+    select: publicProfile,
+  });
+  if (!user) notFound();
+  return user;
+}
+export async function recoverCurrentProfile() {
+  return mutation(() => requireUser());
+}
 export async function sendContactForm(form: FormData) {
-  try {
-    const name = form.get("name");
-    const email = form.get("email");
-    const subject = form.get("subject");
-    const message = form.get("message");
-
-    sendEmail(
-      name as string,
-      email as string,
-      subject as string,
-      message as string
-    );
-  } catch (error) {
-    handleError(error);
-  }
+  // The contact form remains public and does not write to the database.
+  const email = text(form, "email", 255);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+    throw new Error("Invalid email.");
+  const result = await sendEmail(
+    text(form, "name", 255),
+    email,
+    text(form, "subject", 500),
+    text(form, "message", 10000),
+  );
+  if (!result.success)
+    throw new Error("Unable to send your message. Please try again.");
 }

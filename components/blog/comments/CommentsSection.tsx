@@ -1,7 +1,5 @@
 import {
   getAllCommentsByBlog,
-  getCommentLikeCount,
-  checkIfUserLikedComment,
 } from "@/lib/actions/comment.actions";
 import CommentsList from "./CommentsList";
 import AddCommentForm from "./AddCommentForm";
@@ -22,40 +20,13 @@ export default async function CommentsSection({
   // Fetch all like data at server level - modern approach for instant rendering
   const likesData: Record<number, { count: number; isLiked: boolean }> = {};
 
-  if (user && comments.length > 0) {
-    // Flatten all comments including nested replies
-    const flattenComments = (comms: CommentType[]): CommentType[] => {
-      const result: CommentType[] = [];
-      const traverse = (cs: CommentType[]) => {
-        cs.forEach((c) => {
-          result.push(c);
-          if (c.replies && c.replies.length > 0) {
-            traverse(c.replies);
-          }
-        });
-      };
-      traverse(comms);
-      return result;
-    };
-
-    const allComments = flattenComments(comments);
-
-    // Fetch all likes data in parallel
-    const likesResults = await Promise.all(
-      allComments.map(async (comment) => {
-        const [count, isLiked] = await Promise.all([
-          getCommentLikeCount(comment.id),
-          checkIfUserLikedComment(user.id, comment.id),
-        ]);
-        return { id: comment.id, count, isLiked };
-      })
-    );
-
-    // Convert to object for easy lookup
-    likesResults.forEach((like) => {
-      likesData[like.id] = { count: like.count, isLiked: like.isLiked };
-    });
-  }
+  const collect = (nodes: CommentType[]) => {
+    for (const comment of nodes) {
+      likesData[comment.id] = { count: comment.likeCount ?? 0, isLiked: comment.isLiked ?? false };
+      collect(comment.replies);
+    }
+  };
+  collect(comments);
   return (
     <div className="w-full bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-slate-800 transition-colors duration-300">
       {/* Header */}

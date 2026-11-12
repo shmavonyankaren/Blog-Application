@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { User } from "@/lib/types";
 import Link from "next/link";
-import {} from "@clerk/nextjs/server";
 import { useUser } from "@clerk/nextjs";
 
 interface CommentHeaderProps {
@@ -17,10 +16,8 @@ export default function CommentHeader({
 }: CommentHeaderProps) {
   const isEdited = createdAt !== updatedAt;
   const { user } = useUser();
-  // Add 4 hours to compensate for Railway UTC storage
-  const offset = 4 * 60 * 60 * 1000;
-  const adjustedCreatedAt = new Date(new Date(createdAt).getTime() + offset);
-  const adjustedUpdatedAt = new Date(new Date(updatedAt).getTime() + offset);
+  const adjustedCreatedAt = new Date(createdAt);
+  const adjustedUpdatedAt = new Date(updatedAt);
   const isOwnBlog = user?.id === creatorOfComment.user_id;
   return (
     <Link
@@ -30,7 +27,7 @@ export default function CommentHeader({
       className="flex items-center gap-3"
     >
       <Image
-        src={creatorOfComment.photo}
+        src={creatorOfComment.photo || "/assets/images/user_avatar.png"}
         alt="User Avatar"
         width={40}
         height={40}

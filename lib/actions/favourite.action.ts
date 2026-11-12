@@ -1,80 +1,60 @@
-"use server";
-
-import pool from "@/lib/db";
-import { handleError } from "@/lib/utils/";
-import { revalidatePath } from "next/dist/server/web/spec-extension/revalidate";
-import { BlogType, FavouriteType } from "@/lib/types";
-
+﻿"use server";
+import db from "@/lib/db";
+import { requireSelf, requireUser, publicProfile } from "@/lib/server/users";
+import { mutation, positiveId, refresh } from "@/lib/server/action-utils";
 export async function checkIfBlogIsFavourited(userId: string, blogId: number) {
-  try {
-    const [rows] = await pool!.query(
-      "SELECT blog_id FROM favourites WHERE user_id = ? AND blog_id = ?",
-      [userId, blogId]
-    );
-    return (rows as FavouriteType[]).length > 0;
-  } catch (error) {
-    handleError(error);
-
-    return false;
-  }
+  await requireSelf(userId);
+  return !!(await db.favourite.findUnique({
+    where: {
+      user_id_blog_id: { user_id: userId, blog_id: positiveId(blogId) },
+    },
+    select: { id: true },
+  }));
 }
-
-// CREATE
-export async function favouriteBlog(formData: FormData, path: string) {
-  try {
-    const userId = formData.get("userId");
-    const blogId = formData.get("blogId");
-    await pool!.query(
-      "INSERT INTO favourites (user_id, blog_id) VALUES (?, ?)",
-      [userId, blogId]
-    );
-    revalidatePath(path);
-  } catch (error) {
-    handleError(error);
-  }
+export async function favouriteBlog(form: FormData, path: string) {
+  return mutation(async () => {
+    const user = await requireUser();
+    await db.favourite.createMany({
+      data: [
+        { user_id: user.user_id, blog_id: positiveId(form.get("blogId")) },
+      ],
+      skipDuplicates: true,
+    });
+    refresh(path);
+  });
 }
-
-// DELETE
-export async function unfavouriteBlog(formData: FormData, path: string) {
-  try {
-    const userId = formData.get("userId");
-    const blogId = formData.get("blogId");
-    await pool!.query(
-      "DELETE FROM favourites WHERE user_id = ? AND blog_id = ?",
-      [userId, blogId]
-    );
-    revalidatePath(path);
-  } catch (error) {
-    handleError(error);
-  }
+export async function unfavouriteBlog(form: FormData, path: string) {
+  return mutation(async () => {
+    const user = await requireUser();
+    await db.favourite.deleteMany({
+      where: { user_id: user.user_id, blog_id: positiveId(form.get("blogId")) },
+    });
+    refresh(path);
+  });
 }
-
-// DELETE ALL FAVOURITES FOR A USER
-export async function deleteAllFavouritesByUser(
-  formData: FormData,
-  path: string
-) {
-  try {
-    const userId = formData.get("deleteId"); // Changed to match DeleteButton
-    await pool!.query("DELETE FROM favourites WHERE user_id = ?", [userId]);
-    revalidatePath(path);
-  } catch (error) {
-    handleError(error);
-  }
+export async function deleteAllFavouritesByUser(_form: FormData, path: string) {
+  return mutation(async () => {
+    const user = await requireUser();
+    await db.favourite.deleteMany({ where: { user_id: user.user_id } });
+    refresh(path);
+  });
 }
-// GET ALL FAVOURITES FOR A USER
 export async function getAllFavouritesByUser(userId: string) {
-  try {
-    const [rows] = await pool!.query(
-      `SELECT b.* FROM blogs b
-       JOIN favourites f ON b.id = f.blog_id
-         WHERE f.user_id = ?`,
-      [userId]
-    );
-    const favourites: BlogType[] = JSON.parse(JSON.stringify(rows));
-
-    return favourites;
-  } catch (error) {
-    handleError(error);
-  }
+  await requireSelf(userId);
+  const blogs = await db.blog.findMany({
+    where: { favourites: { some: { user_id: userId } } },
+    include: {
+      author: { select: publicProfile },
+      likes: { where: { user_id: userId }, select: { id: true } },
+    },
+    orderBy: [{ created_at: "desc" }, { id: "desc" }],
+  });
+  return blogs.map(({ author, likes, ...b }) => ({
+    ...b,
+    created_at: b.created_at.toISOString(),
+    updated_at: b.updated_at.toISOString(),
+    creator: author,
+    isLiked: likes.length > 0,
+    isFavourited: true,
+  }));
 }
