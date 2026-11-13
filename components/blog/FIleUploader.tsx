@@ -4,19 +4,24 @@ import { useRef, useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import { useUploadThing } from "@/lib/utils/uploadthing";
-import { handleError } from "@/lib/utils";
+
 
 type FileUploaderProps = {
   imageUrl: string | null;
   onFieldChange: (url: string) => void;
+  onUploadStateChange?: (pending: boolean) => void;
   setFiles?: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export default function FileUploader({
   imageUrl,
   onFieldChange,
+  onUploadStateChange,
 }: FileUploaderProps) {
-  const { startUpload } = useUploadThing("imageUploader");
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const { startUpload } = useUploadThing("imageUploader", {
+    onUploadError: (error) => setUploadError(error.message),
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(imageUrl);
   const [isUploading, setIsUploading] = useState(false);
@@ -32,26 +37,32 @@ export default function FileUploader({
       const localPreview = URL.createObjectURL(file);
       setPreviewUrl(localPreview);
       setIsUploading(true);
+      setUploadError(null);
+      onUploadStateChange?.(true);
 
       try {
         const uploaded = await startUpload([file]);
 
-        if (uploaded?.[0]?.url) {
+        const url = uploaded?.[0]?.ufsUrl;
+        if (url) {
           // Replace local preview with uploaded URL
-          URL.revokeObjectURL(localPreview);
-          setPreviewUrl(uploaded[0].url);
-          onFieldChange(uploaded[0].url);
+          setPreviewUrl(url);
+          onFieldChange(url);
+        } else {
+          setPreviewUrl(imageUrl);
+          setUploadError((message) => message ?? "Image upload failed. Please try again.");
         }
       } catch (error) {
         // Revert to original imageUrl on error
-        URL.revokeObjectURL(localPreview);
         setPreviewUrl(imageUrl);
-        handleError(error);
+        setUploadError(error instanceof Error ? error.message : "Image upload failed. Please try again.");
       } finally {
+        URL.revokeObjectURL(localPreview);
+        onUploadStateChange?.(false);
         setIsUploading(false);
       }
     },
-    [startUpload, onFieldChange, imageUrl]
+    [startUpload, onFieldChange, imageUrl, onUploadStateChange]
   );
 
   const onDrop = useCallback(
@@ -65,11 +76,12 @@ export default function FileUploader({
     onDrop,
     accept: { "image/*": [] },
     multiple: false,
+    disabled: isUploading,
   });
 
   const triggerFileDialog = useCallback(() => {
-    fileInputRef.current?.click();
-  }, [fileInputRef]);
+    if (!isUploading) fileInputRef.current?.click();
+  }, [isUploading]);
 
   const manualSelect = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,8 +105,10 @@ export default function FileUploader({
         accept="image/*"
         onChange={manualSelect}
         className="hidden"
+        disabled={isUploading}
       />
 
+      {uploadError && <p role="alert" className="p-2 text-sm text-red-600">{uploadError}</p>}
       {previewUrl ? (
         <>
           <Image

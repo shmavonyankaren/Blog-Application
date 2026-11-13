@@ -26,10 +26,9 @@ export default clerkMiddleware(async (auth, req) => {
   await auth.protect();
 });
 
-// Configure matcher to run middleware for page routes only (exclude API and static files).
 export const config = {
   matcher: [
-    // Run middleware for all non-static, non-_next, non-api routes
+    "/api/uploadthing(.*)",
     "/((?!_next|api|trpc|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
   ],
 };

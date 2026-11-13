@@ -18,6 +18,7 @@ export default function CreateEditBlogModal({
 }: CreateEditBlogTypes) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isImageUploading, setIsImageUploading] = useState(false);
   const [shouldCloseAfterRefresh, setShouldCloseAfterRefresh] = useState(false);
   const { user } = useUser();
   const pathname = usePathname();
@@ -61,6 +62,7 @@ export default function CreateEditBlogModal({
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      if (isImageUploading) return;
       setIsSubmitting(true);
 
       try {
@@ -83,7 +85,7 @@ export default function CreateEditBlogModal({
         setIsSubmitting(false);
       }
     },
-    [actionType, pathname, router, startTransition]
+    [actionType, pathname, router, startTransition, isImageUploading]
   );
 
   useEffect(() => {
@@ -144,7 +146,7 @@ export default function CreateEditBlogModal({
           <div className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto">
             <div
               className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-              onClick={isSubmitting || isRefreshing ? undefined : handleClose}
+              onClick={isSubmitting || isRefreshing || isImageUploading ? undefined : handleClose}
             />
 
             {/* modal panel */}
@@ -157,7 +159,7 @@ export default function CreateEditBlogModal({
                   </h3>
                   <button
                     onClick={handleClose}
-                    disabled={isSubmitting || isRefreshing}
+                    disabled={isSubmitting || isRefreshing || isImageUploading}
                     className="cursor-pointer inline-flex items-center justify-center w-9 h-9 rounded-full hover:bg-white/20 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     aria-label="Close"
                   >
@@ -260,6 +262,7 @@ export default function CreateEditBlogModal({
                         <FileUploader
                           onFieldChange={setImageUrl}
                           imageUrl={imageUrl}
+                          onUploadStateChange={setIsImageUploading}
                         />
                         <input
                           type="hidden"
@@ -274,7 +277,7 @@ export default function CreateEditBlogModal({
                       <button
                         type="button"
                         onClick={() => setIsOpen(false)}
-                        disabled={isSubmitting || isRefreshing}
+                        disabled={isSubmitting || isRefreshing || isImageUploading}
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-[#0f172a] border border-gray-300 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all duration-300 cursor-pointer shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Cancel
@@ -282,7 +285,7 @@ export default function CreateEditBlogModal({
 
                       <button
                         type="submit"
-                        disabled={isSubmitting || isRefreshing}
+                        disabled={isSubmitting || isRefreshing || isImageUploading}
                         className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold cursor-pointer hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-600"
                       >
                         {isSubmitting || isRefreshing ? (
