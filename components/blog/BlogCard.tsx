@@ -35,7 +35,7 @@ export default async function BlogCard({ cardType, blog }: BlogCardProps) {
             ? `url(${blog.image})`
             : "url(/assets/images/default_blog_image.png)",
         }}
-        className="relative flex-center grow bg-gray-50 dark:bg-slate-800/50 bg-cover bg-center text-grey-500 overflow-hidden transition-colors duration-300"
+        className="relative flex-center min-h-[180px] grow bg-gray-50 dark:bg-slate-800/50 bg-cover bg-center text-grey-500 overflow-hidden transition-colors duration-300"
       >
         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </Link>
